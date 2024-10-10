@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Comfy Learn</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="your_web_client_id">1005345375717-0t16i8fe6aobkea28dd879qsfe3h622l.apps.googleusercontent.com</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_materi">All Study</string>
+    <string name="menu_games">All Games</string>
+    <string name="menu_learprog">Learning Progress</string>
+    <string name="menu_setting">Settings</string>
+    <string name="menu_rate">Rate App</string>
+    <string name="nav_header_calltoaction">Subscribe</string>
+
+    <integer-array name="data_buttonStudy">
+        <item>@drawable/custom_button_left</item>
+        <item>@drawable/custom_button_right</item>
+        <item>@drawable/custom_button_left</item>
+        <item>@drawable/custom_button_right</item>
+    </integer-array>
+    <integer-array name="data_buttonGames">
+        <item>@drawable/custom_button_left</item>
+        <item>@drawable/custom_button_right</item>
+        <item>@drawable/custom_button_left</item>
+        <item>@drawable/custom_button_right</item>
+    </integer-array>
+</resources>
