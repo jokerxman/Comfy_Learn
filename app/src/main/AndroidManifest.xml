@@ -15,6 +15,9 @@
         android:theme="@style/Theme.ComfyLearn"
         tools:targetApi="31">
         <activity
+            android:name=".AlphabetActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.study.materi1.materi1Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"

@@ -1,11 +1,13 @@
 package com.hompimpa.comfylearn.ui.study
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.hompimpa.comfylearn.AlphabetActivity
 import com.hompimpa.comfylearn.databinding.FragmentStudyBinding
 
 class StudyFragment : Fragment() {
@@ -18,14 +20,20 @@ class StudyFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        // Initialize the ViewModel
         studyViewModel = ViewModelProvider(this)[StudyViewModel::class.java]
-
-        // Inflate the fragment layout
         _binding = FragmentStudyBinding.inflate(inflater, container, false)
-        val root: View = binding.root
 
-        return root
+        // Set onClickListener to launch AlphabetActivity
+        binding.imageButton.setOnClickListener {
+            launchAlphabetActivity()
+        }
+
+        return binding.root
+    }
+
+    private fun launchAlphabetActivity() {
+        val intent = Intent(requireContext(), AlphabetActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onDestroyView() {
