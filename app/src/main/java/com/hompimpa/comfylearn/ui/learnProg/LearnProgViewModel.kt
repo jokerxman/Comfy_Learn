@@ -1,10 +1,10 @@
-package com.hompimpa.comfylearn.ui.slideshow
+package com.hompimpa.comfylearn.ui.learnProg
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class SlideshowViewModel : ViewModel() {
+class LearnProgViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is slideshow Fragment"

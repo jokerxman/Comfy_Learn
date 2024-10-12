@@ -17,16 +17,7 @@
     <string name="menu_rate">Rate App</string>
     <string name="nav_header_calltoaction">Subscribe</string>
 
-    <integer-array name="data_buttonStudy">
-        <item>@drawable/custom_button_left</item>
-        <item>@drawable/custom_button_right</item>
-        <item>@drawable/custom_button_left</item>
-        <item>@drawable/custom_button_right</item>
-    </integer-array>
-    <integer-array name="data_buttonGames">
-        <item>@drawable/custom_button_left</item>
-        <item>@drawable/custom_button_right</item>
-        <item>@drawable/custom_button_left</item>
-        <item>@drawable/custom_button_right</item>
-    </integer-array>
+    <string name="title_activity_materi1">materi1Activity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
