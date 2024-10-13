@@ -10,8 +10,9 @@
         android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Button Alphabet dan Number"
-        android:src="@drawable/custom_button_left"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="Button Games 1"
+        android:src="@drawable/button_spelling"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,8 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="148dp"
         android:layout_marginEnd="4dp"
-        android:contentDescription="Button Aritmatika Dasar"
-        android:src="@drawable/custom_button_right"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="Button Games 2"
+        android:src="@drawable/button_counting"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,8 +33,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="116dp"
-        android:contentDescription="Button Membaca"
-        android:src="@drawable/custom_button_left"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="Button Games 3"
+        android:src="@drawable/button_drawing"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageButton" />
 
@@ -42,8 +45,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="108dp"
         android:layout_marginEnd="4dp"
-        android:contentDescription="Button Tracing"
-        android:src="@drawable/custom_button_right"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="Button Games 4"
+        android:src="@drawable/button_puzzle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageButton2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

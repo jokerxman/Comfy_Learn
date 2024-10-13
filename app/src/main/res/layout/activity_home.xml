@@ -18,9 +18,9 @@
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
-        android:background="@drawable/outline_background"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@drawable/outline_background"
         android:fitsSystemWindows="false"
         app:headerLayout="@layout/nav_header_home"
         app:menu="@menu/activity_main_drawer" />

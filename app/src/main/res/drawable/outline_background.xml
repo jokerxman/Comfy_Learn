@@ -8,6 +8,6 @@
         android:color="@color/colorAccent" />
 
     <!-- Optional: Set the corner radius for rounded corners -->
-    <corners android:bottomRightRadius="10dp"/>
+    <corners android:bottomRightRadius="10dp" />
     <corners android:topRightRadius="10dp" />
 </shape>

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.hompimpa.comfylearn.AlphabetActivity
 import com.hompimpa.comfylearn.databinding.FragmentStudyBinding
 
@@ -15,25 +14,18 @@ class StudyFragment : Fragment() {
     private var _binding: FragmentStudyBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var studyViewModel: StudyViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        studyViewModel = ViewModelProvider(this)[StudyViewModel::class.java]
         _binding = FragmentStudyBinding.inflate(inflater, container, false)
 
-        // Set onClickListener to launch AlphabetActivity
-        binding.imageButton.setOnClickListener {
-            launchAlphabetActivity()
+        binding.buttonOpenAlphabet.setOnClickListener {
+            val intent = Intent(requireContext(), AlphabetActivity::class.java)
+            intent.putExtra("letter", 'A') // Start with letter 'A'
+            startActivity(intent)
         }
 
         return binding.root
-    }
-
-    private fun launchAlphabetActivity() {
-        val intent = Intent(requireContext(), AlphabetActivity::class.java)
-        startActivity(intent)
     }
 
     override fun onDestroyView() {
@@ -41,3 +33,4 @@ class StudyFragment : Fragment() {
         _binding = null
     }
 }
+
