@@ -7,47 +7,47 @@
     tools:context=".ui.games.GamesFragment">
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/buttonOpenGameFill"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@android:color/transparent"
-        android:contentDescription="Button Games 1"
+        android:contentDescription="Button Games Fill"
         android:src="@drawable/button_spelling"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/buttonOpenGameArithmetic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="148dp"
         android:layout_marginEnd="4dp"
         android:backgroundTint="@android:color/transparent"
-        android:contentDescription="Button Games 2"
+        android:contentDescription="Button Games Arithmetic"
         android:src="@drawable/button_counting"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/buttonOpenGameDrawing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="116dp"
         android:backgroundTint="@android:color/transparent"
-        android:contentDescription="Button Games 3"
+        android:contentDescription="Button Games Drawing"
         android:src="@drawable/button_drawing"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonOpenGameFill" />
 
     <ImageButton
-        android:id="@+id/imageButton4"
+        android:id="@+id/buttonOpenGamePuzzle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="108dp"
         android:layout_marginEnd="4dp"
         android:backgroundTint="@android:color/transparent"
-        android:contentDescription="Button Games 4"
+        android:contentDescription="Button Games Puzzle"
         android:src="@drawable/button_puzzle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton2" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonOpenGameArithmetic" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,14 +15,17 @@
         android:theme="@style/Theme.ComfyLearn"
         tools:targetApi="31">
         <activity
-            android:name=".AlphabetActivity"
+            android:name=".ui.study.spelling.SpellingActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.study.materi1.materi1Activity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="false"
-            android:label="@string/title_activity_materi1"
-            android:theme="@style/Theme.ComfyLearn.Fullscreen" />
+            android:name=".ui.study.tracing.TracingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.study.number.NumberActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.study.alphabet.AlphabetActivity"
+            android:exported="false" />
         <activity
             android:name=".SplashActivity"
             android:exported="true"

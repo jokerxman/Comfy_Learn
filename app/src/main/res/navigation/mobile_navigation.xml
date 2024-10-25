@@ -8,11 +8,7 @@
     <fragment
         android:id="@+id/nav_study"
         android:name="com.hompimpa.comfylearn.ui.study.StudyFragment"
-        tools:layout="@layout/fragment_study">
-        <action
-            android:id="@+id/action_studyFragment_to_alphabetFragment"
-            app:destination="@id/alphabetFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_study"></fragment>
 
     <fragment
         android:id="@+id/nav_games"
@@ -30,16 +26,8 @@
         tools:layout="@layout/fragment_settings" />
 
     <fragment
-        android:id="@+id/alphabetFragment"
-        android:name="com.hompimpa.comfylearn.ui.study.AlphabetFragment"
-        android:label="Alphabet"
-        tools:layout="@layout/item_alphabet">
-        <action
-            android:id="@+id/action_alphabetFragment_self"
-            app:destination="@id/alphabetFragment" />
-        <action
-            android:id="@+id/action_alphabetFragment_to_studyFragment"
-            app:destination="@id/nav_study" />
-    </fragment>
+        android:id="@+id/digitCanvasFragment"
+        android:name="com.hompimpa.comfylearn.ui.study.tracing.DigitCanvasFragment"
+        tools:layout="@layout/fragment_digit_canvas" />
 
 </navigation>
