@@ -1,28 +1,38 @@
 package com.hompimpa.comfylearn.ui.games
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.hompimpa.comfylearn.databinding.FragmentGamesBinding
+import com.hompimpa.comfylearn.ui.games.drawing.DrawingActivity
+import com.hompimpa.comfylearn.ui.games.fillIn.FillInActivity
 
 class GamesFragment : Fragment() {
 
     private var _binding: FragmentGamesBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var gamesViewModel: GamesViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // Initialize the ViewModel
-        gamesViewModel = ViewModelProvider(this)[GamesViewModel::class.java]
 
         // Inflate the fragment layout
         _binding = FragmentGamesBinding.inflate(inflater, container, false)
+
+        binding.buttonOpenGameFill.setOnClickListener {
+            val intent = Intent(requireContext(), FillInActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.buttonOpenGameDrawing.setOnClickListener {
+            val intent = Intent(requireContext(), DrawingActivity::class.java)
+            startActivity(intent)
+        }
+
         val root: View = binding.root
 
         return root

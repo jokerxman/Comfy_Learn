@@ -1,84 +1,78 @@
 package com.hompimpa.comfylearn.ui.study.spelling
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commit
-import com.hompimpa.comfylearn.HomeActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.hompimpa.comfylearn.R
 
 class SpellingActivity : AppCompatActivity() {
 
-    private lateinit var nextButton: ImageButton
-    private lateinit var backButton: ImageButton
     private lateinit var homeButton: ImageButton
-    private var currentSyllable: Int = 0 // Start from the first syllable
-
-    // List of syllables
-    private val syllables = listOf(
-        "a", "i", "u", "e", "o",
-        "ba", "bi", "bu", "be", "bo",
-        "ca", "ci", "cu", "ce", "co",
-        "da", "di", "du", "de", "do",
-        "fa", "fi", "fu", "fe", "fo",
-        "ga", "gi", "gu", "ge", "go",
-        "ha", "hi", "hu", "he", "ho",
-        "ja", "ji", "ju", "je", "jo",
-        "ka", "ki", "ku", "ke", "ko",
-        "la", "li", "lu", "le", "lo",
-        "ma", "mi", "mu", "me", "mo",
-        "na", "ni", "nu", "ne", "no",
-        "pa", "pi", "pu", "pe", "po",
-        "ra", "ri", "ru", "re", "ro",
-        "sa", "si", "su", "se", "so",
-        "ta", "ti", "tu", "te", "to",
-        "va", "vi", "vu", "ve", "vo",
-        "wa", "wi", "wu", "we", "wo",
-        "xa", "xi", "xu", "xe", "xo",
-        "ya", "yi", "yu", "ye", "yo",
-        "za", "zi", "zu", "ze", "zo"
-    )
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var categoryAdapter: CategoryAdapter
+    private val mainCategories = listOf("Animals", "Objects") // Main categories
+    private lateinit var consonantCategories: List<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spelling)
 
-        nextButton = findViewById(R.id.nextButton)
-        backButton = findViewById(R.id.backButton)
+        // Load consonant categories from strings.xml
+        consonantCategories = resources.getStringArray(R.array.consonants).toList()
+
         homeButton = findViewById(R.id.homeButton)
+        homeButton.setOnClickListener {
+            finish() // Close the activity or navigate to home
+        }
 
-        // Retrieve the syllable passed from the intent
-        currentSyllable = intent.getIntExtra("syllable_index", 0)
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = GridLayoutManager(this, 2)
 
-        loadSyllableFragment(currentSyllable)
+        // Combine main categories and consonants into one list for the adapter
+        val combinedCategories = mainCategories + consonantCategories
 
-        nextButton.setOnClickListener { navigateToSyllable(currentSyllable + 1) }
-        backButton.setOnClickListener { navigateToSyllable(currentSyllable - 1) }
-        homeButton.setOnClickListener { navigateToHome() }
+        categoryAdapter = CategoryAdapter(combinedCategories) { selectedCategory ->
+            onCategorySelected(selectedCategory)
+        }
+        recyclerView.adapter = categoryAdapter
     }
 
-    private fun loadSyllableFragment(syllableIndex: Int) {
-        if (syllableIndex in syllables.indices) {
-            supportFragmentManager.commit {
-                replace(
-                    R.id.fragment_container,
-                    SpellingFragment.newInstance(syllables[syllableIndex])
-                )
+    private fun onCategorySelected(category: String) {
+        // Hide the RecyclerView
+        recyclerView.visibility = View.GONE
+
+        // Create a new instance of SpellingFragment based on the selected category
+        val fragment = when {
+            mainCategories.contains(category) -> {
+                // Handle main categories
+                SpellingFragment.newInstanceForCategory(category)
+            }
+
+            consonantCategories.contains(category) -> {
+                // Handle consonant categories
+                SpellingFragment.newInstanceForLetter(category)
+            }
+
+            else -> {
+                // Handle unknown category (optional)
+                return
             }
         }
+
+        // Replace the current fragment with the new fragment
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
-    private fun navigateToSyllable(syllableIndex: Int) {
-        if (syllableIndex in syllables.indices) {
-            currentSyllable = syllableIndex
-            loadSyllableFragment(syllableIndex)
+    override fun onBackPressed() {
+        if (recyclerView.visibility != View.VISIBLE) {
+            recyclerView.visibility = View.VISIBLE
         }
-    }
-
-    private fun navigateToHome() {
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
-        finish()
+        super.onBackPressed()
     }
 }

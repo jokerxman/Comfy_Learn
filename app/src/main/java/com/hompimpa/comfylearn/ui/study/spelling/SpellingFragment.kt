@@ -4,73 +4,118 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.hompimpa.comfylearn.R
+import kotlin.random.Random
 
 class SpellingFragment : Fragment() {
 
-    private var syllable: String = "a"
-    private lateinit var syllableImages: Map<String, Int>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            syllable = it.getString(ARG_SYLLABLE) ?: "ba"
-        }
-
-        val syllables = listOf(
-            "a", "i", "u", "e", "o",
-            "ba", "bi", "bu", "be", "bo",
-            "ca", "ci", "cu", "ce", "co",
-            "da", "di", "du", "de", "do",
-            "fa", "fi", "fu", "fe", "fo",
-            "ga", "gi", "gu", "ge", "go",
-            "ha", "hi", "hu", "he", "ho",
-            "ja", "ji", "ju", "je", "jo",
-            "ka", "ki", "ku", "ke", "ko",
-            "la", "li", "lu", "le", "lo",
-            "ma", "mi", "mu", "me", "mo",
-            "na", "ni", "nu", "ne", "no",
-            "pa", "pi", "pu", "pe", "po",
-            "ra", "ri", "ru", "re", "ro",
-            "sa", "si", "su", "se", "so",
-            "ta", "ti", "tu", "te", "to",
-            "va", "vi", "vu", "ve", "vo",
-            "wa", "wi", "wu", "we", "wo",
-            "xa", "xi", "xu", "xe", "xo",
-            "ya", "yi", "yu", "ye", "yo",
-            "za", "zi", "zu", "ze", "zo"
-        )
-
-        syllableImages = syllables.associateWith { syllable ->
-            val resName = "spell_$syllable"
-            resources.getIdentifier(resName, "drawable", requireContext().packageName)
-        }
-    }
+    private lateinit var wordTextView: TextView
+    private var selectedCategory: String? = null
+    private var selectedLetter: String? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_spelling, container, false)
-        val syllableImageView: ImageView = view.findViewById(R.id.spellingImageView)
-        updateSyllableImage(syllableImageView)
-        return view
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_spelling, container, false)
     }
 
-    private fun updateSyllableImage(syllableImageView: ImageView) {
-        val imageRes = syllableImages[syllable] ?: R.drawable.ic_no_image
-        syllableImageView.setImageResource(imageRes)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        wordTextView = view.findViewById(R.id.wordTextView)
+
+        // Get the selected category or letter from arguments
+        selectedCategory = arguments?.getString(ARG_CATEGORY)
+        selectedLetter = arguments?.getString(ARG_LETTER)
+
+        // Load and display words based on the selected category or letter
+        if (selectedCategory != null) {
+            displayRandomWordForCategory(selectedCategory)
+        } else if (selectedLetter != null) {
+            displayWordsForLetter(selectedLetter)
+        }
+    }
+
+    private fun displayRandomWordForCategory(category: String?) {
+        val words = when (category) {
+            "Animals" -> resources.getStringArray(R.array.animal).toList()
+            "Objects" -> resources.getStringArray(R.array.objek).toList()
+            else -> emptyList()
+        }
+
+        // Select a random word from the list
+        if (words.isNotEmpty()) {
+            val randomWord = words[Random.nextInt(words.size)]
+            wordTextView.text = randomWord
+        } else {
+            wordTextView.text = "No words available"
+        }
+    }
+
+    private fun displayWordsForLetter(letter: String?) {
+        // Define the consonants you are using
+        val consonants = listOf(
+            'B',
+            'C',
+            'D',
+            'F',
+            'G',
+            'H',
+            'J',
+            'K',
+            'L',
+            'M',
+            'N',
+            'P',
+            'Q',
+            'R',
+            'S',
+            'T',
+            'V',
+            'W',
+            'X',
+            'Y',
+            'Z'
+        )
+
+        // Get the index based on the consonant letter
+        val index = letter?.firstOrNull()?.uppercaseChar()?.let { consonants.indexOf(it) }
+
+        // Ensure the index is valid
+        val words = if (index != null && index in consonants.indices) {
+            resources.getStringArray(R.array.spell)[index].split(",") // Split the string into a list
+        } else {
+            emptyList()
+        }
+
+        // Display the words in the TextView
+        wordTextView.text = words.joinToString(", ")
     }
 
     companion object {
-        private const val ARG_SYLLABLE = "syllable"
+        private const val ARG_CATEGORY = "category"
+        private const val ARG_LETTER = "letter"
 
-        @JvmStatic
-        fun newInstance(syllable: String) = SpellingFragment().apply {
-            arguments = Bundle().apply {
-                putString(ARG_SYLLABLE, syllable)
-            }
+        // Factory method to create a new instance of this fragment for category
+        fun newInstanceForCategory(category: String): SpellingFragment {
+            val fragment = SpellingFragment()
+            val args = Bundle()
+            args.putString(ARG_CATEGORY, category)
+            fragment.arguments = args
+            return fragment
+        }
+
+        // Factory method to create a new instance of this fragment for letter
+        fun newInstanceForLetter(letter: String): SpellingFragment {
+            val fragment = SpellingFragment()
+            val args = Bundle()
+            args.putString(ARG_LETTER, letter)
+            fragment.arguments = args
+            return fragment
         }
     }
 }

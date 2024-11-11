@@ -34,6 +34,8 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //Library Alphabet SVG randomize, call asset based on SVG
+
         // Initialize binding first
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)

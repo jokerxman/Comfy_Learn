@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.hompimpa.comfylearn.databinding.FragmentStudyBinding
+import com.hompimpa.comfylearn.ui.ParseActivity
 import com.hompimpa.comfylearn.ui.study.alphabet.AlphabetActivity
 import com.hompimpa.comfylearn.ui.study.spelling.SpellingActivity
-import com.hompimpa.comfylearn.ui.study.tracing.TracingActivity
 
 class StudyFragment : Fragment() {
 
@@ -28,7 +28,7 @@ class StudyFragment : Fragment() {
         }
 
         binding.buttonOpenTracing.setOnClickListener {
-            val intent = Intent(requireContext(), TracingActivity::class.java)
+            val intent = Intent(requireContext(), ParseActivity::class.java)
             startActivity(intent)
         }
 

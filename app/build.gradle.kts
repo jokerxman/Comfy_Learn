@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.hompimpa.comfylearn"
-        minSdk = 29
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -28,17 +28,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         viewBinding = true
         buildConfig = true
         mlModelBinding = true
     }
+    buildToolsVersion = "35.0.0"
 }
 
 dependencies {
@@ -50,6 +51,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.viewpager2)
     implementation(libs.glide)
+    implementation(libs.androidsvg.aar)
+
 
 // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
@@ -69,11 +72,11 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
 
 // Other
-//    implementation(libs.tensorflow.lite.task.vision)
     implementation(libs.tasks.vision)
     implementation(libs.tensorflow.lite.support)
     implementation(libs.tensorflow.lite.metadata)
     implementation(libs.tensorflow.lite.gpu)
+    implementation(libs.androidx.recyclerview)
 
 // Testing
     testImplementation(libs.junit)

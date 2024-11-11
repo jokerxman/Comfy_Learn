@@ -16,6 +16,7 @@ class NumberActivity : AppCompatActivity() {
     private lateinit var homeButton: ImageButton
     private lateinit var changeButton: ImageButton
     private var currentNumber: Int = 1 // Default starting number
+    val fragment = NumberFragment.newInstance(currentNumber)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

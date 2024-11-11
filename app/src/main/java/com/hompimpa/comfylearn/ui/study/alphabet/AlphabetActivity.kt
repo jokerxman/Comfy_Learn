@@ -58,6 +58,7 @@ class AlphabetActivity : AppCompatActivity() {
 
     private fun navigateToOther() {
         val intent = Intent(this, NumberActivity::class.java)
+        intent.putExtra("number", 1)
         startActivity(intent)
         finish()
     }

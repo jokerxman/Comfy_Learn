@@ -17,21 +17,514 @@
     <string name="menu_rate">Rate App</string>
     <string name="nav_header_calltoaction">Subscribe</string>
 
-    <string name="inference_time">Inference Time: %1$s ms</string>
-    <string name="label_confidence_threshold">Threshold</string>
-    <string name="label_max_results">Max Results</string>
-    <string name="label_threads">Number of Threads</string>
-    <string name="label_delegate">Delegate</string>
-    <string name="default_threshold">0.50</string>
-    <string name="default_max_results">3</string>
-    <string name="tv_predicted_results">Predicted results:</string>
-    <string name="btn_clear">Clear</string>
-
-    <string-array name="delegate_spinner_titles">
-        <item>CPU</item>
-        <item>GPU</item>
-        <item>NNAPI</item>
+    <string-array name="vowel">
+        <item>A</item>
+        <item>E</item>
+        <item>I</item>
+        <item>O</item>
+        <item>U</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="consonants">
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>F</item>
+        <item>G</item>
+        <item>H</item>
+        <item>J</item>
+        <item>K</item>
+        <item>L</item>
+        <item>M</item>
+        <item>N</item>
+        <item>P</item>
+        <item>Q</item>
+        <item>R</item>
+        <item>S</item>
+        <item>T</item>
+        <item>V</item>
+        <item>W</item>
+        <item>X</item>
+        <item>Y</item>
+        <item>Z</item>
+    </string-array>
+    <string-array name="number">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="alphabets">
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
+        <item>F</item>
+        <item>G</item>
+        <item>H</item>
+        <item>I</item>
+        <item>J</item>
+        <item>K</item>
+        <item>L</item>
+        <item>M</item>
+        <item>N</item>
+        <item>O</item>
+        <item>P</item>
+        <item>Q</item>
+        <item>R</item>
+        <item>S</item>
+        <item>T</item>
+        <item>U</item>
+        <item>V</item>
+        <item>W</item>
+        <item>X</item>
+        <item>Y</item>
+        <item>Z</item>
+    </string-array>
+    <string-array name="spell">
+        <item>ba,bi,bu,be,bo</item>
+        <item>ca,ci,cu,ce,co</item>
+        <item>da,di,du,de,do</item>
+        <item>fa,fi,fu,fe,fo</item>
+        <item>ga,gi,gu,ge,go</item>
+        <item>ha,hi,hu,he,ho</item>
+        <item>ja,ji,ju,je,jo</item>
+        <item>ka,ki,ku,ke,ko</item>
+        <item>la,li,lu,le,lo</item>
+        <item>ma,mi,mu,me,mo</item>
+        <item>na,ni,nu,ne,no</item>
+        <item>pa,pi,pu,pe,po</item>
+        <item>qa,qi,qu,qe,qo</item>
+        <item>ra,ri,ru,re,ro</item>
+        <item>sa,si,su,se,so</item>
+        <item>ta,ti,tu,te,to</item>
+        <item>va,vi,vu,ve,vo</item>
+        <item>wa,wi,wu,we,wo</item>
+        <item>xa,xi,xu,xe,xo</item>
+        <item>ya,yi,yu,ye,yo</item>
+        <item>za,zi,zu,ze,zo</item>
+    </string-array>
+    <string-array name="animal">
+        <item>Dog</item>
+        <item>Cow</item>
+        <item>Cat</item>
+        <item>Horse</item>
+        <item>Donkey</item>
+        <item>Tiger</item>
+        <item>Lion</item>
+        <item>Panther</item>
+        <item>Leopard</item>
+        <item>Cheetah</item>
+        <item>Bear</item>
+        <item>Elephant</item>
+        <item>Polar bear</item>
+        <item>Turtle</item>
+        <item>Tortoise</item>
+        <item>Crocodile</item>
+        <item>Rabbit</item>
+        <item>Porcupine</item>
+        <item>Hare</item>
+        <item>Hen</item>
+        <item>Pigeon</item>
+        <item>Albatross</item>
+        <item>Crow</item>
+        <item>Fish</item>
+        <item>Dolphin</item>
+        <item>Frog</item>
+        <item>Whale</item>
+        <item>Alligator</item>
+        <item>Eagle</item>
+        <item>Flying squirrel</item>
+        <item>Ostrich</item>
+        <item>Fox</item>
+        <item>Goat</item>
+        <item>Jackal</item>
+        <item>Emu</item>
+        <item>Armadillo</item>
+        <item>Eel</item>
+        <item>Goose</item>
+        <item>Arctic fox</item>
+        <item>Wolf</item>
+        <item>Beagle</item>
+        <item>Gorilla</item>
+        <item>Chimpanzee</item>
+        <item>Monkey</item>
+        <item>Beaver</item>
+        <item>Orangutan</item>
+        <item>Antelope</item>
+        <item>Bat</item>
+        <item>Badger</item>
+        <item>Giraffe</item>
+        <item>Hermit Crab</item>
+        <item>Giant Panda</item>
+        <item>Hamster</item>
+        <item>Cobra</item>
+        <item>Hammerhead shark</item>
+        <item>Camel</item>
+        <item>Hawk</item>
+        <item>Deer</item>
+        <item>Chameleon</item>
+        <item>Hippopotamus</item>
+        <item>Jaguar</item>
+        <item>Chihuahua</item>
+        <item>King Cobra</item>
+        <item>Ibex</item>
+        <item>Lizard</item>
+        <item>Koala</item>
+        <item>Kangaroo</item>
+        <item>Iguana</item>
+        <item>Llama</item>
+        <item>Chinchillas</item>
+        <item>Dodo</item>
+        <item>Jellyfish</item>
+        <item>Rhinoceros</item>
+        <item>Hedgehog</item>
+        <item>Zebra</item>
+        <item>Possum</item>
+        <item>Wombat</item>
+        <item>Bison</item>
+        <item>Bull</item>
+        <item>Buffalo</item>
+        <item>Sheep</item>
+        <item>Meerkat</item>
+        <item>Mouse</item>
+        <item>Otter</item>
+        <item>Sloth</item>
+        <item>Owl</item>
+        <item>Vulture</item>
+        <item>Flamingo</item>
+        <item>Racoon</item>
+        <item>Mole</item>
+        <item>Duck</item>
+        <item>Swan</item>
+        <item>Lynx</item>
+        <item>Monitor lizard</item>
+        <item>Elk</item>
+        <item>Boar</item>
+        <item>Lemur</item>
+        <item>Mule</item>
+        <item>Baboon</item>
+        <item>Mammoth</item>
+        <item>Blue whale</item>
+        <item>Rat</item>
+        <item>Snake</item>
+        <item>Peacock</item>
+
+    </string-array>
+    <string-array name="objek">
+        <item>Blender</item>
+        <item>Bucket</item>
+        <item>Chair</item>
+        <item>Bedsheet</item>
+        <item>Bottle</item>
+        <item>Broom</item>
+        <item>Clothes stand</item>
+        <item>Pot</item>
+        <item>Light bulb</item>
+        <item>Desk</item>
+        <item>Curtains</item>
+        <item>Calendar</item>
+        <item>Dishwasher</item>
+        <item>Lantern</item>
+        <item>Comb</item>
+        <item>basket</item>
+        <item>Television</item>
+        <item>Couch</item>
+        <item>Refrigerator</item>
+        <item>Watching machine</item>
+        <item>Microwave oven</item>
+        <item>Griller</item>
+        <item>Table</item>
+        <item>Lamp</item>
+        <item>Kettle</item>
+        <item>Mob</item>
+        <item>Iron box</item>
+        <item>Hanger</item>
+        <item>Photo frame</item>
+        <item>Fan</item>
+        <item>Air conditioner</item>
+        <item>Cloth</item>
+        <item>Stationery item</item>
+        <item>Toaster</item>
+        <item>Speaker</item>
+        <item>Vacuum cleaner</item>
+        <item>Kitchen hood</item>
+        <item>Torch</item>
+        <item>Stove</item>
+        <item>Pressure cooker</item>
+        <item>Mixer</item>
+        <item>Coffee machine</item>
+        <item>Juicer</item>
+        <item>Stepladder</item>
+        <item>Sewing machine</item>
+        <item>Clock</item>
+        <item>Hair dryer</item>
+        <item>Dog house</item>
+        <item>Dustbin</item>
+        <item>Dust pan</item>
+        <item>Bathtub</item>
+        <item>Pillow</item>
+        <item>Bed</item>
+        <item>Cradle</item>
+        <item>Cleaning tool</item>
+        <item>Towel</item>
+        <item>Cupboard</item>
+        <item>Closet</item>
+        <item>Carpet</item>
+        <item>Chimney</item>
+        <item>Fence</item>
+        <item>Fireplace</item>
+        <item>Blind</item>
+        <item>Remote</item>
+        <item>Book</item>
+        <item>Plastic container</item>
+        <item>Rolling pin</item>
+        <item>Napkin</item>
+        <item>Jar</item>
+        <item>Cutting board</item>
+        <item>Teapot</item>
+        <item>Bowl</item>
+        <item>Bottle opener</item>
+        <item>Cutlery</item>
+        <item>Dish rack</item>
+        <item>Tissue paper</item>
+        <item>Kitchen towel</item>
+        <item>Potato Masher</item>
+    </string-array>
+    <string-array name="color">
+        <item>Red</item>
+        <item>Orange</item>
+        <item>Yellow</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Purple</item>
+        <item>Pink</item>
+        <item>Brown</item>
+        <item>Black</item>
+        <item>White</item>
+        <item>Gray</item>
+        <item>Gold</item>
+        <item>Silver</item>
+        <item>Bronze</item>
+        <item>Beige</item>
+        <item>Magenta</item>
+        <item>Cyan</item>
+        <item>Olive</item>
+        <item>Maroon</item>
+        <item>Navy</item>
+        <item>Teal</item>
+        <item>Lavender</item>
+        <item>Turquoise</item>
+        <item>Coral</item>
+        <item>Peach</item>
+        <item>Lime</item>
+        <item>Mauve</item>
+        <item>Khaki</item>
+        <item>Crimson</item>
+        <item>Scarlet</item>
+        <item>Fuchsia</item>
+        <item>Aquamarine</item>
+        <item>Periwinkle</item>
+        <item>Chartreuse</item>
+        <item>Salmon</item>
+        <item>Tan</item>
+        <item>Ivory</item>
+        <item>Cream</item>
+        <item>Slate</item>
+        <item>Charcoal</item>
+        <item>Burgundy</item>
+        <item>Mauve</item>
+        <item>Lilac</item>
+        <item>Cerulean</item>
+        <item>Indigo</item>
+        <item>Emerald</item>
+        <item>Jade</item>
+        <item>Olive</item>
+        <item>Russet</item>
+        <item>Auburn</item>
+        <item>Blond</item>
+        <item>Brunette</item>
+        <item>Chestnut</item>
+        <item>Ginger</item>
+        <item>Platinum</item>
+        <item>Rose Gold</item>
+        <item>Champagne</item>
+        <item>Taupe</item>
+        <item>Mint</item>
+        <item>Dusty Rose</item>
+        <item>Baby Blue</item>
+        <item>Powder Blue</item>
+        <item>Sky Blue</item>
+        <item>Royal Blue</item>
+        <item>Navy Blue</item>
+        <item>Dark Blue</item>
+        <item>Light Blue</item>
+        <item>Pale Blue</item>
+        <item>Light Green</item>
+        <item>Dark Green</item>
+        <item>Olive Green</item>
+        <item>Forest Green</item>
+        <item>Hunter Green</item>
+        <item>Teal Green</item>
+        <item>Mint Green</item>
+        <item>Lime Green</item>
+        <item>Spring Green</item>
+        <item>Sea Green</item>
+        <item>Kelly Green</item>
+        <item>Dark Red</item>
+        <item>Light Red</item>
+        <item>Pink Red</item>
+        <item>Orange Red</item>
+        <item>Yellow Red</item>
+        <item>Purple Red</item>
+        <item>Brown Red</item>
+        <item>Black Red</item>
+        <item>White Red</item>
+        <item>Gray Red</item>
+        <item>Gold Red</item>
+        <item>Silver Red</item>
+        <item>Bronze Red</item>
+        <item>Beige Red</item>
+        <item>Magenta Red</item>
+        <item>Cyan Red</item>
+        <item>Olive Red</item>
+        <item>Maroon Red</item>
+        <item>Navy Red</item>
+        <item>Teal Red</item>
+        <item>Lavender Red</item>
+        <item>Turquoise Red</item>
+        <item>Coral Red</item>
+        <item>Peach Red</item>
+        <item>Lime Red</item>
+        <item>Mauve Red</item>
+        <item>Khaki Red</item>
+        <item>Crimson Red</item>
+        <item>Scarlet Red</item>
+        <item>Fuchsia Red</item>
+        <item>Aquamarine Red</item>
+        <item>Periwinkle Red</item>
+        <item>Chartreuse Red</item>
+        <item>Salmon Red</item>
+        <item>Tan Red</item>
+        <item>Ivory Red</item>
+        <item>Cream Red</item>
+        <item>Slate Red</item>
+        <item>Charcoal Red</item>
+        <item>Burgundy Red</item>
+        <item>Mauve Red</item>
+        <item>Lilac Red</item>
+        <item>Cerulean Red</item>
+        <item>Indigo Red</item>
+        <item>Emerald Red</item>
+        <item>Jade Red</item>
+        <item>Olive Red</item>
+        <item>Russet Red</item>
+        <item>Auburn Red</item>
+        <item>Blond Red</item>
+        <item>Brunette Red</item>
+        <item>Chestnut Red</item>
+        <item>Ginger Red</item>
+        <item>Platinum Red</item>
+        <item>Rose Gold Red</item>
+        <item>Champagne Red</item>
+        <item>Taupe Red</item>
+        <item>Mint Red</item>
+        <item>Dusty Rose Red</item>
+        <item>Baby Blue Red</item>
+        <item>Powder Blue Red</item>
+        <item>Sky Blue Red</item>
+        <item>Royal Blue Red</item>
+        <item>Navy Blue Red</item>
+        <item>Dark Blue Red</item>
+        <item>Light Blue Red</item>
+        <item>Pale Blue Red</item>
+        <item>Light Green Red</item>
+        <item>Dark Green Red</item>
+        <item>Olive Green Red</item>
+        <item>Forest Green Red</item>
+        <item>Hunter Green Red</item>
+        <item>Teal Green Red</item>
+        <item>Mint Green Red</item>
+        <item>Lime Green Red</item>
+        <item>Spring Green Red</item>
+        <item>Sea Green Red</item>
+        <item>Kelly Green Red</item>
+    </string-array>
+    <string-array name="transportation">
+        <item>Car</item>
+        <item>Motorcycle</item>
+        <item>Bicycle</item>
+        <item>Bus</item>
+        <item>Train</item>
+        <item>Airplane</item>
+        <item>Ship</item>
+        <item>Boat</item>
+        <item>Helicopter</item>
+        <item>Rocket</item>
+        <item>Scooter</item>
+        <item>Truck</item>
+        <item>Van</item>
+        <item>Taxi</item>
+        <item>Rickshaw</item>
+        <item>Trolley</item>
+        <item>Cable car</item>
+        <item>Funicular</item>
+        <item>Monorail</item>
+        <item>Tram</item>
+        <item>Subway</item>
+        <item>Ferry</item>
+        <item>Yacht</item>
+        <item>Canoe</item>
+        <item>Kayak</item>
+        <item>Raft</item>
+        <item>Submarine</item>
+    </string-array>
+    <string-array name="activities">
+        <item>Playing with toys</item>
+        <item>Drawing pictures</item>
+        <item>Coloring</item>
+        <item>Singing songs</item>
+        <item>Dancing</item>
+        <item>Reading stories</item>
+        <item>Building with blocks</item>
+        <item>Playing with puzzles</item>
+        <item>Playing outside</item>
+        <item>Swinging</item>
+        <item>Sliding</item>
+        <item>Climbing</item>
+        <item>Jumping</item>
+        <item>Running</item>
+        <item>Eating snacks</item>
+        <item>Taking naps</item>
+        <item>Hugging friends</item>
+        <item>Sharing toys</item>
+        <item>Helping others</item>
+        <item>Listening to stories</item>
+        <item>Playing video games</item>
+        <item>Watching TV</item>
+        <item>Reading books</item>
+        <item>Listening to music</item>
+        <item>Playing sports</item>
+        <item>Hanging out with friends</item>
+        <item>Doing homework</item>
+        <item>Studying for tests</item>
+        <item>Joining clubs</item>
+        <item>Volunteering</item>
+        <item>Playing board games</item>
+        <item>Using a computer</item>
+        <item>Using a tablet</item>
+        <item>Using a smartphone</item>
+        <item>Going to the movies</item>
+        <item>Going shopping</item>
+        <item>Eating out</item>
+        <item>Traveling</item>
+        <item>Camping</item>
+        <item>Hiking</item>
+    </string-array>
 </resources>
