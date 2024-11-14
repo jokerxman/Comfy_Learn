@@ -27,9 +27,6 @@
             android:name=".ui.study.spelling.SpellingActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.study.tracing.TracingActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.study.number.NumberActivity"
             android:exported="false" />
         <activity

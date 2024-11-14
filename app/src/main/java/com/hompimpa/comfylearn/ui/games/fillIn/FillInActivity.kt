@@ -1,25 +1,19 @@
 package com.hompimpa.comfylearn.ui.games.fillIn
 
-import android.content.ClipData
 import android.os.Bundle
-import android.view.DragEvent
-import android.view.MotionEvent
-import android.view.View
+import android.view.Gravity
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.hompimpa.comfylearn.R
 
 class FillInActivity : AppCompatActivity() {
 
-    private val questions = listOf(
-        Question("TREE", R.drawable.image_tree)
-        // Add more questions as needed
-    )
-
+    private lateinit var questions: List<Question>
     private lateinit var currentQuestion: Question
     private lateinit var letterSlots: MutableList<TextView>
     private lateinit var letterOptions: MutableList<TextView>
@@ -29,7 +23,19 @@ class FillInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fill_in)
 
+        loadQuestions()
         setupQuestion()
+    }
+
+    private fun loadQuestions() {
+        val words = resources.getStringArray(R.array.animal)
+
+        questions = words.map { word ->
+            // Construct the image URL based on the word
+            val imageUrl =
+                "https://juankevinr.rf.gd/animals/${word.lowercase()}.png" // Replace with your actual URL pattern
+            Question(word, imageUrl) // Store the URL instead of a drawable resource ID
+        }
     }
 
     private fun setupQuestion() {
@@ -38,74 +44,59 @@ class FillInActivity : AppCompatActivity() {
         letterOptions = mutableListOf()
 
         // Set image for the question if applicable
-        findViewById<ImageView>(R.id.imagePrompt).setImageResource(currentQuestion.imageResId)
+        Glide.with(this)
+            .load(currentQuestion.imageUrl) // Load the image from the URL
+            .into(findViewById<ImageView>(R.id.imagePrompt)) // Set the loaded image into the ImageView
 
         // Initialize letter slots dynamically based on the word length
         val slotContainer = findViewById<LinearLayout>(R.id.letterSlots)
         slotContainer.removeAllViews()
         currentQuestion.word.forEach { _ ->
             val slot = TextView(this).apply {
-                text = ""
+                text = "_" // Placeholder character
                 textSize = 24f
                 setBackgroundResource(R.color.colorAccent) // Use a suitable background
                 setPadding(16, 16, 16, 16)
+                gravity = Gravity.CENTER // Center the placeholder character
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
             }
             letterSlots.add(slot)
             slotContainer.addView(slot)
         }
 
-        // Initialize letter options with the correct letters and random other letters
-        val gridLayout = findViewById<GridLayout>(R.id.letterOptions)
-        gridLayout.removeAllViews()
-        val correctLetters = currentQuestion.word.toList()
-        val extraLetters =
-            ('A'..'Z').filterNot { it in correctLetters }.shuffled().take(10 - correctLetters.size)
-        val letters =
-            (correctLetters + extraLetters).shuffled()  // Ensure all correct letters are included, then shuffle
+        // Initialize letter options with the full alphabet
+        val buttonContainer = findViewById<GridLayout>(R.id.letterOptions)
+        buttonContainer.removeAllViews()
+        val alphabet = ('A'..'Z').toList()
 
-        letters.forEach { letter ->
+        alphabet.forEach { letter ->
             val option = TextView(this).apply {
                 text = letter.toString()
                 textSize = 24f
-                setBackgroundResource(R.drawable.baseline_circle_24)
+                setBackgroundResource(R.drawable.button_option)
                 setPadding(16, 16, 16, 16)
-                setOnTouchListener { view, event ->
-                    if (event.action == MotionEvent.ACTION_DOWN) {
-                        view.performClick()
-                        val clipData = ClipData.newPlainText("", text)
-                        val dragShadow = View.DragShadowBuilder(view)
-                        view.startDragAndDrop(clipData, dragShadow, view, 0)
-                        true
-                    } else false
+                gravity = Gravity.CENTER // Center the letter in the button
+                setOnClickListener {
+                    fillSlotWithLetter(letter.toString())
                 }
             }
             letterOptions.add(option)
-            gridLayout.addView(option)
-        }
-
-        // Set drag listeners on slots
-        letterSlots.forEach { slot ->
-            slot.setOnDragListener(dragListener)
+            buttonContainer.addView(option)
         }
     }
 
-
-    private val dragListener = View.OnDragListener { view, event ->
-        when (event.action) {
-            DragEvent.ACTION_DROP -> {
-                val draggedView = event.localState as TextView
-                val droppedLetter = draggedView.text.toString()
-
-                // Set the dropped letter in the slot and show the letter again in the options
-                (view as TextView).text = droppedLetter
-                draggedView.visibility = View.VISIBLE
-
-                checkAnswer()
-                true
+    private fun fillSlotWithLetter(letter: String) {
+        // Find the first empty slot and fill it with the selected letter
+        for (slot in letterSlots) {
+            if (slot.text == "_") { // Check for the placeholder
+                slot.text = letter
+                break
             }
-
-            else -> true
         }
+        checkAnswer()
     }
 
     private fun checkAnswer() {
@@ -115,6 +106,9 @@ class FillInActivity : AppCompatActivity() {
             // Move to the next question
             currentQuestionIndex = (currentQuestionIndex + 1) % questions.size
             setupQuestion()
+        } else {
+            // Optionally, provide feedback for incorrect answers
+            Toast.makeText(this, "Try again!", Toast.LENGTH_SHORT).show()
         }
     }
 }
