@@ -25,4 +25,9 @@ class DrawingActivity : AppCompatActivity() {
         }
         boardView.setPenColor(newColor)
     }
+
+    fun clearBoard(view: View) {
+        boardView.clear()
+    }
+
 }

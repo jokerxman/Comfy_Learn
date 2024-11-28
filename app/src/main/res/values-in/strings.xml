@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Comfy Learn</string>
+    <string name="action_settings">Pengaturan</string>
+    <string name="menu_materi">Pelajaran</string>
+    <string name="menu_games">Permainan</string>
+    <string name="menu_learprog">Perkembangan</string>
+    <string name="menu_setting">Pengaturan</string>
+    <string name="menu_rate">Penilaian</string>
+    <string name="nav_header_calltoaction">Berlangganan</string>
+    <string name="sign_out">Keluar</string>
+
+    <string-array name="animal">
+        <item>Keledai</item>
+        <item>Anjing</item>
+        <item>Sapi</item>
+        <item>Kucing</item>
+        <item>Kuda</item>
+        <item>Macan</item>
+        <item>Singa</item>
+        <item>Macan Tutul</item>
+        <item>Beruang</item>
+        <item>Gajah</item>
+        <item>Beruang Kutub</item>
+        <item>Penyu</item>
+        <item>Kura-kura</item>
+        <item>Buaya</item>
+        <item>Kelinci</item>
+        <item>Ayam</item>
+        <item>Merpati</item>
+        <item>Gagak</item>
+        <item>Ikan</item>
+        <item>Lumba-lumba</item>
+        <item>Katak</item>
+        <item>Paus</item>
+        <item>Elang</item>
+        <item>Tupai Terbang</item>
+        <item>Burung Unta</item>
+        <item>Rubah</item>
+        <item>Kambing</item>
+        <item>Armadillo</item>
+        <item>Belut</item>
+        <item>Rubah Kutub</item>
+        <item>Serigala</item>
+        <item>Gorila</item>
+        <item>Simpanse</item>
+        <item>Monyet</item>
+        <item>Berang-berang</item>
+        <item>Orangutan</item>
+        <item>Kijang</item>
+        <item>Kelelawar</item>
+        <item>Jerapah</item>
+        <item>Kelomang</item>
+        <item>Panda</item>
+        <item>Hamster</item>
+        <item>Kobra</item>
+        <item>Hiu Martil</item>
+        <item>Unta</item>
+        <item>Hawk</item>
+        <item>Rusa</item>
+        <item>Bunglon</item>
+        <item>Kuda Nil</item>
+        <item>Jaguar</item>
+        <item>Chihuahua</item>
+        <item>King Cobra</item>
+        <item>Kambing Gunung</item>
+        <item>Kadal</item>
+        <item>Koala</item>
+        <item>Kanguru</item>
+        <item>Iguana</item>
+        <item>Llama</item>
+        <item>Chinchillas</item>
+        <item>Ubur-ubur</item>
+        <item>Badak</item>
+        <item>Landak</item>
+        <item>Zebra</item>
+        <item>Bison</item>
+        <item>Banteng</item>
+        <item>Kerbau</item>
+        <item>Domba</item>
+        <item>Tikus</item>
+        <item>Otter</item>
+        <item>Kungkang</item>
+        <item>Burung Hantu</item>
+        <item>Burung Bangkai</item>
+        <item>Flamingo</item>
+        <item>Rakun</item>
+        <item>Tikus Tanah</item>
+        <item>Bebek</item>
+        <item>Angsa</item>
+        <item>Lynx</item>
+        <item>Rusa Besar</item>
+        <item>Babi Hutan</item>
+        <item>Lemur</item>
+        <item>Babon</item>
+        <item>Mammoth</item>
+        <item>Paus Biru</item>
+        <item>Ular</item>
+        <item>Merak</item>
+    </string-array>
+    <string-array name="object">
+        <item>Blender</item>
+        <item>Ember</item>
+        <item>Kursi</item>
+        <item>Sprei</item>
+        <item>Botol</item>
+        <item>Sapu</item>
+        <item>Gantungan Baju</item>
+        <item>Pot</item>
+        <item>Bola Lampu</item>
+        <item>Meja</item>
+        <item>Tirai</item>
+        <item>Kalender</item>
+        <item>Mesin Cuci</item>
+        <item>Lentera</item>
+        <item>Sisir</item>
+        <item>Keranjang</item>
+        <item>Televisi</item>
+        <item>Sofa</item>
+        <item>Kulkas</item>
+        <item>Microwave</item>
+        <item>Pemanggang</item>
+        <item>Lampu</item>
+        <item>Ceret</item>
+        <item>Kain Pel</item>
+        <item>Gantungan</item>
+        <item>Bingkai</item>
+        <item>Kipas</item>
+        <item>Air conditioner</item>
+        <item>Kain</item>
+        <item>Pemanggang Roti</item>
+        <item>Pengeras Suara</item>
+        <item>Penyedot Debu</item>
+        <item>Kitchen hood</item>
+        <item>Obor</item>
+        <item>Kompor</item>
+        <item>Mixer</item>
+        <item>Tangga</item>
+        <item>Mesin Jahit</item>
+        <item>Jam</item>
+        <item>Pengering Rambut</item>
+        <item>Tempat Sampah</item>
+        <item>Cedok Sampah</item>
+        <item>Bak Mandi</item>
+        <item>Bantal</item>
+        <item>Ranjang</item>
+        <item>Handuk</item>
+        <item>Lemari</item>
+        <item>Karpet</item>
+        <item>Cerobong Asap</item>
+        <item>Pagar</item>
+        <item>Tungku Api</item>
+        <item>Gorden</item>
+        <item>Buku</item>
+        <item>Serbet</item>
+        <item>Stoples</item>
+        <item>Talenan</item>
+        <item>Teko</item>
+        <item>Mangkuk</item>
+        <item>Pembuka Botol</item>
+        <item>Alat Makan</item>
+        <item>Rak Piring</item>
+        <item>Kertas Tisu</item>
+        <item>Kitchen towel</item>
+    </string-array>
+    <string-array name="color">
+        <item>Merah</item>
+        <item>Kuning</item>
+        <item>Hijau</item>
+        <item>Biru</item>
+        <item>Abu-abu</item>
+        <item>Cokelat</item>
+        <item>Hitam</item>
+        <item>Putih</item>
+        <item>Emas</item>
+        <item>Merah Jambu</item>
+        <item>Jingga</item>
+        <item>Ungu</item>
+        <item>Toska</item>
+        <item>Nila</item>
+        <item>Lila</item>
+    </string-array>
+    <string-array name="transportation">
+        <item>Mobil</item>
+        <item>Motor</item>
+        <item>Sepeda</item>
+        <item>Bus</item>
+        <item>Kereta</item>
+        <item>Pesawat</item>
+        <item>Kapal</item>
+        <item>Perahu</item>
+        <item>Helikopter</item>
+        <item>Roket</item>
+        <item>Skuter</item>
+        <item>Truk</item>
+        <item>Van</item>
+        <item>Taksi</item>
+        <item>Troli</item>
+        <item>Kereta Gantung</item>
+        <item>Funicular</item>
+        <item>Monorel</item>
+        <item>Trem</item>
+        <item>Kereta Bawah Tanah</item>
+        <item>Feri</item>
+        <item>Kapal Pesiar</item>
+        <item>Kano</item>
+        <item>Kayak</item>
+        <item>Rakit</item>
+        <item>Kapal Selam</item>
+    </string-array>
+</resources>

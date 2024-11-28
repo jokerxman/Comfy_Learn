@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.PictureDrawable
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -27,7 +28,7 @@ class ParseActivity : AppCompatActivity() {
     private fun getRandomWordFromCategory(category: String?, context: Context): String? {
         val array = when (category) {
             "spell_array" -> context.resources.getStringArray(R.array.spell)
-            "object_array" -> context.resources.getStringArray(R.array.objek)
+            "object_array" -> context.resources.getStringArray(R.array.`object`)
             // Add more cases for other categories
             else -> null
         }
@@ -48,31 +49,37 @@ class ParseActivity : AppCompatActivity() {
         // Check if a random word was found
         if (randomWord != null) {
             // Create a horizontal LinearLayout to hold the letters
-            val wordLayout = LinearLayout(this)
-            wordLayout.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            wordLayout.gravity = Gravity.CENTER // Center the word layout
+            val wordLayout = LinearLayout(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                gravity = Gravity.CENTER // Center the word layout
+                orientation = LinearLayout.HORIZONTAL // Ensure horizontal orientation
+            }
 
             // Iterate through each character in the random word
             for (char in randomWord) {
                 if (char == ' ') {
+                    // Optionally, you can add a placeholder for spaces
+                    val spaceView = createSpaceView() // Create a view for space
+                    wordLayout.addView(spaceView)
+                } else {
+                    // Create an ImageView for the letter
+                    val imageView = createImageViewForLetter(char)
 
+                    // Set layout parameters to align the image to the bottom
+                    val layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        gravity = Gravity.BOTTOM // Align to bottom
+                    }
+                    imageView.layoutParams = layoutParams
+
+                    // Add the ImageView to the word layout
+                    wordLayout.addView(imageView)
                 }
-                // Create an ImageView for the letter
-                val imageView = createImageViewForLetter(char)
-
-                // Set layout parameters to align the image to the bottom
-                val layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                layoutParams.gravity = Gravity.BOTTOM // Align to bottom
-                imageView.layoutParams = layoutParams
-
-                // Add the ImageView to the word layout
-                wordLayout.addView(imageView)
             }
 
             // Add the word layout to the main linear layout
@@ -82,6 +89,18 @@ class ParseActivity : AppCompatActivity() {
             val errorTextView = createTextView("No words found for category: $category")
             linearLayout.addView(errorTextView)
         }
+    }
+
+    // Example function to create a space view
+    private fun createSpaceView(): View {
+        // You can create a simple view or an ImageView with a specific width
+        val spaceView = View(this)
+        val params = LinearLayout.LayoutParams(
+            20,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ) // Adjust width as needed
+        spaceView.layoutParams = params
+        return spaceView
     }
 
     private fun createImageViewForLetter(letter: Char): ImageView {

@@ -43,7 +43,7 @@ class SpellingFragment : Fragment() {
     private fun displayRandomWordForCategory(category: String?) {
         val words = when (category) {
             "Animals" -> resources.getStringArray(R.array.animal).toList()
-            "Objects" -> resources.getStringArray(R.array.objek).toList()
+            "Objects" -> resources.getStringArray(R.array.`object`).toList()
             else -> emptyList()
         }
 

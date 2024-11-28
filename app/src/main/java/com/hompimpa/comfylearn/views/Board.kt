@@ -77,4 +77,9 @@ class Board @JvmOverloads constructor(
         mPath?.lineTo(x, y)
         mPath = null  // Reset path after drawing
     }
+
+    fun clear() {
+        mDrawnPaths.clear()
+        invalidate()
+    }
 }

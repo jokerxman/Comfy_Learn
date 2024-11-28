@@ -3,6 +3,7 @@ package com.hompimpa.comfylearn
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -29,18 +30,55 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
 
+        // Initialize Binding
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Initialize Firebase Auth
         auth = Firebase.auth
 
-        binding.signInButton.setOnClickListener {
-            signIn()
+        // Button Listeners
+        binding.btnLogin.setOnClickListener { emailLogin() }
+        binding.tvToRegister.setOnClickListener {
+            startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
+            finish()
         }
+        binding.signInButton.setOnClickListener { signIn() }
     }
+
+
+    private fun emailLogin() {
+        val email = binding.edLoginEmail.text.toString().trim()
+        val password = binding.edLoginPassword.text.toString().trim()
+
+        if (email.isEmpty() || password.isEmpty()) {
+            // Show error if fields are empty
+            Toast.makeText(this, "Email and password cannot be empty", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Firebase Authentication with email and password
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Login successful
+                    Log.d(TAG, "signInWithEmail:success")
+                    val user = auth.currentUser
+                    updateUI(user)
+                } else {
+                    // Login failed
+                    Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    Toast.makeText(
+                        baseContext,
+                        "Authentication failed.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    updateUI(null)
+                }
+            }
+    }
+
 
     private fun signIn() {
         val credentialManager = CredentialManager.create(this)
@@ -111,6 +149,9 @@ class LoginActivity : AppCompatActivity() {
         if (currentUser != null) {
             startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
             finish()
+        } else {
+            // Feedback for failed login or logout
+            Toast.makeText(this, "Please log in to continue.", Toast.LENGTH_SHORT).show()
         }
     }
 

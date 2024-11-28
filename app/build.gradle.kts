@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.hompimpa.comfylearn"
-        minSdk = 26
+        minSdk = 33
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
 
 // Authentication
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.googleid)
     implementation(libs.play.services.auth)
@@ -77,6 +78,9 @@ dependencies {
     implementation(libs.tensorflow.lite.metadata)
     implementation(libs.tensorflow.lite.gpu)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 
 // Testing
     testImplementation(libs.junit)

@@ -1,27 +1,31 @@
 package com.hompimpa.comfylearn.ui.games.fillIn
 
+import android.graphics.drawable.PictureDrawable
 import android.os.Bundle
 import android.view.Gravity
-import android.widget.GridLayout
-import android.widget.ImageView
+import android.view.View.LAYER_TYPE_SOFTWARE
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
+import com.caverock.androidsvg.SVG
 import com.hompimpa.comfylearn.R
+import com.hompimpa.comfylearn.databinding.ActivityFillInBinding
+import kotlin.random.Random
 
 class FillInActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityFillInBinding
     private lateinit var questions: List<Question>
     private lateinit var currentQuestion: Question
     private lateinit var letterSlots: MutableList<TextView>
     private lateinit var letterOptions: MutableList<TextView>
-    private var currentQuestionIndex = 0
+    private var previousQuestionIndex = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_fill_in)
+        binding = ActivityFillInBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         loadQuestions()
         setupQuestion()
@@ -29,35 +33,37 @@ class FillInActivity : AppCompatActivity() {
 
     private fun loadQuestions() {
         val words = resources.getStringArray(R.array.animal)
-
         questions = words.map { word ->
-            // Construct the image URL based on the word
-            val imageUrl =
-                "https://juankevinr.rf.gd/animals/${word.lowercase()}.png" // Replace with your actual URL pattern
-            Question(word, imageUrl) // Store the URL instead of a drawable resource ID
+            val svgPath = "en/animal_${word.lowercase()}.svg"
+            Question(word, svgPath)
         }
     }
 
     private fun setupQuestion() {
-        currentQuestion = questions[currentQuestionIndex]
+        // Pick a random question, avoiding repeats
+        var randomIndex: Int
+        do {
+            randomIndex = Random.nextInt(questions.size)
+        } while (randomIndex == previousQuestionIndex)
+
+        previousQuestionIndex = randomIndex
+        currentQuestion = questions[randomIndex]
+
         letterSlots = mutableListOf()
         letterOptions = mutableListOf()
 
-        // Set image for the question if applicable
-        Glide.with(this)
-            .load(currentQuestion.imageUrl) // Load the image from the URL
-            .into(findViewById<ImageView>(R.id.imagePrompt)) // Set the loaded image into the ImageView
+        // Render the SVG from the assets folder
+        loadSvgFromAssets(currentQuestion.imageUrl)
 
-        // Initialize letter slots dynamically based on the word length
-        val slotContainer = findViewById<LinearLayout>(R.id.letterSlots)
+        // Initialize letter slots
+        val slotContainer = binding.letterSlots
         slotContainer.removeAllViews()
         currentQuestion.word.forEach { _ ->
             val slot = TextView(this).apply {
                 text = "_" // Placeholder character
                 textSize = 24f
-                setBackgroundResource(R.color.colorAccent) // Use a suitable background
                 setPadding(16, 16, 16, 16)
-                gravity = Gravity.CENTER // Center the placeholder character
+                gravity = Gravity.CENTER
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -67,20 +73,21 @@ class FillInActivity : AppCompatActivity() {
             slotContainer.addView(slot)
         }
 
-        // Initialize letter options with the full alphabet
-        val buttonContainer = findViewById<GridLayout>(R.id.letterOptions)
+        // Initialize letter options
+        val buttonContainer = binding.letterOptions
         buttonContainer.removeAllViews()
-        val alphabet = ('A'..'Z').toList()
+        val alphabet = ('A'..'Z').shuffled()
 
         alphabet.forEach { letter ->
             val option = TextView(this).apply {
                 text = letter.toString()
                 textSize = 24f
-                setBackgroundResource(R.drawable.button_option)
                 setPadding(16, 16, 16, 16)
-                gravity = Gravity.CENTER // Center the letter in the button
+                gravity = Gravity.CENTER
+                setBackgroundResource(R.drawable.button_option)
                 setOnClickListener {
                     fillSlotWithLetter(letter.toString())
+                    it.isEnabled = false
                 }
             }
             letterOptions.add(option)
@@ -88,10 +95,25 @@ class FillInActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadSvgFromAssets(svgPath: String) {
+        try {
+            val inputStream = assets.open(svgPath)
+            val svg = SVG.getFromInputStream(inputStream)
+            val drawable = svg.renderToPicture().let { PictureDrawable(it) }
+            binding.imagePrompt.apply {
+                setLayerType(LAYER_TYPE_SOFTWARE, null)
+                setImageDrawable(drawable)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun fillSlotWithLetter(letter: String) {
-        // Find the first empty slot and fill it with the selected letter
+        // Fill the first empty slot
         for (slot in letterSlots) {
-            if (slot.text == "_") { // Check for the placeholder
+            if (slot.text == "_") {
                 slot.text = letter
                 break
             }
@@ -103,12 +125,13 @@ class FillInActivity : AppCompatActivity() {
         val userAnswer = letterSlots.joinToString("") { it.text.toString() }
         if (userAnswer.equals(currentQuestion.word, ignoreCase = true)) {
             Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show()
-            // Move to the next question
-            currentQuestionIndex = (currentQuestionIndex + 1) % questions.size
-            setupQuestion()
-        } else {
-            // Optionally, provide feedback for incorrect answers
-            Toast.makeText(this, "Try again!", Toast.LENGTH_SHORT).show()
+            regenerateQuestion()
         }
+    }
+
+    private fun regenerateQuestion() {
+        letterSlots.forEach { it.text = "_" }
+        letterOptions.forEach { it.isEnabled = true }
+        setupQuestion()
     }
 }

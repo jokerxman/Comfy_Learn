@@ -1,19 +1,18 @@
 package com.hompimpa.comfylearn
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.credentials.ClearCredentialStateRequest
-import androidx.credentials.CredentialManager
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -23,30 +22,34 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.hompimpa.comfylearn.databinding.ActivityHomeBinding
-import kotlinx.coroutines.launch
+import com.hompimpa.comfylearn.helper.MainViewModel
+import com.hompimpa.comfylearn.helper.ViewModelFactory
+import com.hompimpa.comfylearn.ui.settings.SettingPreferences
+import com.hompimpa.comfylearn.ui.settings.SettingsActivity
+import com.hompimpa.comfylearn.ui.settings.dataStore
 
 class HomeActivity : AppCompatActivity() {
 
+    private lateinit var mainViewModel: MainViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityHomeBinding
     private lateinit var auth: FirebaseAuth
+    private var shouldRecreate = false // Flag to track if recreation is needed
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Library Alphabet SVG randomize, call asset based on SVG
-
-        // Initialize binding first
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.appBarHome.toolbar)
 
-        // Now you can access the binding properties
+        // Initialize the ViewModel
+        val pref = SettingPreferences.getInstance(dataStore)
+        mainViewModel = ViewModelProvider(this, ViewModelFactory(pref))[MainViewModel::class.java]
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_home)
 
-        // Setup action bar and navigation controller
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_study,
@@ -61,64 +64,46 @@ class HomeActivity : AppCompatActivity() {
         auth = Firebase.auth
         val firebaseUser = auth.currentUser
         if (firebaseUser == null) {
-            // Not signed in, launch the Login activity
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return
         } else {
-            // User is already signed in
-            val name = firebaseUser.displayName // Get the user's display name
-            val email = firebaseUser.email // Get the user's email
-            val photoUrl = firebaseUser.photoUrl // Get the user's profile image
+            setupUserHeader(navView)
+        }
 
-            // Get the header view (nav_header_home layout)
-            val headerView: View = navView.getHeaderView(0)
+        navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_settings -> {
+                    val intent = Intent(this, SettingsActivity::class.java)
+                    startActivityForResult(intent, SETTINGS_REQUEST_CODE)
+                    true
+                }
 
-            // Find the TextView in the header layout
-            val userNameTextView: TextView = headerView.findViewById(R.id.name_text)
-            val userEmailTextView: TextView = headerView.findViewById(R.id.email_text)
-            val userProfileImageView: ImageView = headerView.findViewById(R.id.imageView)
-
-            // Set the name and email to the TextViews in the header
-            userNameTextView.text = name ?: "No name available"
-            userEmailTextView.text = email ?: "No email available"
-
-            // Load the profile picture into the ImageView using Glide
-            if (photoUrl != null) {
-                Glide.with(this)
-                    .load(photoUrl)
-                    .placeholder(R.mipmap.ic_launcher_round) // You can provide a placeholder image
-                    .into(userProfileImageView)
-            } else {
-                // If no profile picture is available, set a default image
-                userProfileImageView.setImageResource(R.mipmap.ic_launcher_round)
+                else -> {
+                    NavigationUI.onNavDestinationSelected(menuItem, navController)
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
             }
         }
     }
 
+    private fun setupUserHeader(navView: NavigationView) {
+        val headerView: View = navView.getHeaderView(0)
+        val userNameTextView: TextView = headerView.findViewById(R.id.name_text)
+        val userEmailTextView: TextView = headerView.findViewById(R.id.email_text)
+        val userProfileImageView: ImageView = headerView.findViewById(R.id.imageView)
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.home, menu)
-        return true
-    }
+        val firebaseUser = auth.currentUser
+        userNameTextView.text = firebaseUser?.displayName ?: "No name available"
+        userEmailTextView.text = firebaseUser?.email ?: "No email available"
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.sign_out_menu -> {
-                signOut()
-                true
-            }
-
-            R.id.action_settings -> {
-                // Use NavController to navigate to SettingsFragment
-                val navController = findNavController(R.id.nav_host_fragment_content_home)
-                navController.navigate(R.id.nav_settings) // Navigates to SettingsFragment
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
+        firebaseUser?.photoUrl?.let { photoUrl ->
+            Glide.with(this)
+                .load(photoUrl)
+                .placeholder(R.mipmap.ic_launcher_round)
+                .into(userProfileImageView)
+        } ?: userProfileImageView.setImageResource(R.mipmap.ic_launcher_round)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -126,13 +111,22 @@ class HomeActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    private fun signOut() {
-        lifecycleScope.launch {
-            val credentialManager = CredentialManager.create(this@HomeActivity)
-            auth.signOut()
-            credentialManager.clearCredentialState(ClearCredentialStateRequest())
-            startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
-            finish()
+    override fun onResume() {
+        super.onResume()
+        if (shouldRecreate) {
+            shouldRecreate = false
+            recreate() // Recreate the activity if the flag is set
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SETTINGS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            shouldRecreate = true // Set the flag to recreate the activity on resume
+        }
+    }
+
+    companion object {
+        const val SETTINGS_REQUEST_CODE = 1
     }
 }

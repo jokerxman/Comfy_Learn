@@ -1,9 +1,7 @@
 package com.hompimpa.comfylearn.ui
 
-import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
-import com.hompimpa.comfylearn.R
 
 data class Word(
     val vowels: Array<String>,
@@ -33,51 +31,6 @@ data class Word(
         parcel.createStringArray() ?: arrayOf(),
         parcel.readInt() // Read the image resource ID from the parcel
     )
-
-    fun getArrayByCategory(category: String): Any? {
-        return when (category.lowercase()) {
-            "vowel" -> vowels
-            "consonants" -> consonants
-            "alphabets" -> alphabets
-            "numbers" -> numbers
-            "spell" -> spell
-            "objects" -> objects
-            "colors" -> colors
-            "transportation" -> transportation
-            "activities" -> activities
-            "animals" -> animals
-            else -> null // Return null if the category is not recognized
-        }
-    }
-
-    fun getWordData(context: Context): Word {
-        val spellArray = context.resources.getStringArray(R.array.spell)
-        val spellList =
-            spellArray.map { it.split(",").map { it.trim() } } // Split and trim each item
-
-        return Word(
-            vowels = context.resources.getStringArray(R.array.vowel),
-            consonants = context.resources.getStringArray(R.array.consonants),
-            numbers = context.resources.getStringArray(R.array.number),
-            alphabets = context.resources.getStringArray(R.array.alphabets),
-            spell = spellList,
-            animals = context.resources.getStringArray(R.array.animal),
-            objects = context.resources.getStringArray(R.array.objek),
-            colors = context.resources.getStringArray(R.array.color),
-            transportation = context.resources.getStringArray(R.array.transportation),
-            activities = context.resources.getStringArray(R.array.activities),
-            imageResId = imageResId // Set the image resource ID
-        )
-    }
-
-    // Method to get a specific spell array by index
-    fun getSpellArray(index: Int): List<String>? {
-        return if (index in spell.indices) {
-            spell[index]
-        } else {
-            null // Return null if the index is out of bounds
-        }
-    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeStringArray(vowels)
