@@ -3,135 +3,136 @@ package com.hompimpa.comfylearn.ui.games.fillIn
 import android.graphics.drawable.PictureDrawable
 import android.os.Bundle
 import android.view.Gravity
-import android.view.View.LAYER_TYPE_SOFTWARE
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import com.caverock.androidsvg.SVG
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivityFillInBinding
-import kotlin.random.Random
+import com.hompimpa.comfylearn.helper.LetterOptionsAdapter
+import com.hompimpa.comfylearn.helper.Question
 
 class FillInActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityFillInBinding
     private lateinit var questions: List<Question>
     private lateinit var currentQuestion: Question
     private lateinit var letterSlots: MutableList<TextView>
-    private lateinit var letterOptions: MutableList<TextView>
-    private var previousQuestionIndex = -1
+    private var category: String = "animal" // Default category
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFillInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Get category from intent or use default
+        category = intent.getStringExtra("CATEGORY") ?: "animal"
+
         loadQuestions()
         setupQuestion()
     }
 
     private fun loadQuestions() {
-        val words = resources.getStringArray(R.array.animal)
-        questions = words.map { word ->
-            val svgPath = "en/animal_${word.lowercase()}.svg"
+        val wordArray = resources.getStringArray(getCategoryResourceId())
+        questions = wordArray.map { word ->
+            // Dynamically set the SVG path based on the category
+            val svgPath = "en/${category.lowercase()}_${word.lowercase()}.svg"
             Question(word, svgPath)
         }
     }
 
-    private fun setupQuestion() {
-        // Pick a random question, avoiding repeats
-        var randomIndex: Int
-        do {
-            randomIndex = Random.nextInt(questions.size)
-        } while (randomIndex == previousQuestionIndex)
-
-        previousQuestionIndex = randomIndex
-        currentQuestion = questions[randomIndex]
-
-        letterSlots = mutableListOf()
-        letterOptions = mutableListOf()
-
-        // Render the SVG from the assets folder
-        loadSvgFromAssets(currentQuestion.imageUrl)
-
-        // Initialize letter slots
-        val slotContainer = binding.letterSlots
-        slotContainer.removeAllViews()
-        currentQuestion.word.forEach { _ ->
-            val slot = TextView(this).apply {
-                text = "_" // Placeholder character
-                textSize = 24f
-                setPadding(16, 16, 16, 16)
-                gravity = Gravity.CENTER
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-            }
-            letterSlots.add(slot)
-            slotContainer.addView(slot)
-        }
-
-        // Initialize letter options
-        val buttonContainer = binding.letterOptions
-        buttonContainer.removeAllViews()
-        val alphabet = ('A'..'Z').shuffled()
-
-        alphabet.forEach { letter ->
-            val option = TextView(this).apply {
-                text = letter.toString()
-                textSize = 24f
-                setPadding(16, 16, 16, 16)
-                gravity = Gravity.CENTER
-                setBackgroundResource(R.drawable.button_option)
-                setOnClickListener {
-                    fillSlotWithLetter(letter.toString())
-                    it.isEnabled = false
-                }
-            }
-            letterOptions.add(option)
-            buttonContainer.addView(option)
+    private fun getCategoryResourceId(): Int {
+        return when (category) {
+            "animal" -> R.array.animal
+            "object" -> R.array.`object`
+            else -> R.array.animal // Default to animal if category not found
         }
     }
 
-    private fun loadSvgFromAssets(svgPath: String) {
-        try {
-            val inputStream = assets.open(svgPath)
-            val svg = SVG.getFromInputStream(inputStream)
-            val drawable = svg.renderToPicture().let { PictureDrawable(it) }
-            binding.imagePrompt.apply {
-                setLayerType(LAYER_TYPE_SOFTWARE, null)
-                setImageDrawable(drawable)
+    private fun setupQuestion() {
+        // Pick a random question
+        currentQuestion = questions.random()
+        binding.imagePrompt.setImageDrawable(loadSvgFromAssets(currentQuestion.imageUrl))
+
+        // Setup slots for letters
+        setupLetterSlots()
+
+        // Setup letter options
+        setupLetterOptions()
+
+        // Setup undo button
+        setupUndoButton()
+    }
+
+    private fun setupLetterSlots() {
+        letterSlots = mutableListOf()
+        binding.letterSlots.removeAllViews()
+        currentQuestion.word.forEach { _ ->
+            val slot = TextView(this).apply {
+                text = "_"
+                textSize = 24f
+                gravity = Gravity.CENTER
+                setPadding(0, 0, 8, 0)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show()
+            letterSlots.add(slot)
+            binding.letterSlots.addView(slot)
+        }
+    }
+
+    private val availableLetters = listOf(
+        "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
+        "A", "S", "D", "F", "G", "H", "J", "K", "L",
+        "Z", "X", "C", "V", "B", "N", "M"
+    )
+
+    private fun setupLetterOptions() {
+        val adapter = LetterOptionsAdapter(availableLetters) { letter ->
+            fillSlotWithLetter(letter)
+        }
+
+        // Use GridLayoutManager with the desired number of columns
+        binding.letterOptions.layoutManager = GridLayoutManager(this, 10)
+        binding.letterOptions.adapter = adapter
+    }
+
+
+    private fun setupUndoButton() {
+        binding.deleteButton.setOnClickListener {
+            for (i in letterSlots.size - 1 downTo 0) {
+                val slot = letterSlots[i]
+                if (slot.text != "_") {
+                    slot.text = "_"
+                    break
+                }
+            }
         }
     }
 
     private fun fillSlotWithLetter(letter: String) {
-        // Fill the first empty slot
         for (slot in letterSlots) {
             if (slot.text == "_") {
                 slot.text = letter
+                checkAnswer()
                 break
             }
         }
-        checkAnswer()
     }
 
     private fun checkAnswer() {
         val userAnswer = letterSlots.joinToString("") { it.text.toString() }
-        if (userAnswer.equals(currentQuestion.word, ignoreCase = true)) {
+        if (userAnswer.equals(currentQuestion.word, true)) {
             Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show()
-            regenerateQuestion()
+            setupQuestion()
         }
     }
 
-    private fun regenerateQuestion() {
-        letterSlots.forEach { it.text = "_" }
-        letterOptions.forEach { it.isEnabled = true }
-        setupQuestion()
+    private fun loadSvgFromAssets(path: String): PictureDrawable? {
+        return try {
+            val svg = SVG.getFromInputStream(assets.open(path))
+            PictureDrawable(svg.renderToPicture())
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }

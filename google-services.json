@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "1005345375717",
     "project_id": "comfy-learn",
-    "storage_bucket": "comfy-learn.appspot.com"
+    "storage_bucket": "comfy-learn.firebasestorage.app"
   },
   "client": [
     {
@@ -13,6 +13,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1005345375717-bn28hfduke2t1qkph6ccsf903uaef7lo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hompimpa.comfylearn",
+            "certificate_hash": "c0531fd2c70a9d363c88db0f3b7aceef98741848"
+          }
+        },
+        {
+          "client_id": "1005345375717-rrb8pub4u2ucbn7j99kinrnf8lmlbc03.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hompimpa.comfylearn",
+            "certificate_hash": "fe7fa33aa4cf23bc604736162b966ef559fb24d3"
+          }
+        },
         {
           "client_id": "1005345375717-p602uvi1pps108dpnjbfiuhrum66n1an.apps.googleusercontent.com",
           "client_type": 3

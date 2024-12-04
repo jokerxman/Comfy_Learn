@@ -34,69 +34,69 @@
         <item>Katak</item>
         <item>Paus</item>
         <item>Elang</item>
-        <item>Tupai Terbang</item>
-        <item>Burung Unta</item>
-        <item>Rubah</item>
-        <item>Kambing</item>
-        <item>Armadillo</item>
-        <item>Belut</item>
-        <item>Rubah Kutub</item>
-        <item>Serigala</item>
-        <item>Gorila</item>
-        <item>Simpanse</item>
-        <item>Monyet</item>
-        <item>Berang-berang</item>
-        <item>Orangutan</item>
-        <item>Kijang</item>
-        <item>Kelelawar</item>
-        <item>Jerapah</item>
-        <item>Kelomang</item>
-        <item>Panda</item>
-        <item>Hamster</item>
-        <item>Kobra</item>
-        <item>Hiu Martil</item>
-        <item>Unta</item>
-        <item>Hawk</item>
-        <item>Rusa</item>
-        <item>Bunglon</item>
-        <item>Kuda Nil</item>
-        <item>Jaguar</item>
-        <item>Chihuahua</item>
-        <item>King Cobra</item>
-        <item>Kambing Gunung</item>
-        <item>Kadal</item>
-        <item>Koala</item>
-        <item>Kanguru</item>
-        <item>Iguana</item>
-        <item>Llama</item>
-        <item>Chinchillas</item>
-        <item>Ubur-ubur</item>
-        <item>Badak</item>
-        <item>Landak</item>
-        <item>Zebra</item>
-        <item>Bison</item>
-        <item>Banteng</item>
-        <item>Kerbau</item>
-        <item>Domba</item>
-        <item>Tikus</item>
-        <item>Otter</item>
-        <item>Kungkang</item>
-        <item>Burung Hantu</item>
-        <item>Burung Bangkai</item>
-        <item>Flamingo</item>
-        <item>Rakun</item>
-        <item>Tikus Tanah</item>
-        <item>Bebek</item>
-        <item>Angsa</item>
-        <item>Lynx</item>
-        <item>Rusa Besar</item>
-        <item>Babi Hutan</item>
-        <item>Lemur</item>
-        <item>Babon</item>
-        <item>Mammoth</item>
-        <item>Paus Biru</item>
-        <item>Ular</item>
-        <item>Merak</item>
+<!--        <item>Tupai Terbang</item>-->
+<!--        <item>Burung Unta</item>-->
+<!--        <item>Rubah</item>-->
+<!--        <item>Kambing</item>-->
+<!--        <item>Armadillo</item>-->
+<!--        <item>Belut</item>-->
+<!--        <item>Rubah Kutub</item>-->
+<!--        <item>Serigala</item>-->
+<!--        <item>Gorila</item>-->
+<!--        <item>Simpanse</item>-->
+<!--        <item>Monyet</item>-->
+<!--        <item>Berang-berang</item>-->
+<!--        <item>Orangutan</item>-->
+<!--        <item>Kijang</item>-->
+<!--        <item>Kelelawar</item>-->
+<!--        <item>Jerapah</item>-->
+<!--        <item>Kelomang</item>-->
+<!--        <item>Panda</item>-->
+<!--        <item>Hamster</item>-->
+<!--        <item>Kobra</item>-->
+<!--        <item>Hiu Martil</item>-->
+<!--        <item>Unta</item>-->
+<!--        <item>Hawk</item>-->
+<!--        <item>Rusa</item>-->
+<!--        <item>Bunglon</item>-->
+<!--        <item>Kuda Nil</item>-->
+<!--        <item>Jaguar</item>-->
+<!--        <item>Chihuahua</item>-->
+<!--        <item>King Cobra</item>-->
+<!--        <item>Kambing Gunung</item>-->
+<!--        <item>Kadal</item>-->
+<!--        <item>Koala</item>-->
+<!--        <item>Kanguru</item>-->
+<!--        <item>Iguana</item>-->
+<!--        <item>Llama</item>-->
+<!--        <item>Chinchillas</item>-->
+<!--        <item>Ubur-ubur</item>-->
+<!--        <item>Badak</item>-->
+<!--        <item>Landak</item>-->
+<!--        <item>Zebra</item>-->
+<!--        <item>Bison</item>-->
+<!--        <item>Banteng</item>-->
+<!--        <item>Kerbau</item>-->
+<!--        <item>Domba</item>-->
+<!--        <item>Tikus</item>-->
+<!--        <item>Otter</item>-->
+<!--        <item>Kungkang</item>-->
+<!--        <item>Burung Hantu</item>-->
+<!--        <item>Burung Bangkai</item>-->
+<!--        <item>Flamingo</item>-->
+<!--        <item>Rakun</item>-->
+<!--        <item>Tikus Tanah</item>-->
+<!--        <item>Bebek</item>-->
+<!--        <item>Angsa</item>-->
+<!--        <item>Lynx</item>-->
+<!--        <item>Rusa Besar</item>-->
+<!--        <item>Babi Hutan</item>-->
+<!--        <item>Lemur</item>-->
+<!--        <item>Babon</item>-->
+<!--        <item>Mammoth</item>-->
+<!--        <item>Paus Biru</item>-->
+<!--        <item>Ular</item>-->
+<!--        <item>Merak</item>-->
     </string-array>
     <string-array name="object">
         <item>Blender</item>

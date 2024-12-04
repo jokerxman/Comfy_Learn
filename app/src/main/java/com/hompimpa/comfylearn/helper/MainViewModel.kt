@@ -4,12 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.hompimpa.comfylearn.ui.settings.SettingPreferences
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val pref: SettingPreferences) : ViewModel() {
 
-    // Existing theme methods
     fun getThemeSettings(): LiveData<Boolean> {
         return pref.getThemeSetting().asLiveData()
     }
@@ -20,7 +18,6 @@ class MainViewModel(private val pref: SettingPreferences) : ViewModel() {
         }
     }
 
-    // New language methods
     fun getLanguageSetting(): LiveData<String> {
         return pref.getLanguageSetting().asLiveData()
     }

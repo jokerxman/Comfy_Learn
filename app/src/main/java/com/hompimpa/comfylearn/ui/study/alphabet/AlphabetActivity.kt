@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import com.hompimpa.comfylearn.HomeActivity
+import com.hompimpa.comfylearn.ui.HomeActivity
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.ui.study.number.NumberActivity
 

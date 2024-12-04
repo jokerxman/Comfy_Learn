@@ -2,7 +2,6 @@ package com.hompimpa.comfylearn.helper
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.hompimpa.comfylearn.ui.settings.SettingPreferences
 
 class ViewModelFactory(private val pref: SettingPreferences) :
     ViewModelProvider.NewInstanceFactory() {

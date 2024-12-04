@@ -7,12 +7,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <!-- Splash screen theme to make it full-screen -->
-    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/splashscreen</item>
-        <item name="android:windowFullscreen">true</item>
-    </style>
-
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorControlNormal">@color/black</item> <!-- Icon color -->
         <item name="iconGravity">start</item>

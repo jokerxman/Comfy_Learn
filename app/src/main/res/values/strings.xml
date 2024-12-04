@@ -24,6 +24,16 @@
     <string name="to_register">Don\'t have an account? Create an account now!</string>
     <string name="to_login">Already have an account? Sign in here</string>
     <string name="name">Your Name</string>
+    <string name="no_name">No name available</string>
+    <string name="no_email">No email available</string>
+    <string name="email_and_password_cannot_be_empty">Email and password cannot be empty</string>
+    <string name="authentication_failed">Authentication failed.</string>
+    <string name="please_log_in_to_continue">Please log in to continue.</string>
+    <string name="all_fields_must_not_be_empty">All fields must not be empty.</string>
+    <string name="invalid_email_format">Invalid email format.</string>
+    <string name="password_must_be_at_least_6_characters">Password must be at least 6 characters.</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="apply_changes">Apply Changes</string>
 
     <string-array name="vowel">
         <item>A</item>
@@ -142,69 +152,69 @@
         <item>Frog</item>
         <item>Whale</item>
         <item>Eagle</item>
-        <item>Flying squirrel</item>
-        <item>Ostrich</item>
-        <item>Fox</item>
-        <item>Goat</item>
-        <item>Armadillo</item>
-        <item>Eel</item>
-        <item>Arctic fox</item>
-        <item>Wolf</item>
-        <item>Gorilla</item>
-        <item>Chimpanzee</item>
-        <item>Monkey</item>
-        <item>Beaver</item>
-        <item>Orangutan</item>
-        <item>Antelope</item>
-        <item>Bat</item>
-        <item>Giraffe</item>
-        <item>Hermit Crab</item>
-        <item>Panda</item>
-        <item>Hamster</item>
-        <item>Cobra</item>
-        <item>Hammerhead shark</item>
-        <item>Camel</item>
-        <item>Hawk</item>
-        <item>Deer</item>
-        <item>Chameleon</item>
-        <item>Hippopotamus</item>
-        <item>Jaguar</item>
-        <item>Chihuahua</item>
-        <item>King Cobra</item>
-        <item>Ibex</item>
-        <item>Lizard</item>
-        <item>Koala</item>
-        <item>Kangaroo</item>
-        <item>Iguana</item>
-        <item>Llama</item>
-        <item>Chinchillas</item>
-        <item>Jellyfish</item>
-        <item>Rhinoceros</item>
-        <item>Hedgehog</item>
-        <item>Zebra</item>
-        <item>Bison</item>
-        <item>Bull</item>
-        <item>Buffalo</item>
-        <item>Sheep</item>
-        <item>Mouse</item>
-        <item>Otter</item>
-        <item>Sloth</item>
-        <item>Owl</item>
-        <item>Vulture</item>
-        <item>Flamingo</item>
-        <item>Racoon</item>
-        <item>Mole</item>
-        <item>Duck</item>
-        <item>Swan</item>
-        <item>Lynx</item>
-        <item>Elk</item>
-        <item>Boar</item>
-        <item>Lemur</item>
-        <item>Baboon</item>
-        <item>Mammoth</item>
-        <item>Blue whale</item>
-        <item>Snake</item>
-        <item>Peacock</item>
+<!--        <item>Flying squirrel</item>-->
+<!--        <item>Ostrich</item>-->
+<!--        <item>Fox</item>-->
+<!--        <item>Goat</item>-->
+<!--        <item>Armadillo</item>-->
+<!--        <item>Eel</item>-->
+<!--        <item>Arctic fox</item>-->
+<!--        <item>Wolf</item>-->
+<!--        <item>Gorilla</item>-->
+<!--        <item>Chimpanzee</item>-->
+<!--        <item>Monkey</item>-->
+<!--        <item>Beaver</item>-->
+<!--        <item>Orangutan</item>-->
+<!--        <item>Antelope</item>-->
+<!--        <item>Bat</item>-->
+<!--        <item>Giraffe</item>-->
+<!--        <item>Hermit Crab</item>-->
+<!--        <item>Panda</item>-->
+<!--        <item>Hamster</item>-->
+<!--        <item>Cobra</item>-->
+<!--        <item>Hammerhead shark</item>-->
+<!--        <item>Camel</item>-->
+<!--        <item>Hawk</item>-->
+<!--        <item>Deer</item>-->
+<!--        <item>Chameleon</item>-->
+<!--        <item>Hippopotamus</item>-->
+<!--        <item>Jaguar</item>-->
+<!--        <item>Chihuahua</item>-->
+<!--        <item>King Cobra</item>-->
+<!--        <item>Ibex</item>-->
+<!--        <item>Lizard</item>-->
+<!--        <item>Koala</item>-->
+<!--        <item>Kangaroo</item>-->
+<!--        <item>Iguana</item>-->
+<!--        <item>Llama</item>-->
+<!--        <item>Chinchillas</item>-->
+<!--        <item>Jellyfish</item>-->
+<!--        <item>Rhinoceros</item>-->
+<!--        <item>Hedgehog</item>-->
+<!--        <item>Zebra</item>-->
+<!--        <item>Bison</item>-->
+<!--        <item>Bull</item>-->
+<!--        <item>Buffalo</item>-->
+<!--        <item>Sheep</item>-->
+<!--        <item>Mouse</item>-->
+<!--        <item>Otter</item>-->
+<!--        <item>Sloth</item>-->
+<!--        <item>Owl</item>-->
+<!--        <item>Vulture</item>-->
+<!--        <item>Flamingo</item>-->
+<!--        <item>Racoon</item>-->
+<!--        <item>Mole</item>-->
+<!--        <item>Duck</item>-->
+<!--        <item>Swan</item>-->
+<!--        <item>Lynx</item>-->
+<!--        <item>Elk</item>-->
+<!--        <item>Boar</item>-->
+<!--        <item>Lemur</item>-->
+<!--        <item>Baboon</item>-->
+<!--        <item>Mammoth</item>-->
+<!--        <item>Blue whale</item>-->
+<!--        <item>Snake</item>-->
+<!--        <item>Peacock</item>-->
     </string-array>
     <string-array name="object">
         <item>Blender</item>

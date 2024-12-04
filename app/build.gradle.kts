@@ -25,6 +25,7 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -52,7 +53,7 @@ dependencies {
     implementation(libs.androidx.viewpager2)
     implementation(libs.glide)
     implementation(libs.androidsvg.aar)
-
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
 // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)

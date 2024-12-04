@@ -14,13 +14,30 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ComfyLearn">
         <activity
+            android:name=".ui.study.arithmetic.ArithmeticActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.HomeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_home"
+            android:theme="@style/Theme.ComfyLearn.NoActionBar" />
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.RegisterActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.settings.SettingsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.ParseActivity"
             android:exported="false" />
         <activity
             android:name=".ui.games.drawing.DrawingActivity"
@@ -36,24 +53,6 @@
             android:exported="false" />
         <activity
             android:name=".ui.study.alphabet.AlphabetActivity"
-            android:exported="false" />
-        <activity
-            android:name=".SplashActivity"
-            android:exported="true"
-            android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".HomeActivity"
-            android:exported="false"
-            android:label="@string/title_activity_home"
-            android:theme="@style/Theme.ComfyLearn.NoActionBar" />
-        <activity
-            android:name=".LoginActivity"
             android:exported="false" />
     </application>
 
