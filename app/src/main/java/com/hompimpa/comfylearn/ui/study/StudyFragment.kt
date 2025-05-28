@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.hompimpa.comfylearn.databinding.FragmentStudyBinding
 import com.hompimpa.comfylearn.ui.study.alphabet.AlphabetActivity
+import com.hompimpa.comfylearn.ui.study.arithmetic.ArithmeticActivity
 import com.hompimpa.comfylearn.ui.study.spelling.SpellingActivity
-import com.hompimpa.comfylearn.ui.study.tracing.TracingActivity
 
 class StudyFragment : Fragment() {
 
@@ -27,13 +27,12 @@ class StudyFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.buttonOpenTracing.setOnClickListener {
-            val intent = Intent(requireContext(), TracingActivity::class.java)
-            startActivity(intent)
-        }
-
         binding.buttonOpenSpelling.setOnClickListener {
             val intent = Intent(requireContext(), SpellingActivity::class.java)
+            startActivity(intent)
+        }
+        binding.buttonOpenArithmetic.setOnClickListener {
+            val intent = Intent(requireContext(), ArithmeticActivity::class.java)
             startActivity(intent)
         }
 
