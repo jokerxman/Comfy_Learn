@@ -27,6 +27,10 @@ class Board @JvmOverloads constructor(
         currentColor = newColor
     }
 
+    fun getPenColor(): Int {
+        return currentColor
+    }
+
     // Create a new Paint object with the current color
     private fun createPaint(color: Int): Paint {
         return Paint().apply {
