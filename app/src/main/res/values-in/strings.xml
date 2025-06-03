@@ -9,159 +9,83 @@
     <string name="menu_rate">Penilaian</string>
     <string name="nav_header_calltoaction">Berlangganan</string>
     <string name="sign_out">Keluar</string>
+    <string name="dark_mode">Mode Gelap</string>
+    <string name="apply_changes">Terapkan</string>
+    <string name="pick_color">Pilih Warna</string>
+    <string name="login">Masuk</string>
+    <string name="register">Mendaftar</string>
+    <string name="password">Sandi</string>
+    <string name="email">Alamat Email</string>
+    <string name="another_method">Gunakan Metode Lain</string>
+    <string name="to_register">Belum punya akun? Buat akunmu sekarang!</string>
+    <string name="to_login">Sudah punya akun? Masuk di sini</string>
+    <string name="name">Nama kamu</string>
+    <string name="no_name">Tanpa Nama</string>
+    <string name="no_email">Tanpa Email</string>
+    <string name="email_and_password_cannot_be_empty">Email dan sandi tidak boleh kosong</string>
+    <string name="authentication_failed">Autentikasi gagal</string>
+    <string name="please_log_in_to_continue">Silahkan masuk untuk melanjutkan</string>
+    <string name="all_fields_must_not_be_empty">Semua kolom harus terisi</string>
+    <string name="invalid_email_format">Format email salah</string>
+    <string name="password_must_be_at_least_6_characters">Sandi harus memiliki 6 atau lebih karakter</string>
 
     <string-array name="animal">
-        <item>Keledai</item>
-        <item>Anjing</item>
-        <item>Sapi</item>
-        <item>Kucing</item>
-        <item>Kuda</item>
-        <item>Macan</item>
-        <item>Singa</item>
-        <item>Macan Tutul</item>
-        <item>Beruang</item>
-        <item>Gajah</item>
-        <item>Beruang Kutub</item>
-        <item>Penyu</item>
-        <item>Kura-kura</item>
         <item>Buaya</item>
-        <item>Kelinci</item>
+        <item>Berang Berang</item>
         <item>Ayam</item>
-        <item>Merpati</item>
-        <item>Gagak</item>
-        <item>Ikan</item>
-        <item>Lumba-lumba</item>
-        <item>Katak</item>
-        <item>Paus</item>
-        <item>Elang</item>
-<!--        <item>Tupai Terbang</item>-->
-<!--        <item>Burung Unta</item>-->
-<!--        <item>Rubah</item>-->
-<!--        <item>Kambing</item>-->
-<!--        <item>Armadillo</item>-->
-<!--        <item>Belut</item>-->
-<!--        <item>Rubah Kutub</item>-->
-<!--        <item>Serigala</item>-->
-<!--        <item>Gorila</item>-->
-<!--        <item>Simpanse</item>-->
-<!--        <item>Monyet</item>-->
-<!--        <item>Berang-berang</item>-->
-<!--        <item>Orangutan</item>-->
-<!--        <item>Kijang</item>-->
-<!--        <item>Kelelawar</item>-->
-<!--        <item>Jerapah</item>-->
-<!--        <item>Kelomang</item>-->
-<!--        <item>Panda</item>-->
-<!--        <item>Hamster</item>-->
-<!--        <item>Kobra</item>-->
-<!--        <item>Hiu Martil</item>-->
-<!--        <item>Unta</item>-->
-<!--        <item>Hawk</item>-->
-<!--        <item>Rusa</item>-->
-<!--        <item>Bunglon</item>-->
-<!--        <item>Kuda Nil</item>-->
-<!--        <item>Jaguar</item>-->
-<!--        <item>Chihuahua</item>-->
-<!--        <item>King Cobra</item>-->
-<!--        <item>Kambing Gunung</item>-->
-<!--        <item>Kadal</item>-->
-<!--        <item>Koala</item>-->
-<!--        <item>Kanguru</item>-->
-<!--        <item>Iguana</item>-->
-<!--        <item>Llama</item>-->
-<!--        <item>Chinchillas</item>-->
-<!--        <item>Ubur-ubur</item>-->
-<!--        <item>Badak</item>-->
-<!--        <item>Landak</item>-->
-<!--        <item>Zebra</item>-->
-<!--        <item>Bison</item>-->
-<!--        <item>Banteng</item>-->
-<!--        <item>Kerbau</item>-->
-<!--        <item>Domba</item>-->
-<!--        <item>Tikus</item>-->
-<!--        <item>Otter</item>-->
-<!--        <item>Kungkang</item>-->
-<!--        <item>Burung Hantu</item>-->
-<!--        <item>Burung Bangkai</item>-->
-<!--        <item>Flamingo</item>-->
-<!--        <item>Rakun</item>-->
-<!--        <item>Tikus Tanah</item>-->
-<!--        <item>Bebek</item>-->
-<!--        <item>Angsa</item>-->
-<!--        <item>Lynx</item>-->
-<!--        <item>Rusa Besar</item>-->
-<!--        <item>Babi Hutan</item>-->
-<!--        <item>Lemur</item>-->
-<!--        <item>Babon</item>-->
-<!--        <item>Mammoth</item>-->
-<!--        <item>Paus Biru</item>-->
-<!--        <item>Ular</item>-->
-<!--        <item>Merak</item>-->
+        <item>Anjing</item>
+        <item>Bebek</item>
+        <item>Rubah</item>
+        <item>Angsa</item>
+        <item>Kuda</item>
+        <item>Kanguru</item>
+        <item>Kepik</item>
+        <item>Macan Tutul</item>
+        <item>Singa</item>
+        <item>Panda</item>
+        <item>Beo</item>
+        <item>Babi</item>
+        <item>Belalang Sembah</item>
+        <item>Kelinci</item>
+        <item>Kambing</item>
+        <item>Badak</item>
+        <item>Penyu</item>
+        <item>Domba</item>
+        <item>Siput</item>
+        <item>Kura Kura</item>
+        <item>Tukan</item>
     </string-array>
-    <string-array name="object">
-        <item>Blender</item>
-        <item>Ember</item>
-        <item>Kursi</item>
-        <item>Sprei</item>
-        <item>Botol</item>
-        <item>Sapu</item>
-        <item>Gantungan Baju</item>
-        <item>Pot</item>
-        <item>Bola Lampu</item>
-        <item>Meja</item>
-        <item>Tirai</item>
-        <item>Kalender</item>
-        <item>Mesin Cuci</item>
-        <item>Lentera</item>
-        <item>Sisir</item>
-        <item>Keranjang</item>
-        <item>Televisi</item>
-        <item>Sofa</item>
-        <item>Kulkas</item>
-        <item>Microwave</item>
-        <item>Pemanggang</item>
-        <item>Lampu</item>
-        <item>Ceret</item>
-        <item>Kain Pel</item>
-        <item>Gantungan</item>
-        <item>Bingkai</item>
-        <item>Kipas</item>
+    <string-array name="objek">
         <item>Air conditioner</item>
-        <item>Kain</item>
-        <item>Pemanggang Roti</item>
-        <item>Pengeras Suara</item>
-        <item>Penyedot Debu</item>
+        <item>Basket</item>
+        <item>Bed</item>
+        <item>Blender</item>
+        <item>Bottle</item>
+        <item>Broom</item>
+        <item>Bucket</item>
+        <item>Calendar</item>
+        <item>Chair</item>
+        <item>Cloth</item>
+        <item>Clothes stand</item>
+        <item>Comb</item>
+        <item>Couch</item>
+        <item>Curtains</item>
+        <item>Desk</item>
+        <item>Fan</item>
+        <item>Hanger</item>
+        <item>Kettle</item>
         <item>Kitchen hood</item>
-        <item>Obor</item>
-        <item>Kompor</item>
-        <item>Mixer</item>
-        <item>Tangga</item>
-        <item>Mesin Jahit</item>
-        <item>Jam</item>
-        <item>Pengering Rambut</item>
-        <item>Tempat Sampah</item>
-        <item>Cedok Sampah</item>
-        <item>Bak Mandi</item>
-        <item>Bantal</item>
-        <item>Ranjang</item>
-        <item>Handuk</item>
-        <item>Lemari</item>
-        <item>Karpet</item>
-        <item>Cerobong Asap</item>
-        <item>Pagar</item>
-        <item>Tungku Api</item>
-        <item>Gorden</item>
-        <item>Buku</item>
-        <item>Serbet</item>
-        <item>Stoples</item>
-        <item>Talenan</item>
-        <item>Teko</item>
-        <item>Mangkuk</item>
-        <item>Pembuka Botol</item>
-        <item>Alat Makan</item>
-        <item>Rak Piring</item>
-        <item>Kertas Tisu</item>
-        <item>Kitchen towel</item>
+        <item>Lamp</item>
+        <item>Lantern</item>
+        <item>Lightbulb</item>
+        <item>Microwave</item>
+        <item>Mop</item>
+        <item>Photo frame</item>
+        <item>Pot</item>
+        <item>Refrigerator</item>
+        <item>Speaker</item>
+        <item>Television</item>
+        <item>Toaster</item>
     </string-array>
     <string-array name="color">
         <item>Merah</item>
@@ -208,4 +132,5 @@
         <item>Rakit</item>
         <item>Kapal Selam</item>
     </string-array>
+
 </resources>

@@ -28,13 +28,11 @@ class ArithmeticActivity : AppCompatActivity() {
     private fun generateQuestion() {
         val num1: Int
         val num2: Int
-        val operator: String
 
         if (Random.nextBoolean()) { // Randomly decide between addition and subtraction
             // Addition case: Ensure that num1 + num2 <= 9 and at least 1
             num1 = Random.nextInt(1, 10) // Random number between 1 and 9
             num2 = Random.nextInt(1, 10 - num1 + 1) // Ensure sum does not exceed 9
-            operator = "+"
             correctAnswer = num1 + num2
             binding.questionText.text = "What is $num1 + $num2?"
         } else {
@@ -42,7 +40,6 @@ class ArithmeticActivity : AppCompatActivity() {
             num1 = Random.nextInt(1, 10) // Random number between 1 and 9
             num2 =
                 Random.nextInt(0, num1) // Ensure that num2 is less than num1 to avoid zero result
-            operator = "-"
             correctAnswer = num1 - num2
             binding.questionText.text = "What is $num1 - $num2?"
         }

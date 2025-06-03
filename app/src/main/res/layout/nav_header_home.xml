@@ -16,7 +16,6 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/nav_header_desc"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,7 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/nav_header_vertical_spacing"
         android:layout_marginTop="54dp"
-        android:text="@string/nav_header_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@id/imageView"
@@ -39,7 +37,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/nav_header_vertical_spacing"
-        android:text="@string/nav_header_subtitle"
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@id/name_text" />

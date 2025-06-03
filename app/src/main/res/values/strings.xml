@@ -1,13 +1,6 @@
 <resources>
     <string name="app_name">Comfy Learn</string>
-    <string name="your_web_client_id">1005345375717-0t16i8fe6aobkea28dd879qsfe3h622l.apps.googleusercontent.com</string>
-    <string name="title_activity_home">HomeActivity</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-
+    <string name="your_web_client_id" translatable="false">1005345375717-0t16i8fe6aobkea28dd879qsfe3h622l.apps.googleusercontent.com</string>
     <string name="action_settings">Settings</string>
     <string name="menu_materi">All Study</string>
     <string name="menu_games">All Games</string>
@@ -34,6 +27,7 @@
     <string name="password_must_be_at_least_6_characters">Password must be at least 6 characters.</string>
     <string name="dark_mode">Dark Mode</string>
     <string name="apply_changes">Apply Changes</string>
+    <string name="pick_color">Pick Color</string>
 
     <string-array name="vowel">
         <item>A</item>
@@ -129,157 +123,62 @@
         <item>za,zi,zu,ze,zo</item>
     </string-array>
     <string-array name="animal">
-        <item>Donkey</item>
-        <item>Dog</item>
-        <item>Cow</item>
-        <item>Cat</item>
-        <item>Horse</item>
-        <item>Tiger</item>
-        <item>Lion</item>
-        <item>Leopard</item>
-        <item>Bear</item>
-        <item>Elephant</item>
-        <item>Polar bear</item>
-        <item>Turtle</item>
-        <item>Tortoise</item>
-        <item>Crocodile</item>
-        <item>Rabbit</item>
+        <item>Alligator</item>
+        <item>Beaver</item>
         <item>Chicken</item>
-        <item>Pigeon</item>
-        <item>Crow</item>
-        <item>Fish</item>
-        <item>Dolphin</item>
-        <item>Frog</item>
-        <item>Whale</item>
-        <item>Eagle</item>
-<!--        <item>Flying squirrel</item>-->
-<!--        <item>Ostrich</item>-->
-<!--        <item>Fox</item>-->
-<!--        <item>Goat</item>-->
-<!--        <item>Armadillo</item>-->
-<!--        <item>Eel</item>-->
-<!--        <item>Arctic fox</item>-->
-<!--        <item>Wolf</item>-->
-<!--        <item>Gorilla</item>-->
-<!--        <item>Chimpanzee</item>-->
-<!--        <item>Monkey</item>-->
-<!--        <item>Beaver</item>-->
-<!--        <item>Orangutan</item>-->
-<!--        <item>Antelope</item>-->
-<!--        <item>Bat</item>-->
-<!--        <item>Giraffe</item>-->
-<!--        <item>Hermit Crab</item>-->
-<!--        <item>Panda</item>-->
-<!--        <item>Hamster</item>-->
-<!--        <item>Cobra</item>-->
-<!--        <item>Hammerhead shark</item>-->
-<!--        <item>Camel</item>-->
-<!--        <item>Hawk</item>-->
-<!--        <item>Deer</item>-->
-<!--        <item>Chameleon</item>-->
-<!--        <item>Hippopotamus</item>-->
-<!--        <item>Jaguar</item>-->
-<!--        <item>Chihuahua</item>-->
-<!--        <item>King Cobra</item>-->
-<!--        <item>Ibex</item>-->
-<!--        <item>Lizard</item>-->
-<!--        <item>Koala</item>-->
-<!--        <item>Kangaroo</item>-->
-<!--        <item>Iguana</item>-->
-<!--        <item>Llama</item>-->
-<!--        <item>Chinchillas</item>-->
-<!--        <item>Jellyfish</item>-->
-<!--        <item>Rhinoceros</item>-->
-<!--        <item>Hedgehog</item>-->
-<!--        <item>Zebra</item>-->
-<!--        <item>Bison</item>-->
-<!--        <item>Bull</item>-->
-<!--        <item>Buffalo</item>-->
-<!--        <item>Sheep</item>-->
-<!--        <item>Mouse</item>-->
-<!--        <item>Otter</item>-->
-<!--        <item>Sloth</item>-->
-<!--        <item>Owl</item>-->
-<!--        <item>Vulture</item>-->
-<!--        <item>Flamingo</item>-->
-<!--        <item>Racoon</item>-->
-<!--        <item>Mole</item>-->
-<!--        <item>Duck</item>-->
-<!--        <item>Swan</item>-->
-<!--        <item>Lynx</item>-->
-<!--        <item>Elk</item>-->
-<!--        <item>Boar</item>-->
-<!--        <item>Lemur</item>-->
-<!--        <item>Baboon</item>-->
-<!--        <item>Mammoth</item>-->
-<!--        <item>Blue whale</item>-->
-<!--        <item>Snake</item>-->
-<!--        <item>Peacock</item>-->
+        <item>Dog</item>
+        <item>Duck</item>
+        <item>Fox</item>
+        <item>Goose</item>
+        <item>Horse</item>
+        <item>Kangaroo</item>
+        <item>Ladybug</item>
+        <item>Leopard</item>
+        <item>Lion</item>
+        <item>Panda</item>
+        <item>Parrot</item>
+        <item>Pig</item>
+        <item>Praying Mantis</item>
+        <item>Rabbit</item>
+        <item>Ram</item>
+        <item>Rhino</item>
+        <item>Sea Turtle</item>
+        <item>Sheep</item>
+        <item>Snail</item>
+        <item>Tortoise</item>
+        <item>Toucan</item>
     </string-array>
-    <string-array name="object">
+    <string-array name="objek">
+        <item>Air conditioner</item>
+        <item>Basket</item>
+        <item>Bed</item>
         <item>Blender</item>
-        <item>Bucket</item>
-        <item>Chair</item>
-        <item>Bedsheet</item>
         <item>Bottle</item>
         <item>Broom</item>
-        <item>Clothes stand</item>
-        <item>Pot</item>
-        <item>Light bulb</item>
-        <item>Desk</item>
-        <item>Curtains</item>
+        <item>Bucket</item>
         <item>Calendar</item>
-        <item>Dishwasher</item>
-        <item>Lantern</item>
-        <item>Comb</item>
-        <item>basket</item>
-        <item>Television</item>
-        <item>Couch</item>
-        <item>Refrigerator</item>
-        <item>Microwave</item>
-        <item>Griller</item>
-        <item>Lamp</item>
-        <item>Kettle</item>
-        <item>Mob</item>
-        <item>Hanger</item>
-        <item>Photo frame</item>
-        <item>Fan</item>
-        <item>Air conditioner</item>
+        <item>Chair</item>
         <item>Cloth</item>
-        <item>Toaster</item>
-        <item>Speaker</item>
-        <item>Vacuum cleaner</item>
+        <item>Clothes stand</item>
+        <item>Comb</item>
+        <item>Couch</item>
+        <item>Curtains</item>
+        <item>Desk</item>
+        <item>Fan</item>
+        <item>Hanger</item>
+        <item>Kettle</item>
         <item>Kitchen hood</item>
-        <item>Torch</item>
-        <item>Stove</item>
-        <item>Mixer</item>
-        <item>Stepladder</item>
-        <item>Sewing machine</item>
-        <item>Clock</item>
-        <item>Hair dryer</item>
-        <item>Dustbin</item>
-        <item>Dust pan</item>
-        <item>Bathtub</item>
-        <item>Pillow</item>
-        <item>Bed</item>
-        <item>Towel</item>
-        <item>Closet</item>
-        <item>Carpet</item>
-        <item>Chimney</item>
-        <item>Fence</item>
-        <item>Fireplace</item>
-        <item>Blind</item>
-        <item>Book</item>
-        <item>Napkin</item>
-        <item>Jar</item>
-        <item>Cutting board</item>
-        <item>Teapot</item>
-        <item>Bowl</item>
-        <item>Bottle opener</item>
-        <item>Cutlery</item>
-        <item>Dish rack</item>
-        <item>Tissue paper</item>
-        <item>Kitchen towel</item>
+        <item>Lamp</item>
+        <item>Lantern</item>
+        <item>Lightbulb</item>
+        <item>Microwave</item>
+        <item>Mop</item>
+        <item>Photo frame</item>
+        <item>Pot</item>
+        <item>Refrigerator</item>
+        <item>Speaker</item>
+        <item>Television</item>
+        <item>Toaster</item>
     </string-array>
     <string-array name="color">
         <item>Red</item>

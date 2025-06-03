@@ -25,6 +25,7 @@ class GamesFragment : Fragment() {
 
         binding.buttonOpenGameFill.setOnClickListener {
             val intent = Intent(requireContext(), FillInActivity::class.java)
+            intent.putExtra("CATEGORY", "animal")
             startActivity(intent)
         }
 

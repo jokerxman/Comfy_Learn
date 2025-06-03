@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.androidsvg.aar)
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation(libs.colorpicker)
 
 // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
