@@ -1,17 +1,17 @@
 package com.hompimpa.comfylearn.ui
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -25,21 +25,37 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivityHomeBinding
-import com.hompimpa.comfylearn.helper.MainViewModel
+import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.helper.SettingPreferences
-import com.hompimpa.comfylearn.helper.ViewModelFactory
 import com.hompimpa.comfylearn.helper.dataStore
 import com.hompimpa.comfylearn.ui.auth.LoginActivity
+import com.hompimpa.comfylearn.ui.learnProg.LearnProgFragment
 import com.hompimpa.comfylearn.ui.settings.SettingsActivity
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import java.util.Locale
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : BaseActivity() {
 
-    private lateinit var mainViewModel: MainViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityHomeBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var settingsLauncher: ActivityResultLauncher<Intent>
-    private var shouldRecreate = false
+
+    override fun attachBaseContext(newBase: Context) {
+        val prefs = SettingPreferences.getInstance(newBase.dataStore)
+        val languageCode = runBlocking { prefs.getLanguageSetting().first() }
+
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+
+        val configuration = Configuration(newBase.resources.configuration)
+        configuration.setLocale(locale)
+        configuration.setLayoutDirection(locale)
+
+        val context = newBase.createConfigurationContext(configuration)
+        super.attachBaseContext(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +64,6 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.appBarHome.toolbar)
 
-        val pref = SettingPreferences.getInstance(dataStore)
-        mainViewModel = ViewModelProvider(this, ViewModelFactory(pref))[MainViewModel::class.java]
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_home)
@@ -58,8 +72,7 @@ class HomeActivity : AppCompatActivity() {
             setOf(
                 R.id.nav_study,
                 R.id.nav_games,
-                R.id.nav_learnprog,
-                R.id.nav_settings
+                R.id.nav_learnprog
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -78,25 +91,26 @@ class HomeActivity : AppCompatActivity() {
         settingsLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                shouldRecreate = true
+            if (result.resultCode == RESULT_OK) {
+                recreate()
             }
         }
 
         navView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
+            val handled: Boolean = when (menuItem.itemId) {
                 R.id.nav_settings -> {
                     val intent = Intent(this, SettingsActivity::class.java)
                     settingsLauncher.launch(intent)
                     true
                 }
-
                 else -> {
                     NavigationUI.onNavDestinationSelected(menuItem, navController)
-                    drawerLayout.closeDrawer(GravityCompat.START)
-                    true
                 }
             }
+            if (handled) {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            }
+            handled
         }
     }
 
@@ -122,12 +136,11 @@ class HomeActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_home)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
-    override fun onResume() {
-        super.onResume()
-        if (shouldRecreate) {
-            shouldRecreate = false
-            recreate()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data) // Keep this!
+        Log.d("HomeActivity_DEBUG", "onActivityResult in HomeActivity: requestCode=$requestCode, resultCode=$resultCode, data present: ${data != null}")
+        if (requestCode == LearnProgFragment.FILL_IN_GAME_REQUEST_CODE) {
+            Log.d("HomeActivity_DEBUG", "HomeActivity received result for FILL_IN_GAME_REQUEST_CODE.")
         }
     }
 }

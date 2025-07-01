@@ -20,7 +20,7 @@ class SettingPreferences private constructor(private val dataStore: DataStore<Pr
     // Retrieve theme setting
     fun getThemeSetting(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
-            preferences[THEME_KEY] ?: false
+            preferences[THEME_KEY] ?: false // Default to false (light mode)
         }
     }
 

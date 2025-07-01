@@ -5,18 +5,19 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hompimpa.comfylearn.R
+import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.helper.CategoryAdapter
 
-class SpellingActivity : AppCompatActivity() {
+class SpellingActivity : BaseActivity() {
 
     private lateinit var homeButton: ImageButton
     private lateinit var recyclerViewCategories: RecyclerView
     private lateinit var categoryAdapter: CategoryAdapter
-    private val mainCategories = listOf("Animals", "Objects") // Keep these as defined
+    private val mainCategories = listOf("animal", "objek") // Keep these as defined
     private lateinit var consonantCategories: List<String>
     private lateinit var fragmentContainer: View
     private var isFragmentDisplayed = false
@@ -52,7 +53,6 @@ class SpellingActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this, backPressedCallback)
 
-        // Ensure consonantCategories is initialized before being used in onCategorySelected
         consonantCategories = resources.getStringArray(R.array.consonants).toList()
 
         homeButton = findViewById(R.id.homeButton)
@@ -76,13 +76,11 @@ class SpellingActivity : AppCompatActivity() {
         val fragment = when {
             mainCategories.contains(category) -> {
                 Log.d("SpellingActivity", "Creating fragment for general category: $category")
-                // Pass false for isConsonant
                 SpellingFragment.newInstance(category, false) // <--- CORRECTED
             }
 
             consonantCategories.contains(category) -> {
                 Log.d("SpellingActivity", "Creating fragment for letter category: $category")
-                // Pass true for isConsonant
                 SpellingFragment.newInstance(category, true)  // <--- CORRECTED
             }
 
@@ -107,7 +105,7 @@ class SpellingActivity : AppCompatActivity() {
         backPressedCallback.isEnabled = false
         Log.d(
             "SpellingActivity",
-            "Categories Visible: ${recyclerViewCategories.visibility == View.VISIBLE}, Fragment Container Visible: ${fragmentContainer.visibility == View.VISIBLE}, backPressedCallback enabled: ${backPressedCallback.isEnabled}"
+            "Categories Visible: ${recyclerViewCategories.isVisible}, Fragment Container Visible: ${fragmentContainer.isVisible}, backPressedCallback enabled: ${backPressedCallback.isEnabled}"
         )
     }
 
@@ -119,7 +117,7 @@ class SpellingActivity : AppCompatActivity() {
         backPressedCallback.isEnabled = true
         Log.d(
             "SpellingActivity",
-            "Categories Visible: ${recyclerViewCategories.visibility == View.VISIBLE}, Fragment Container Visible: ${fragmentContainer.visibility == View.VISIBLE}, backPressedCallback enabled: ${backPressedCallback.isEnabled}"
+            "Categories Visible: ${recyclerViewCategories.isVisible}, Fragment Container Visible: ${fragmentContainer.isVisible}, backPressedCallback enabled: ${backPressedCallback.isEnabled}"
         )
     }
 }

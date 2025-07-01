@@ -3,11 +3,11 @@ package com.hompimpa.comfylearn.ui.study.arithmetic
 import android.os.Bundle
 import android.view.View
 import android.widget.RadioButton
-import androidx.appcompat.app.AppCompatActivity
 import com.hompimpa.comfylearn.databinding.ActivityArithmeticBinding
+import com.hompimpa.comfylearn.helper.BaseActivity
 import kotlin.random.Random
 
-class ArithmeticActivity : AppCompatActivity() {
+class ArithmeticActivity : BaseActivity() {
 
     private lateinit var binding: ActivityArithmeticBinding // Declare the binding variable
     private var correctAnswer = 0

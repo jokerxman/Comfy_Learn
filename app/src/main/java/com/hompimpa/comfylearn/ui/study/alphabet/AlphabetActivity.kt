@@ -3,13 +3,13 @@ package com.hompimpa.comfylearn.ui.study.alphabet
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import com.hompimpa.comfylearn.ui.HomeActivity
 import com.hompimpa.comfylearn.R
+import com.hompimpa.comfylearn.helper.BaseActivity
+import com.hompimpa.comfylearn.ui.HomeActivity
 import com.hompimpa.comfylearn.ui.study.number.NumberActivity
 
-class AlphabetActivity : AppCompatActivity() {
+class AlphabetActivity : BaseActivity() {
 
     private lateinit var nextButton: ImageButton
     private lateinit var backButton: ImageButton

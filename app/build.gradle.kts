@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.hompimpa.comfylearn"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.hompimpa.comfylearn"
         minSdk = 33
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -53,7 +53,7 @@ dependencies {
     implementation(libs.androidx.viewpager2)
     implementation(libs.glide)
     implementation(libs.androidsvg.aar)
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.colorpicker)
 
 // Navigation
@@ -83,6 +83,8 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.ui.text.android)
+    implementation(libs.appcompat)
 
 // Testing
     testImplementation(libs.junit)

@@ -5,9 +5,22 @@
     <color name="colorPrimary">#FFFEE8</color>
     <color name="colorPrimaryDark">#FFFEE8</color>
     <color name="colorAccent">#A67032</color>
-    <color name="light_blue_600">#FF039BE5</color>
-    <color name="light_blue_900">#FF01579B</color>
-    <color name="light_blue_A200">#FF40C4FF</color>
-    <color name="light_blue_A400">#FF00B0FF</color>
-    <color name="black_overlay">#66000000</color>
+
+    <!-- NEW Feedback Colors for PuzzleActivity -->
+    <color name="feedback_correct_bg">#C8E6C9</color> <!-- Light Green -->
+    <color name="feedback_incorrect_bg">#FFCDD2</color> <!-- Light Red/Pink -->
+    <color name="feedback_game_end_bg">#BBDEFB</color> <!-- Light Blue -->
+
+    <color name="light_blue_bg">#E3F2FD</color>
+    <color name="purple_title">#9C27B0</color>
+    <color name="orange_button">#FF9800</color>
+    <color name="operator_color">#7E57C2</color>
+
+    <color name="pink_balloon">#F48FB1</color>
+    <color name="pink_balloon_border">#E91E63</color>
+    <color name="green_balloon">#A5D6A7</color>
+    <color name="green_balloon_border">#4CAF50</color>
+    <!-- ... other colors ... -->
+    <color name="colorDragEnter">#E0E0E0</color>
+
 </resources>

@@ -4,9 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="syllable_text_size">28sp</dimen> <!-- Using sp for text size -->
-    <dimen name="syllable_padding_horizontal">16dp</dimen>
-    <dimen name="syllable_padding_vertical">8dp</dimen>
-    <dimen name="syllable_margin_end">8dp</dimen>
+    <!-- Using sp for text size -->
+    <dimen name="slot_padding_start_end">8dp</dimen>
+    <dimen name="slot_padding_top_bottom">4dp</dimen>
+    <dimen name="slot_min_width">40dp</dimen>
+    <dimen name="slot_min_height">48dp</dimen>
 </resources>

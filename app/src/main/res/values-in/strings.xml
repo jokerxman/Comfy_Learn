@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Comfy Learn</string>
-    <string name="action_settings">Pengaturan</string>
     <string name="menu_materi">Pelajaran</string>
     <string name="menu_games">Permainan</string>
     <string name="menu_learprog">Perkembangan</string>
@@ -28,6 +27,7 @@
     <string name="all_fields_must_not_be_empty">Semua kolom harus terisi</string>
     <string name="invalid_email_format">Format email salah</string>
     <string name="password_must_be_at_least_6_characters">Sandi harus memiliki 6 atau lebih karakter</string>
+    <string name="select_difficulty">Pilih Tingkat Kesulitan</string>
 
     <string-array name="animal">
         <item>Buaya</item>
@@ -87,50 +87,24 @@
         <item>Television</item>
         <item>Toaster</item>
     </string-array>
-    <string-array name="color">
-        <item>Merah</item>
-        <item>Kuning</item>
-        <item>Hijau</item>
-        <item>Biru</item>
-        <item>Abu-abu</item>
-        <item>Cokelat</item>
-        <item>Hitam</item>
-        <item>Putih</item>
-        <item>Emas</item>
-        <item>Merah Jambu</item>
-        <item>Jingga</item>
-        <item>Ungu</item>
-        <item>Toska</item>
-        <item>Nila</item>
-        <item>Lila</item>
-    </string-array>
-    <string-array name="transportation">
-        <item>Mobil</item>
-        <item>Motor</item>
-        <item>Sepeda</item>
-        <item>Bus</item>
-        <item>Kereta</item>
-        <item>Pesawat</item>
-        <item>Kapal</item>
-        <item>Perahu</item>
-        <item>Helikopter</item>
-        <item>Roket</item>
-        <item>Skuter</item>
-        <item>Truk</item>
-        <item>Van</item>
-        <item>Taksi</item>
-        <item>Troli</item>
-        <item>Kereta Gantung</item>
-        <item>Funicular</item>
-        <item>Monorel</item>
-        <item>Trem</item>
-        <item>Kereta Bawah Tanah</item>
-        <item>Feri</item>
-        <item>Kapal Pesiar</item>
-        <item>Kano</item>
-        <item>Kayak</item>
-        <item>Rakit</item>
-        <item>Kapal Selam</item>
-    </string-array>
-
+    <string name="no_more_words_puzzle">Tidak ada %2$s kata tersedia dalam kategori %1$s</string>
+    <string name="no_changes_made">Tidak Ada Perubahan</string>
+    <string name="language_english">Inggris</string>
+    <string name="language_indonesian">Bahasa Indonesia</string>
+    <string name="empty" />
+    <string name="difficulty_easy">Mudah</string>
+    <string name="difficulty_medium">Sedang</string>
+    <string name="difficulty_hard">Sulit</string>
+    <string name="puzzle_instructions_default">Uraikan huruf-huruf untuk membentuk kata.</string>
+    <string name="puzzle_instructions_hard">Mode Sulit: Uraikan huruf-hurufnya!</string>
+    <string name="button_check_word">Periksa</string>
+    <string name="button_play_again">Main Lagi</string>
+    <string name="button_next_word">Kata Berikutnya</string>
+    <string name="feedback_correct">Benar!</string>
+    <string name="feedback_incorrect_try_again">Kurang tepat. Coba lagi!</string>
+    <string name="feedback_incomplete_puzzle">"Lengkapi semua "</string>
+    <string name="congratulations_all_words_category">Selamat! Kamu sudah menyelesaikan semua kata dalam kategori %1$s</string>
+    <string name="start_game">Mulai</string>
+    <string name="undo">Ulang</string>
+    <string name="hint">Bantuan</string>
 </resources>

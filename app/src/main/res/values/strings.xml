@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Comfy Learn</string>
-    <string name="your_web_client_id" translatable="false">1005345375717-0t16i8fe6aobkea28dd879qsfe3h622l.apps.googleusercontent.com</string>
-    <string name="action_settings">Settings</string>
     <string name="menu_materi">All Study</string>
     <string name="menu_games">All Games</string>
     <string name="menu_learprog">Learning Progress</string>
@@ -28,14 +26,37 @@
     <string name="dark_mode">Dark Mode</string>
     <string name="apply_changes">Apply Changes</string>
     <string name="pick_color">Pick Color</string>
+    <string name="select_difficulty">Select Difficulty</string>
+    <string name="language_english">English</string>
+    <string name="language_indonesian">Indonesian</string>
+    <!-- Strings for DifficultySelectionActivity (if you don't have them already) -->
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Medium</string>
+    <string name="difficulty_hard">Hard</string>
+    <!-- Titles and General UI -->
+    <string name="puzzle_instructions_default">Unscramble the letters to form the word.</string>
+    <string name="puzzle_instructions_hard">Hard Mode: Unscramble the letters!</string>
+    <string name="button_check_word">Check Word</string>
+    <string name="button_play_again">Play Again</string>
+    <string name="button_next_word">Next Word</string>
+    <!-- Feedback Messages -->
+    <string name="feedback_correct">Correct!</string>
+    <string name="feedback_incorrect_try_again">Incorrect. Try again!</string>
+    <string name="feedback_incomplete_puzzle">Please fill all the slots.</string>
+    <string name="congratulations_all_words_category">Congratulations! You\'ve completed all words in the %1$s category!</string>
+    <string name="no_more_words_puzzle">No more %2$s words available for the %1$s category.</string>
+    <string name="no_changes_made">No Changes Made</string>
+    <string name="correct_answer">Correct!</string>
+    <string name="try_again_feedback">Try again! Expected %1$d, you have %2$d</string>
+    <string name="problems_solved_format">Solved: %1$d</string>
+    <string name="empty" />
+    <string name="start_game">Start Game</string>
+    <string name="undo">Undo</string>
+    <string name="hint">Hint</string>
+    <string name="error_exclamation">Error</string>
+    <string name="addition_problem_format">%1$operand1Value + %2$operand2Value = ?</string>
+    <string name="subtraction_problem_format">%1$operand1Value - %2$operand2Value = ?</string>
 
-    <string-array name="vowel">
-        <item>A</item>
-        <item>E</item>
-        <item>I</item>
-        <item>O</item>
-        <item>U</item>
-    </string-array>
     <string-array name="consonants">
         <item>B</item>
         <item>C</item>
@@ -53,46 +74,6 @@
         <item>R</item>
         <item>S</item>
         <item>T</item>
-        <item>V</item>
-        <item>W</item>
-        <item>X</item>
-        <item>Y</item>
-        <item>Z</item>
-    </string-array>
-    <string-array name="number">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>8</item>
-        <item>9</item>
-        <item>0</item>
-    </string-array>
-    <string-array name="alphabets">
-        <item>A</item>
-        <item>B</item>
-        <item>C</item>
-        <item>D</item>
-        <item>E</item>
-        <item>F</item>
-        <item>G</item>
-        <item>H</item>
-        <item>I</item>
-        <item>J</item>
-        <item>K</item>
-        <item>L</item>
-        <item>M</item>
-        <item>N</item>
-        <item>O</item>
-        <item>P</item>
-        <item>Q</item>
-        <item>R</item>
-        <item>S</item>
-        <item>T</item>
-        <item>U</item>
         <item>V</item>
         <item>W</item>
         <item>X</item>
@@ -179,50 +160,5 @@
         <item>Speaker</item>
         <item>Television</item>
         <item>Toaster</item>
-    </string-array>
-    <string-array name="color">
-        <item>Red</item>
-        <item>Yellow</item>
-        <item>Green</item>
-        <item>Blue</item>
-        <item>Grey</item>
-        <item>Chocolate</item>
-        <item>Black</item>
-        <item>White</item>
-        <item>Gold</item>
-        <item>Pink</item>
-        <item>Orange</item>
-        <item>Purple</item>
-        <item>Tosca</item>
-        <item>Indigo</item>
-        <item>Lilac</item>
-    </string-array>
-    <string-array name="transportation">
-        <item>Car</item>
-        <item>Motorcycle</item>
-        <item>Bicycle</item>
-        <item>Bus</item>
-        <item>Train</item>
-        <item>Airplane</item>
-        <item>Ship</item>
-        <item>Boat</item>
-        <item>Helicopter</item>
-        <item>Rocket</item>
-        <item>Scooter</item>
-        <item>Truck</item>
-        <item>Van</item>
-        <item>Taxi</item>
-        <item>Trolley</item>
-        <item>Cable car</item>
-        <item>Funicular</item>
-        <item>Monorail</item>
-        <item>Tram</item>
-        <item>Subway</item>
-        <item>Ferry</item>
-        <item>Yacht</item>
-        <item>Canoe</item>
-        <item>Kayak</item>
-        <item>Raft</item>
-        <item>Submarine</item>
     </string-array>
 </resources>

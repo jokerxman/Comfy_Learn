@@ -2,15 +2,14 @@ package com.hompimpa.comfylearn.ui.games.drawing
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
-import android.widget.Button // Import Button
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Button
 import com.github.dhaval2404.colorpicker.ColorPickerDialog
 import com.github.dhaval2404.colorpicker.model.ColorShape
 import com.hompimpa.comfylearn.R
+import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.views.Board
 
-class DrawingActivity : AppCompatActivity() {
+class DrawingActivity : BaseActivity() {
     private lateinit var boardView: Board
     private lateinit var btnOpenColorPicker: Button // Declare the new button
 
