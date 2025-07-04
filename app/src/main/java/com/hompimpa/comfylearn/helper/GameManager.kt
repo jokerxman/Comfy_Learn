@@ -13,24 +13,15 @@ internal val Context.mathGameDataStore: DataStore<Preferences> by preferencesDat
 
 class GameManager(private val context: Context) {
 
-    // A companion object to hold the preferences keys.
     companion object {
         val PROBLEMS_SOLVED_KEY = intPreferencesKey("problems_solved_count")
     }
 
-    /**
-     * A Flow that emits the number of problems solved whenever it changes.
-     * You can observe this from anywhere in your app to show progress.
-     */
     val problemsSolvedFlow: Flow<Int> = context.mathGameDataStore.data
         .map { preferences ->
             preferences[PROBLEMS_SOLVED_KEY] ?: 0
         }
 
-    /**
-     * Increments the count of solved problems in DataStore.
-     * This is a suspend function, so it must be called from a coroutine.
-     */
     suspend fun incrementProblemsSolved() {
         context.mathGameDataStore.edit { settings ->
             val currentCount = settings[PROBLEMS_SOLVED_KEY] ?: 0
@@ -38,9 +29,6 @@ class GameManager(private val context: Context) {
         }
     }
 
-    /**
-     * Resets the progress.
-     */
     suspend fun resetProgress() {
         context.mathGameDataStore.edit { settings ->
             settings[PROBLEMS_SOLVED_KEY] = 0

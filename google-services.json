@@ -22,15 +22,23 @@
           }
         },
         {
-          "client_id": "1005345375717-rrb8pub4u2ucbn7j99kinrnf8lmlbc03.apps.googleusercontent.com",
+          "client_id": "1005345375717-nl50ebqkp48ig6cmqaji6uiu1bere83p.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.hompimpa.comfylearn",
-            "certificate_hash": "fe7fa33aa4cf23bc604736162b966ef559fb24d3"
+            "certificate_hash": "1ca4fc714c1ed7ca2c695fcf6a99565270f89507"
           }
         },
         {
-          "client_id": "1005345375717-p602uvi1pps108dpnjbfiuhrum66n1an.apps.googleusercontent.com",
+          "client_id": "1005345375717-pjb9k11hag8pm320cjvnn63k59r8qd2q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hompimpa.comfylearn",
+            "certificate_hash": "086d335bc9dcc376afefc8d74e4eb9b8f1941402"
+          }
+        },
+        {
+          "client_id": "1005345375717-16lcr08jo9mg9oeoskd2rmvljvvbhhd1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -43,7 +51,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1005345375717-5o338i0p524vpnqnb776mg33o55q5mfo.apps.googleusercontent.com",
+              "client_id": "1005345375717-16lcr08jo9mg9oeoskd2rmvljvvbhhd1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

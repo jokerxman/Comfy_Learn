@@ -2,7 +2,7 @@ package com.hompimpa.comfylearn.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -15,6 +15,8 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
@@ -59,17 +61,22 @@ class LoginActivity : BaseActivity() {
             return
         }
 
+        showLoading(true)
+
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
+                showLoading(false)
+
                 if (task.isSuccessful) {
                     val user = auth.currentUser
                     updateUI(user)
                 } else {
-                    Toast.makeText(
-                        baseContext,
-                        getString(R.string.authentication_failed),
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    val errorMessage = when (task.exception) {
+                        is FirebaseAuthInvalidUserException -> getString(R.string.email_not_found)
+                        is FirebaseAuthInvalidCredentialsException -> getString(R.string.wrong_password)
+                        else -> getString(R.string.authentication_failed)
+                    }
+                    Toast.makeText(baseContext, errorMessage, Toast.LENGTH_LONG).show()
                     updateUI(null)
                 }
             }
@@ -77,11 +84,12 @@ class LoginActivity : BaseActivity() {
 
 
     private fun signIn() {
+        showLoading(true)
         val credentialManager = CredentialManager.create(this)
 
         val googleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
-            .setServerClientId("1005345375717-fkkg4iii3hdifuuhqpimir9hommfur3j.apps.googleusercontent.com")
+            .setServerClientId("1005345375717-16lcr08jo9mg9oeoskd2rmvljvvbhhd1.apps.googleusercontent.com")
             .build()
 
         val request = GetCredentialRequest.Builder()
@@ -96,7 +104,8 @@ class LoginActivity : BaseActivity() {
                 )
                 handleSignIn(result)
             } catch (e: GetCredentialException) {
-                Log.d("Error", e.message.toString())
+                showLoading(false)
+                Toast.makeText(this@LoginActivity, getString(R.string.google_sign_in_cancelled), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -110,14 +119,14 @@ class LoginActivity : BaseActivity() {
                             GoogleIdTokenCredential.createFrom(credential.data)
                         firebaseAuthWithGoogle(googleIdTokenCredential.idToken)
                     } catch (e: GoogleIdTokenParsingException) {
-                        Log.e(TAG, "Received an invalid google id token response", e)
+                        showLoading(false)
                     }
                 } else {
-                    Log.e(TAG, "Unexpected type of credential")
+                    showLoading(false)
                 }
             }
             else -> {
-                Log.e(TAG, "Unexpected type of credential")
+                showLoading(false)
             }
         }
     }
@@ -126,10 +135,12 @@ class LoginActivity : BaseActivity() {
         val credential: AuthCredential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
+                showLoading(false)
                 if (task.isSuccessful) {
                     val user: FirebaseUser? = auth.currentUser
                     updateUI(user)
                 } else {
+                    Toast.makeText(this, getString(R.string.authentication_failed), Toast.LENGTH_SHORT).show()
                     updateUI(null)
                 }
             }
@@ -139,16 +150,23 @@ class LoginActivity : BaseActivity() {
         if (currentUser != null) {
             startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
             finish()
-        } else {
-            Toast.makeText(this, getString(R.string.please_log_in_to_continue), Toast.LENGTH_SHORT)
-                .show()
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.btnLogin.isEnabled = !isLoading
+        binding.signInButton.isEnabled = !isLoading
+        binding.edLoginEmail.isEnabled = !isLoading
+        binding.edLoginPassword.isEnabled = !isLoading
     }
 
     override fun onStart() {
         super.onStart()
         val currentUser = auth.currentUser
-        updateUI(currentUser)
+        if (currentUser != null) {
+            updateUI(currentUser)
+        }
     }
 
     companion object {

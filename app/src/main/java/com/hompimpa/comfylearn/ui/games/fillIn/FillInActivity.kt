@@ -8,10 +8,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnLayout
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
 import com.hompimpa.comfylearn.R
@@ -216,7 +220,7 @@ class FillInActivity : BaseActivity() {
             }
 
             wordArray.forEach { wordWithSpaces ->
-                if (!answeredWordsThisSession.contains(wordWithSpaces)) { // [1]
+                if (!answeredWordsThisSession.contains(wordWithSpaces)) {
                     val filenameWord = wordWithSpaces.replace(" ", "_").lowercase(Locale.ENGLISH)
                     val svgPath = "en/${category.lowercase(Locale.ENGLISH)}_${filenameWord}.svg"
                     questions.add(Question(wordWithSpaces, svgPath))
@@ -274,10 +278,22 @@ class FillInActivity : BaseActivity() {
         val currentQ = currentQuestion ?: return
         val wordChars = currentQ.word.toList()
         val revealedIndices = determineRevealedIndices(currentQ.word, difficulty)
-        wordChars.forEachIndexed { index, charAtIndex ->
-            val slot = createLetterSlot(charAtIndex, revealedIndices.contains(index))
-            letterSlots.add(slot)
-            binding.letterSlots.addView(slot)
+
+        // Use post to wait for the layout to be measured
+        binding.letterSlots.post {
+            val containerWidth = binding.letterSlots.width
+            if (containerWidth == 0 || wordChars.isEmpty()) return@post
+
+            // Calculate the size for each slot
+            val slotMargin = resources.getDimensionPixelSize(R.dimen.slot_margin)
+            val totalMargin = slotMargin * (wordChars.size - 1)
+            val slotSize = (containerWidth - totalMargin) / wordChars.size
+
+            wordChars.forEachIndexed { index, charAtIndex ->
+                val slot = createLetterSlot(charAtIndex, revealedIndices.contains(index), slotSize)
+                letterSlots.add(slot)
+                binding.letterSlots.addView(slot)
+            }
         }
     }
 
@@ -321,19 +337,21 @@ class FillInActivity : BaseActivity() {
         return adjustedCount
     }
 
-    private fun createLetterSlot(charToShow: Char, isRevealed: Boolean): TextView {
+    private fun createLetterSlot(charToShow: Char, isRevealed: Boolean, size: Int): TextView {
         return TextView(this).apply {
-            textSize = 24f
+            // Set LayoutParams to control size
+            val margin = resources.getDimensionPixelSize(R.dimen.slot_margin)
+            val params = LinearLayout.LayoutParams(size, size).also {
+                it.setMargins(0, 0, margin, 0)
+            }
+            layoutParams = params
+
             gravity = Gravity.CENTER
-            setPadding(
-                resources.getDimensionPixelSize(R.dimen.slot_padding_start_end),
-                resources.getDimensionPixelSize(R.dimen.slot_padding_top_bottom),
-                resources.getDimensionPixelSize(R.dimen.slot_padding_start_end),
-                resources.getDimensionPixelSize(R.dimen.slot_padding_top_bottom)
-            )
-            minWidth = resources.getDimensionPixelSize(R.dimen.slot_min_width)
-            minHeight = resources.getDimensionPixelSize(R.dimen.slot_min_height)
             background = ContextCompat.getDrawable(this@FillInActivity, R.drawable.letter_slot_bg)
+
+            // Enable auto-sizing text
+            TextViewCompat.setAutoSizeTextTypeWithDefaults(this, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM)
+
             text = when {
                 charToShow.isWhitespace() -> " "
                 isRevealed -> charToShow.uppercaseChar().toString()
@@ -409,6 +427,24 @@ class FillInActivity : BaseActivity() {
         }
         binding.letterOptions.layoutManager = GridLayoutManager(this, columns)
         binding.letterOptions.adapter = adapter
+
+        // Add a listener to calculate item size after layout
+        binding.letterOptions.doOnLayout { view ->
+            val rv = view as RecyclerView
+            val totalWidth = rv.width
+            val totalHeight = rv.height
+            if (totalWidth == 0 || totalHeight == 0 || adapter.itemCount == 0) return@doOnLayout
+
+            val rows = (adapter.itemCount + columns - 1) / columns // Calculate rows needed
+
+            // Calculate size based on width and height, choose the smaller to ensure fit
+            val sizeFromWidth = totalWidth / columns
+            val sizeFromHeight = totalHeight / rows
+            val itemSize = min(sizeFromWidth, sizeFromHeight)
+
+            // Update the adapter with the new size
+            (rv.adapter as? LetterOptionsAdapter)?.updateItemSize(itemSize)
+        }
     }
 
     private fun setupHintButton() {
@@ -521,7 +557,6 @@ class FillInActivity : BaseActivity() {
     }
 
     private fun handleSvgLoadingException(e: Exception, path: String) {
-        // Simple logging for production, can be expanded
         when (e) {
             is FileNotFoundException -> Log.e(TAG, "SVG not found: assets/$path")
             is SVGParseException -> Log.e(TAG, "SVG parse error: assets/$path")
