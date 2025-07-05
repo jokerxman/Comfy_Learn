@@ -2,6 +2,7 @@ package com.hompimpa.comfylearn.ui.games.mathgame
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
 import android.graphics.drawable.PictureDrawable
 import android.os.Bundle
@@ -15,7 +16,6 @@ import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.random.Random
+import androidx.core.view.isVisible
 
 class MathGameActivity : BaseActivity() {
 
@@ -92,16 +93,18 @@ class MathGameActivity : BaseActivity() {
         }
     }
 
-    /**
-     * This function has been updated to be compatible with older Android versions.
-     * It creates a temporary context with the "en" locale to fetch the correct string array.
-     */
     private fun loadCountingItemFilenames() {
         try {
+            val appInfo: ApplicationInfo = applicationContext.packageManager.getApplicationInfo(
+                applicationContext.packageName,
+                0
+            )
             val config = Configuration(applicationContext.resources.configuration)
             config.setLocale(java.util.Locale.ENGLISH)
-            val englishContext = applicationContext.createConfigurationContext(config)
-            availableCountingItemFilenames = englishContext.resources.getStringArray(R.array.animal).toList()
+            val defaultResources =
+                applicationContext.packageManager.getResourcesForApplication(appInfo, config)
+            availableCountingItemFilenames =
+                defaultResources.getStringArray(R.array.animal).toList()
         } catch (e: Exception) {
             Log.e(TAG, "Error loading animal names: ${e.message}", e)
             availableCountingItemFilenames = listOf("apple") // Fallback
@@ -216,26 +219,19 @@ class MathGameActivity : BaseActivity() {
         if (count <= 0) return
 
         gridLayout.columnCount = when {
-            count > 6 -> 3
+            count > 3 -> 3
             count > 1 -> 2
             else -> 1
         }.coerceAtMost(count.coerceAtLeast(1))
 
-        gridLayout.post {
-            val containerWidth = gridLayout.width
-            if (containerWidth == 0) return@post
+        gridLayout.rowCount = (count + gridLayout.columnCount - 1) / gridLayout.columnCount
 
-            val marginPx = dpToPx(2)
-            val numColumns = gridLayout.columnCount
-            val itemSizePx = (containerWidth / numColumns) - (marginPx * 2)
+        val itemSizePx = dpToPx(50)
+        val marginPx = dpToPx(2)
 
-            gridLayout.removeAllViews()
-            gridLayout.rowCount = (count + numColumns - 1) / numColumns
-
-            repeat(count) {
-                val imageView = createCountingObjectView(fullAssetPath, itemSizePx, marginPx)
-                gridLayout.addView(imageView)
-            }
+        repeat(count) {
+            val imageView = createCountingObjectView(fullAssetPath, itemSizePx, marginPx)
+            gridLayout.addView(imageView)
         }
     }
 

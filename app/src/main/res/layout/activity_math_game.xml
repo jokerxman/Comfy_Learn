@@ -17,176 +17,110 @@
         android:textSize="48sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="3 + 2 = ?" />
 
-    <!-- This container will hold the grids and dynamically resize to fill available space -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/visualProblemContainer"
+    <!-- Area to display objects for the first number -->
+    <GridLayout
+        android:id="@+id/firstOperandObjectsGrid"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintTop_toBottomOf="@id/problemTextView"
-        app:layout_constraintBottom_toTopOf="@id/answerChoicesLayout"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:alignmentMode="alignMargins"
+        android:columnOrderPreserved="false"
+        app:layout_constraintEnd_toStartOf="@+id/operatorTextView"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_weight="2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/problemTextView"
+        tools:columnCount="3"
+        tools:rowCount="2" />
 
-        <!-- ScrollView added to ensure the grids don't get clipped on smaller screens or with many items -->
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <!-- A new ConstraintLayout to manage the horizontal layout of the grids inside the ScrollView -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp">
-
-                <!-- Area to display objects for the first number -->
-                <GridLayout
-                    android:id="@+id/firstOperandObjectsGrid"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:alignmentMode="alignMargins"
-                    android:columnOrderPreserved="false"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/operatorTextView"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintHorizontal_weight="2"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:columnCount="3"
-                    tools:rowCount="2" />
-
-                <TextView
-                    android:id="@+id/operatorTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
-                    android:textSize="40sp"
-                    app:layout_constraintBottom_toBottomOf="@id/firstOperandObjectsGrid"
-                    app:layout_constraintEnd_toStartOf="@+id/secondOperandObjectsGrid"
-                    app:layout_constraintStart_toEndOf="@id/firstOperandObjectsGrid"
-                    app:layout_constraintTop_toTopOf="@id/firstOperandObjectsGrid"
-                    tools:text="+" />
-
-                <!-- Area to display objects for the second number -->
-                <GridLayout
-                    android:id="@+id/secondOperandObjectsGrid"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:alignmentMode="alignMargins"
-                    android:columnOrderPreserved="false"
-                    app:layout_constraintBottom_toBottomOf="@id/firstOperandObjectsGrid"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_weight="2"
-                    app:layout_constraintStart_toEndOf="@id/operatorTextView"
-                    app:layout_constraintTop_toTopOf="@id/firstOperandObjectsGrid"
-                    tools:columnCount="2"
-                    tools:rowCount="1" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Next button is now anchored to the bottom -->
-    <Button
-        android:id="@+id/nextProblemButton"
+    <TextView
+        android:id="@+id/operatorTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/colorAccent"
-        android:text="Next"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="visible" />
+        android:textColor="@android:color/black"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="@id/firstOperandObjectsGrid"
+        app:layout_constraintEnd_toStartOf="@+id/secondOperandObjectsGrid"
+        app:layout_constraintStart_toEndOf="@id/firstOperandObjectsGrid"
+        app:layout_constraintTop_toTopOf="@id/firstOperandObjectsGrid"
+        tools:text="+" />
 
-    <!-- Answer Choices are anchored above the Next button -->
-    <!-- The buttons now use layout_weight and auto-sizing text -->
+    <!-- Area to display objects for the second number -->
+    <GridLayout
+        android:id="@+id/secondOperandObjectsGrid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:alignmentMode="alignMargins"
+        android:columnOrderPreserved="false"
+        app:layout_constraintBottom_toBottomOf="@id/firstOperandObjectsGrid"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@id/operatorTextView"
+        app:layout_constraintTop_toTopOf="@id/firstOperandObjectsGrid"
+        tools:columnCount="2"
+        tools:rowCount="1" />
+
+    <!-- Answer Choices -->
     <LinearLayout
         android:id="@+id/answerChoicesLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="32dp"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/nextProblemButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/firstOperandObjectsGrid"
+        app:layout_constraintVertical_bias="0.8">
 
         <Button
             android:id="@+id/answerButton1"
             style="@style/AnswerChoiceButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="40sp"
-            app:autoSizeStepGranularity="2sp"
-            tools:text="14" />
+            android:layout_marginEnd="16dp"
+            tools:text="4" />
 
         <Button
             android:id="@+id/answerButton2"
             style="@style/AnswerChoiceButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="40sp"
-            app:autoSizeStepGranularity="2sp"
-            tools:text="16" />
+            android:layout_marginEnd="16dp"
+            tools:text="5" />
 
         <Button
             android:id="@+id/answerButton3"
             style="@style/AnswerChoiceButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="40sp"
-            app:autoSizeStepGranularity="2sp"
-            tools:text="13" />
+            android:layout_marginEnd="16dp"
+            tools:text="6" />
 
         <Button
             android:id="@+id/answerButton4"
             style="@style/AnswerChoiceButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="40sp"
-            app:autoSizeStepGranularity="2sp"
-            tools:text="17" />
+            tools:text="7" />
     </LinearLayout>
+
+    <!-- You might want a "Next" button that appears after answering, or auto-advance -->
+    <Button
+        android:id="@+id/nextProblemButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/colorAccent"
+        android:text="Next"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/answerChoicesLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

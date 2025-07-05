@@ -4,10 +4,12 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -98,6 +100,8 @@ class PuzzleActivity : BaseActivity() {
         setupCharacterOptions(currentWord, currentDifficulty)
 
         binding.layoutCharacterOptions.post {
+            // POTENTIAL_SIMPLIFICATION_NOTE: If ScatteredPileLayout handles its children updates well,
+            // this explicit call might sometimes be redundant after adding views. Depends on implementation.
             binding.layoutCharacterOptions.rescatterChildren()
         }
     }
@@ -168,6 +172,7 @@ class PuzzleActivity : BaseActivity() {
         }
     }
 
+    // In PuzzleActivity, your existing generateOptionPool:
     private fun generateOptionPool(
         word: String,
         alphabet: List<Char>
@@ -179,18 +184,28 @@ class PuzzleActivity : BaseActivity() {
             else -> 2
         }
         val distinctCharsInWord = word.toSet().toList()
-        val essentialCharacters = word.toList()
+
+        // The actual letters of the word that need to be present
+        val essentialCharacters =
+            word.toList() // Use toList() to include duplicates like 'P' in "APPLE"
+
         val desiredPoolSize = essentialCharacters.size + distractorsToAddBasedOnDifficulty
+        // Ensure not larger than the alphabet, or some other reasonable cap
         val finalPoolSize =
             desiredPoolSize.coerceAtMost(alphabet.size.coerceAtLeast(essentialCharacters.size))
+        // .coerceAtMost(YOUR_ABSOLUTE_MAX_TILES) // Optional absolute cap
+
         val currentPool = essentialCharacters.toMutableList()
 
         if (currentPool.size < finalPoolSize) {
             val numDistractorsStillNeeded = finalPoolSize - currentPool.size
+            // Get distractors that are NOT in the unique set of word characters
             val potentialDistractors = alphabet.filterNot { distinctCharsInWord.contains(it) }
                 .shuffled(KotlinRandom(System.nanoTime()))
             currentPool.addAll(potentialDistractors.take(numDistractorsStillNeeded))
         }
+        // If currentPool.size > finalPoolSize (e.g. word itself is huge and no distractors were added, but still over a cap)
+        // you might need to trim it, though this scenario is less likely with current logic.
         return currentPool.take(finalPoolSize).shuffled(KotlinRandom(System.nanoTime()))
     }
 
@@ -201,7 +216,9 @@ class PuzzleActivity : BaseActivity() {
 
         if (tileToMakeVisible != null) {
             tileToMakeVisible.visibility = View.VISIBLE
+            // Crucial: Re-assign touch listener AFTER making it visible and ready
             tileToMakeVisible.setOnTouchListener(OptionTileTouchListener(tileToMakeVisible))
+
 
             val originalState = binding.layoutCharacterOptions.getChildState(tileToMakeVisible)
 
@@ -212,12 +229,13 @@ class PuzzleActivity : BaseActivity() {
                     .rotation(originalState.rotation)
                     .setDuration(150)
                     .withEndAction {
-                        binding.layoutCharacterOptions.requestLayout()
+                        binding.layoutCharacterOptions.requestLayout() // Ensures it's correctly placed if other things shifted
                         binding.layoutCharacterOptions.invalidate()
                     }
                     .start()
             } else {
-                originalState?.initialized = false
+                originalState?.initialized =
+                    false // Or call a specific method in ScatteredPileLayout
                 binding.layoutCharacterOptions.requestChildLayoutUpdate(tileToMakeVisible, true)
             }
         } else {
@@ -243,6 +261,8 @@ class PuzzleActivity : BaseActivity() {
                     currentlyDraggedView = tileView
                     val locationOnScreen = IntArray(2)
                     tileView.getLocationOnScreen(locationOnScreen)
+                    // POTENTIAL_SIMPLIFICATION_NOTE: dXTouch/dYTouch calculate offset from raw screen coords to view's screen coords.
+                    // This is one way to handle drag. Another is to calculate offset from touch point to view's top-left in parent coords.
                     dXTouch = locationOnScreen[0] - event.rawX
                     dYTouch = locationOnScreen[1] - event.rawY
 
@@ -257,7 +277,7 @@ class PuzzleActivity : BaseActivity() {
                 }
 
                 MotionEvent.ACTION_MOVE -> {
-                    if (currentlyDraggedView != tileView) return false
+                    if (currentlyDraggedView != tileView) return false // Not dragging this view
 
                     if (!isCurrentlyDragging) {
                         if (abs(event.rawX - initialTouchXRaw) > touchSlop ||
@@ -265,9 +285,10 @@ class PuzzleActivity : BaseActivity() {
                         ) {
                             isCurrentlyDragging = true
                         } else {
-                            return true
+                            return true // Not dragging yet, but consume event
                         }
                     }
+                    // If isCurrentlyDragging is true (either set above or previously)
                     val parentLocation = IntArray(2)
                     (tileView.parent as View).getLocationOnScreen(parentLocation)
                     tileView.x = (event.rawX + dXTouch) - parentLocation[0]
@@ -297,7 +318,9 @@ class PuzzleActivity : BaseActivity() {
                         tileView.animate()
                             .x(originalXOfDraggedView)
                             .y(originalYOfDraggedView)
-                            .rotation(optionTileDragStartRotations[tileView] ?: 0f)
+                            .rotation(
+                                optionTileDragStartRotations[tileView] ?: 0f
+                            ) // Restore rotation
                             .setDuration(200)
                             .withEndAction {
                                 val state = binding.layoutCharacterOptions.getChildState(tileView)
@@ -305,11 +328,147 @@ class PuzzleActivity : BaseActivity() {
                                     it.x = tileView.x
                                     it.y = tileView.y
                                     it.rotation = tileView.rotation
-                                    it.initialized = true
+                                    it.initialized =
+                                        true // Its position is now determined by the animation
                                 }
                                 binding.layoutCharacterOptions.requestLayout()
                                 binding.layoutCharacterOptions.invalidate()
                             }.start()
+                    }
+                    isCurrentlyDragging = false
+                    currentlyDraggedView = null
+                    return true
+                }
+            }
+            return false
+        }
+    }
+
+    private fun updateTargetSlotVisualState(slotView: TextView, isEmpty: Boolean) {
+        if (isEmpty) {
+            // Example: Set to empty state
+            // slotView.text = "" // Already done in your ACTION_UP if not successfully moved
+            slotView.background =
+                ContextCompat.getDrawable(this, R.drawable.option_tile_background_selector)
+            // Or using a placeholder text if you prefer:
+            // slotView.text = "?"
+            // slotView.setTextColor(ContextCompat.getColor(this, R.color.slot_placeholder_text_color))
+            Log.d("PuzzleActivity", "Slot visual updated to EMPTY for: ${slotView.tag}")
+        } else {
+            // Example: Set to occupied state (the letter tile itself is the main visual)
+            // The background might be different when it's correctly occupied vs. empty.
+            // For example, an empty slot might have a dashed border, an occupied one a solid or no border.
+            // If the tile just sits on top, the slot background might just be a clear indicator.
+            slotView.background =
+                ContextCompat.getDrawable(this, R.drawable.target_slot_background_selector)
+            // slotView.setTextColor(ContextCompat.getColor(this, R.color.slot_filled_text_color))
+            Log.d("PuzzleActivity", "Slot visual updated to OCCUPIED for: ${slotView.tag}")
+        }
+        // slotView.invalidate() // Usually not needed for background/text changes
+    }
+
+    private inner class FilledSlotTouchListener(
+        private val slotView: TextView,
+        private val slotIndex: Int
+    ) : View.OnTouchListener {
+        override fun onTouch(view: View, event: MotionEvent): Boolean {
+            if (view != slotView || slotView.text.isNullOrEmpty()) return false
+            val charInSlot = slotView.text.firstOrNull() ?: return false
+
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    isCurrentlyDragging = false
+                    initialTouchXRaw = event.rawX
+                    initialTouchYRaw = event.rawY
+
+                    currentlyDraggedView = slotView
+
+                    originalXOfDraggedView = slotView.x
+                    originalYOfDraggedView = slotView.y
+                    val locationOnScreen = IntArray(2)
+                    slotView.getLocationOnScreen(locationOnScreen)
+                    dXTouch = locationOnScreen[0] - event.rawX
+                    dYTouch = locationOnScreen[1] - event.rawY
+
+                    (slotView.parent as? ViewGroup)?.bringChildToFront(slotView)
+                    return true
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                    when {
+                        currentlyDraggedView != slotView -> return false
+                        !isCurrentlyDragging -> {
+                            if (abs(event.rawX - initialTouchXRaw) > touchSlop ||
+                                abs(event.rawY - initialTouchYRaw) > touchSlop
+                            ) {
+                                isCurrentlyDragging = true
+                            }
+                        }
+                    }
+                    if (isCurrentlyDragging) {
+                        val parentLocation = IntArray(2)
+                        (slotView.parent as View).getLocationOnScreen(parentLocation)
+                        slotView.x = (event.rawX + dXTouch) - parentLocation[0]
+                        slotView.y = (event.rawY + dYTouch) - parentLocation[1]
+                    }
+                    return true
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    if (currentlyDraggedView != slotView) return false
+                    if (!isCurrentlyDragging) { // Just a tap
+                        currentlyDraggedView = null
+                        return true
+                    }
+
+                    var successfullyMoved = false
+                    for (i in targetSlots.indices) {
+                        if (i == slotIndex) continue // Don't check drop on itself
+                        val otherSlotView = targetSlots[i]
+                        if (isViewOverView(otherSlotView, event.rawX, event.rawY)) {
+                            val charBeingMoved = slotFilledBy[slotIndex] // Get char before clearing
+                            slotFilledBy[slotIndex] = null
+                            slotView.text = "" // Empty the original slot's text
+                            slotView.setOnTouchListener(null) // Original slot no longer filled, remove its listener
+                            updateTargetSlotVisualState(
+                                slotView,
+                                true
+                            ) // Update original slot to "empty" visual
+                            handleDropOnSlot(
+                                charBeingMoved!!,
+                                i,
+                                null
+                            ) // Pass null as fromOptionTile
+                            successfullyMoved = true
+                            break
+                        }
+                    }
+
+                    if (!successfullyMoved && isTouchOverOptionsArea(event.rawX, event.rawY)) {
+                        slotFilledBy[slotIndex] = null
+                        slotView.text = ""
+                        slotView.setOnTouchListener(null)
+                        updateTargetSlotVisualState(slotView, true) // Update slot to "empty" visual
+                        returnCharToOptionsManual(charInSlot) // charInSlot is from ACTION_DOWN
+                        successfullyMoved = true
+                    }
+
+                    if (!successfullyMoved) {
+                        // Not dropped on a valid new slot or options area, so return to original position
+                        slotView.animate().x(originalXOfDraggedView).y(originalYOfDraggedView)
+                            .setDuration(200)
+                            .withEndAction {
+                                // Ensure the character is restored if it was meant to stay
+                                if (slotFilledBy[slotIndex] == charInSlot && slotView.text.toString() != charInSlot.toString()) {
+                                    slotView.text = charInSlot.toString()
+                                }
+                                if (!slotView.text.isNullOrEmpty()) {
+                                    updateTargetSlotVisualState(slotView, false)
+                                } else {
+                                    updateTargetSlotVisualState(slotView, true)
+                                }
+                            }
+                            .start()
                     }
                     isCurrentlyDragging = false
                     currentlyDraggedView = null
@@ -328,21 +487,31 @@ class PuzzleActivity : BaseActivity() {
         val targetSlotView = targetSlots[targetSlotIndex]
         val charCurrentlyInTargetSlot = slotFilledBy[targetSlotIndex]
 
-        if (charCurrentlyInTargetSlot != null && charCurrentlyInTargetSlot != droppedChar) {
+        if (charCurrentlyInTargetSlot != null && charCurrentlyInTargetSlot != droppedChar) { // Different char, return old one to options
             returnCharToOptionsManual(charCurrentlyInTargetSlot)
+        }
+
+        if (fromOptionTile == null) { // Moving from another slot
+            for ((idx, charInOtherSlot) in slotFilledBy.entries) {
+                if (charInOtherSlot == droppedChar && idx != targetSlotIndex) {
+                    slotFilledBy[idx] = null // Double-check it's null
+                    break
+                }
+            }
         }
 
         targetSlotView.text = droppedChar.toString()
         slotFilledBy[targetSlotIndex] = droppedChar
-        targetSlotView.background =
-            ContextCompat.getDrawable(this, R.drawable.target_slot_background_selector)
-        targetSlotView.setOnTouchListener(null)
+        updateTargetSlotVisualState(targetSlotView, false) // Update to "occupied" visual
+        targetSlotView.setOnTouchListener(FilledSlotTouchListener(targetSlotView, targetSlotIndex))
 
         fromOptionTile?.let {
             it.visibility = View.INVISIBLE
-            it.setOnTouchListener(null)
+            it.setOnTouchListener(null) // Remove listener from the option tile that was used
             val state = binding.layoutCharacterOptions.getChildState(it)
-            state?.let { s -> s.isUsed = true }
+            state?.let { s ->
+                s.isUsed = true // Mark as used or similar
+            }
         }
         checkWord()
     }
@@ -361,6 +530,18 @@ class PuzzleActivity : BaseActivity() {
             targetLocation[1] + targetView.height
         )
         return targetRect.contains(touchRawX.toInt(), touchRawY.toInt())
+    }
+
+    private fun isTouchOverOptionsArea(touchRawX: Float, touchRawY: Float): Boolean {
+        val optionsLocation = IntArray(2)
+        binding.layoutCharacterOptions.getLocationOnScreen(optionsLocation)
+        val optionsRect = Rect(
+            optionsLocation[0],
+            optionsLocation[1],
+            optionsLocation[0] + binding.layoutCharacterOptions.width,
+            optionsLocation[1] + binding.layoutCharacterOptions.height
+        )
+        return optionsRect.contains(touchRawX.toInt(), touchRawY.toInt())
     }
 
     private fun checkWord() {
@@ -412,15 +593,20 @@ class PuzzleActivity : BaseActivity() {
         categoryName: String,
         difficulty: String,
         isCompleted: Boolean,
-        wordsActuallySolvedThisTime: Int = 0
+        wordsActuallySolvedThisTime: Int = 0 // Default to 0, pass 1 when a word is solved
     ) {
         val prefs = getSharedPreferences(AppConstants.PREFS_PROGRESSION, MODE_PRIVATE)
         val baseKey = AppConstants.getPuzzleProgressKey(categoryName, difficulty)
 
-        prefs.edit {
+        prefs.edit { // Using KTX edit
             if (isCompleted) {
                 putBoolean(baseKey + "_completed", true)
+                // POTENTIAL_SIMPLIFICATION_NOTE: When category/difficulty is completed,
+                // you might also want to ensure the words_solved count reflects the total words,
+                // or reset it if it's only for per-session tracking.
+                // For now, it only sets the _completed flag.
             }
+            // Always update words solved if a word was solved in this specific action
             if (wordsActuallySolvedThisTime > 0) {
                 val currentSolved = prefs.getInt(baseKey + "_words_solved", 0)
                 putInt(baseKey + "_words_solved", currentSolved + wordsActuallySolvedThisTime)
@@ -444,15 +630,15 @@ class PuzzleActivity : BaseActivity() {
 
     private fun showFeedback(
         message: String,
-        isCorrectOrGameEndReason: Boolean,
-        isGameEnd: Boolean
+        isCorrectOrGameEndReason: Boolean, // True if correct word, or if game end is due to all words used.
+        isGameEnd: Boolean // True if game actually ends (no next word or all words used up)
     ) {
         binding.textViewFeedbackPopup.text = message
         val bgColorRes = when {
-            isGameEnd && isCorrectOrGameEndReason -> R.color.feedback_game_end_bg
-            isGameEnd && !isCorrectOrGameEndReason -> R.color.feedback_game_end_bg
-            isCorrectOrGameEndReason -> R.color.feedback_correct_bg
-            else -> R.color.feedback_incorrect_bg
+            isGameEnd && isCorrectOrGameEndReason -> R.color.feedback_game_end_bg // All words completed
+            isGameEnd && !isCorrectOrGameEndReason -> R.color.feedback_game_end_bg // No more words (but not necessarily a "win" for this round)
+            isCorrectOrGameEndReason -> R.color.feedback_correct_bg // Correct word, game continues
+            else -> R.color.feedback_incorrect_bg // Incorrect attempt
         }
         binding.textViewFeedbackPopup.setBackgroundColor(ContextCompat.getColor(this, bgColorRes))
         binding.layoutFeedback.visibility = View.VISIBLE

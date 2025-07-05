@@ -17,24 +17,28 @@ class SettingPreferences private constructor(private val dataStore: DataStore<Pr
     private val THEME_KEY = booleanPreferencesKey("theme_setting")
     private val LANGUAGE_KEY = stringPreferencesKey("language_setting")
 
+    // Retrieve theme setting
     fun getThemeSetting(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
-            preferences[THEME_KEY] ?: false
+            preferences[THEME_KEY] ?: false // Default to false (light mode)
         }
     }
 
+    // Save theme setting
     suspend fun saveThemeSetting(isDarkModeActive: Boolean) {
         dataStore.edit { preferences ->
             preferences[THEME_KEY] = isDarkModeActive
         }
     }
 
+    // Retrieve language setting
     fun getLanguageSetting(): Flow<String> {
         return dataStore.data.map { preferences ->
-            preferences[LANGUAGE_KEY] ?: "en"
+            preferences[LANGUAGE_KEY] ?: "en" // Default to English
         }
     }
 
+    // Save language setting
     suspend fun saveLanguageSetting(language: String) {
         dataStore.edit { preferences ->
             preferences[LANGUAGE_KEY] = language
