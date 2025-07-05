@@ -7,10 +7,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.FragmentGamesBinding
 import com.hompimpa.comfylearn.helper.AppConstants
 import com.hompimpa.comfylearn.helper.GameContentProvider
@@ -34,8 +37,6 @@ class GamesFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        // This onActivityResult might not be strictly needed for FillIn if handled by launcher,
-        // but keep if other activities launched with older startActivityForResult use it.
     }
 
     private fun updatePuzzleProgressInPrefsFromGamesFragment(
@@ -134,54 +135,83 @@ class GamesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentGamesBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.buttonOpenGameDrawing.setOnClickListener {
             val intent = Intent(requireContext(), DrawingActivity::class.java)
             startActivity(intent)
         }
 
-// For FillIn Game
         binding.buttonOpenGameFill.setOnClickListener {
             val categoryForFillInGame = "animal"
             it.tag = categoryForFillInGame
             val intent = DifficultySelectionActivity.newIntent(
                 requireContext(),
                 categoryForFillInGame,
-                DifficultySelectionActivity.GAME_TYPE_FILL_IN, // Specify FillIn game
+                DifficultySelectionActivity.GAME_TYPE_FILL_IN,
                 lastSelectedDifficultyFillIn
             )
             fillInDifficultyLauncher.launch(intent)
         }
 
-// For Puzzle Game
         binding.buttonOpenGamePuzzle.setOnClickListener {
-            val categoryForPuzzleGame = "animal" // Or get from tag
+            val categoryForPuzzleGame = "animal"
             it.tag = categoryForPuzzleGame
             val intent = DifficultySelectionActivity.newIntent(
                 requireContext(),
                 categoryForPuzzleGame,
-                DifficultySelectionActivity.GAME_TYPE_PUZZLE, // Specify Puzzle game
+                DifficultySelectionActivity.GAME_TYPE_PUZZLE,
                 lastSelectedDifficultyPuzzle
             )
-            puzzleDifficultyLauncher.launch(intent) // Use the correct launcher
+            puzzleDifficultyLauncher.launch(intent)
         }
 
-// For Math Game
         binding.buttonOpenGameArithmetic.setOnClickListener {
-            val categoryForMathGame = "arithmetic" // Or appropriate category for Math
+            val categoryForMathGame = "arithmetic"
             val intent = DifficultySelectionActivity.newIntent(
                 requireContext(),
-                categoryForMathGame, // Use a relevant category or a placeholder
-                DifficultySelectionActivity.GAME_TYPE_MATH, // Specify Math game
+                categoryForMathGame,
+                DifficultySelectionActivity.GAME_TYPE_MATH,
                 lastSelectedDifficultyMath
             )
-            mathGameDifficultyLauncher.launch(intent) // Use the correct launcher
+            mathGameDifficultyLauncher.launch(intent)
         }
-        return root
+
+        // Add the scroll indicator logic
+        setupScrollIndicator()
     }
 
-    // Removed launchFillInGame as it's handled by DifficultySelectionActivity now
+    private fun setupScrollIndicator() {
+        val scrollView = binding.scrollView
+        val scrollIndicator = binding.scrollIndicator
+        val contentLayout = scrollView.getChildAt(0)
+
+        contentLayout.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                contentLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                if (contentLayout.height > scrollView.height) {
+                    scrollIndicator.visibility = View.VISIBLE
+                    val bounceAnimation = AnimationUtils.loadAnimation(context, R.anim.bounce)
+                    scrollIndicator.startAnimation(bounceAnimation)
+                } else {
+                    scrollIndicator.visibility = View.GONE
+                }
+            }
+        })
+
+        scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            if (scrollY > 0 && scrollIndicator.visibility == View.VISIBLE) {
+                scrollIndicator.animate().alpha(0f).setDuration(300).withEndAction {
+                    scrollIndicator.visibility = View.GONE
+                }.start()
+            }
+        }
+    }
 
     private fun launchPuzzleGame(category: String, difficulty: String) {
         val intent = Intent(requireContext(), PuzzleActivity::class.java).apply {

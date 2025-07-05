@@ -1,78 +1,123 @@
 package com.hompimpa.comfylearn.ui.study.spelling
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageButton
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hompimpa.comfylearn.R
+import com.hompimpa.comfylearn.helper.BaseActivity
+import com.hompimpa.comfylearn.helper.CategoryAdapter
 
-class SpellingActivity : AppCompatActivity() {
+class SpellingActivity : BaseActivity() {
 
     private lateinit var homeButton: ImageButton
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerViewCategories: RecyclerView
     private lateinit var categoryAdapter: CategoryAdapter
-    private val mainCategories = listOf("Animals", "Objects") // Main categories
+    private val mainCategories = listOf("animal", "objek") // Keep these as defined
     private lateinit var consonantCategories: List<String>
+    private lateinit var fragmentContainer: View
+    private var isFragmentDisplayed = false
+
+    private val backPressedCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            Log.d(
+                "SpellingActivity",
+                "Activity's OnBackPressedCallback: handleOnBackPressed. BackStackCount: ${supportFragmentManager.backStackEntryCount}, isFragmentDisplayed: $isFragmentDisplayed"
+            )
+            if (supportFragmentManager.backStackEntryCount > 0 && isFragmentDisplayed) {
+                Log.d("SpellingActivity", "Popping fragment from back stack via callback.")
+                supportFragmentManager.popBackStackImmediate()
+                showCategoriesView()
+                if (supportFragmentManager.backStackEntryCount == 0) {
+                    this.isEnabled = false
+                }
+            } else {
+                Log.d(
+                    "SpellingActivity",
+                    "Callback: No fragment to pop or fragment not displayed, finishing activity."
+                )
+                this.isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spelling)
+        Log.d("SpellingActivity", "onCreate called")
 
-        // Load consonant categories from strings.xml
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
+
         consonantCategories = resources.getStringArray(R.array.consonants).toList()
 
         homeButton = findViewById(R.id.homeButton)
-        homeButton.setOnClickListener {
-            finish() // Close the activity or navigate to home
-        }
+        homeButton.setOnClickListener { finish() }
+        recyclerViewCategories = findViewById(R.id.recyclerView)
+        fragmentContainer = findViewById(R.id.fragment_container)
 
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = GridLayoutManager(this, 2)
-
-        // Combine main categories and consonants into one list for the adapter
-        val combinedCategories = mainCategories + consonantCategories
-
+        recyclerViewCategories.layoutManager = GridLayoutManager(this, 2)
+        val combinedCategories = mainCategories + consonantCategories // This is fine
         categoryAdapter = CategoryAdapter(combinedCategories) { selectedCategory ->
             onCategorySelected(selectedCategory)
         }
-        recyclerView.adapter = categoryAdapter
+        recyclerViewCategories.adapter = categoryAdapter
+        showCategoriesView()
     }
 
     private fun onCategorySelected(category: String) {
-        // Hide the RecyclerView
-        recyclerView.visibility = View.GONE
+        Log.d("SpellingActivity", "onCategorySelected: $category")
+        showFragmentView()
 
-        // Create a new instance of SpellingFragment based on the selected category
         val fragment = when {
             mainCategories.contains(category) -> {
-                // Handle main categories
-                SpellingFragment.newInstanceForCategory(category)
+                Log.d("SpellingActivity", "Creating fragment for general category: $category")
+                SpellingFragment.newInstance(category, false) // <--- CORRECTED
             }
 
             consonantCategories.contains(category) -> {
-                // Handle consonant categories
-                SpellingFragment.newInstanceForLetter(category)
+                Log.d("SpellingActivity", "Creating fragment for letter category: $category")
+                SpellingFragment.newInstance(category, true)  // <--- CORRECTED
             }
 
             else -> {
-                // Handle unknown category (optional)
+                Log.w("SpellingActivity", "Unknown category selected: $category")
+                showCategoriesView()
                 return
             }
         }
 
-        // Replace the current fragment with the new fragment
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
+            .addToBackStack("SpellingFragmentFor_$category")
             .commit()
     }
 
-    override fun onBackPressed() {
-        if (recyclerView.visibility != View.VISIBLE) {
-            recyclerView.visibility = View.VISIBLE
-        }
-        super.onBackPressed()
+    private fun showCategoriesView() {
+        Log.d("SpellingActivity", "showCategoriesView called")
+        recyclerViewCategories.visibility = View.VISIBLE
+        fragmentContainer.visibility = View.GONE
+        isFragmentDisplayed = false
+        backPressedCallback.isEnabled = false
+        Log.d(
+            "SpellingActivity",
+            "Categories Visible: ${recyclerViewCategories.isVisible}, Fragment Container Visible: ${fragmentContainer.isVisible}, backPressedCallback enabled: ${backPressedCallback.isEnabled}"
+        )
+    }
+
+    private fun showFragmentView() {
+        Log.d("SpellingActivity", "showFragmentView called")
+        recyclerViewCategories.visibility = View.GONE
+        fragmentContainer.visibility = View.VISIBLE
+        isFragmentDisplayed = true
+        backPressedCallback.isEnabled = true
+        Log.d(
+            "SpellingActivity",
+            "Categories Visible: ${recyclerViewCategories.isVisible}, Fragment Container Visible: ${fragmentContainer.isVisible}, backPressedCallback enabled: ${backPressedCallback.isEnabled}"
+        )
     }
 }
