@@ -49,36 +49,13 @@
     <string name="correct_answer">Correct!</string>
     <string name="try_again_feedback">Try again! Expected %1$d, you have %2$d</string>
     <string name="problems_solved_format">Solved: %1$d</string>
-    <string name="empty" translatable="false" />
+    <string name="empty" />
     <string name="start_game">Start Game</string>
     <string name="undo">Undo</string>
     <string name="hint">Hint</string>
     <string name="error_exclamation">Error</string>
-    <string name="addition_problem_format" translatable="false">%1$d + %2$d = ?</string>
-    <string name="subtraction_problem_format" translatable="false">%1$d - %2$d = ?</string>
-    <string name="email_not_found">Your Email is not found</string>
-    <string name="wrong_password">Your password is wrong</string>
-    <string name="google_sign_in_cancelled">Login is canceled</string>
-    <string name="email_already_registered">Email is already registered</string>
-    <string name="password_is_too_weak">Password is weak</string>
-    <string name="registration_failed">Registration is failed</string>
-    <string name="password_must_be_at_least_8_characters">Password must be at least 8 character</string>
-    <string name="save_button_tooltip">Save</string>
-    <string name="clear_button_tooltip">Clear All</string>
-    <string name="color_picker_tooltip">Pick Color</string>
-    <string name="eraser_tooltip">Eraser</string>
-    <string name="small_brush_tooltip">Small Brush</string>
-    <string name="medium_brush_tooltip">Medium Brush</string>
-    <string name="large_brush_tooltip">Large Brush</string>
-    <string name="shape_tool_tooltip">Draw Shape</string>
-    <string name="save_drawing_description">Save Drawing</string>
-    <string name="clear_board_description">Clear Board</string>
-    <string name="pick_color_description">Pick Color</string>
-    <string name="eraser_tool_description">Eraser Tool</string>
-    <string name="small_brush_description">Small Brush</string>
-    <string name="medium_brush_description">Medium Brush</string>
-    <string name="large_brush_description">Large Brush</string>
-    <string name="draw_shape_description">Draw Shape Tool</string>
+    <string name="addition_problem_format">%1$operand1Value + %2$operand2Value = ?</string>
+    <string name="subtraction_problem_format">%1$operand1Value - %2$operand2Value = ?</string>
 
     <string-array name="consonants">
         <item>B</item>
