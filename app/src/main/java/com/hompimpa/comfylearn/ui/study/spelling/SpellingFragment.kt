@@ -1,6 +1,5 @@
 package com.hompimpa.comfylearn.ui.study.spelling
 
-import android.content.Context.MODE_PRIVATE
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.PictureDrawable
 import android.media.AudioAttributes
@@ -18,23 +17,30 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
-import com.hompimpa.comfylearn.R
-import com.hompimpa.comfylearn.helper.AppConstants
+import com.hompimpa.comfylearn.R // Ensure this is your correct R file
 import java.io.IOException
 import java.io.InputStream
 import java.util.Locale
 
 class SpellingFragment : Fragment() {
 
+    // Views
     private lateinit var itemImageView: ImageView
-    private lateinit var itemsContainer: LinearLayout
+    private lateinit var itemsContainer: LinearLayout // Renamed from syllableContainer for generality
     private lateinit var errorTextView: TextView
+    // private lateinit var syllableAndErrorContainer: LinearLayout // Consider if this intermediate container is truly needed
 
     private var currentCategoryName: String? = null
-    private var isConsonantCategory: Boolean = false
+    private var isConsonantCategory: Boolean =
+        false // Determines if we show syllables or a single word image
+
     private var soundPool: SoundPool? = null
 
+    // Map: soundKey (e.g., "dog", "ba") to SoundPool ID.
+    // Value: >0 if loaded, 0 if loading, absent/null if not loaded or failed.
     private val soundIdMap = HashMap<String, Int>()
+
+    // List of soundKeys for which soundPool.load() returned 0 and are pending completion.
     private val soundsCurrentlyLoading = mutableListOf<String>()
 
     companion object {
@@ -42,6 +48,7 @@ class SpellingFragment : Fragment() {
         private const val ARG_CATEGORY_NAME = "category_name"
         private const val ARG_IS_CONSONANT_CATEGORY = "is_consonant_category"
 
+        // Simplified category determination
         const val DISPLAY_TYPE_IMAGE_WITH_WORD =
             1 // For animals, objects (shows image + full word text)
         const val DISPLAY_TYPE_SYLLABLES =
@@ -57,6 +64,7 @@ class SpellingFragment : Fragment() {
         }
     }
 
+    //region Lifecycle Methods
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -79,18 +87,13 @@ class SpellingFragment : Fragment() {
         itemsContainer =
             view.findViewById(R.id.syllableContainer) // Ensure this ID matches your XML
         errorTextView = view.findViewById(R.id.errorTextView)
+        // syllableAndErrorContainer = view.findViewById(R.id.syllableAndErrorContainer)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadAndDisplayCategory()
-
-        currentCategoryName?.let { category ->
-            if (category.isNotBlank()) { // Ensure category name is valid
-                saveSpellingProgress(category)
-            }
-        }
     }
 
     override fun onDestroy() {
@@ -101,13 +104,7 @@ class SpellingFragment : Fragment() {
         soundIdMap.clear()
         soundsCurrentlyLoading.clear()
     }
-
-    private fun saveSpellingProgress(categoryName: String) {
-        activity?.getSharedPreferences(AppConstants.PREFS_PROGRESSION, MODE_PRIVATE)?.edit()
-            ?.putBoolean(AppConstants.getSpellingCategoryProgressKey(categoryName), true)
-            ?.apply()
-        Log.d(TAG, "Saved spelling progress for category: $categoryName")
-    }
+    //endregion
 
     //region Sound Pool Management
     private fun setupSoundPool() {
@@ -119,7 +116,7 @@ class SpellingFragment : Fragment() {
             .setMaxStreams(3) // Max simultaneous streams
             .setAudioAttributes(audioAttributes)
             .build()
-        soundPool?.setOnLoadCompleteListener { _, sampleId, status ->
+        soundPool?.setOnLoadCompleteListener { sp, sampleId, status ->
             // This listener is called when a sound is loaded
             Log.d(
                 TAG,
@@ -278,8 +275,7 @@ class SpellingFragment : Fragment() {
 
         when (displayType) {
             DISPLAY_TYPE_IMAGE_WITH_WORD -> {
-                val allItemsInCategory =
-                    getItemsForGeneralCategory(category) // Get all items like ["Dog", "Cat", "Bird"]
+                val allItemsInCategory = getItemsForGeneralCategory(category) // Get all items like ["Dog", "Cat", "Bird"]
                 if (allItemsInCategory.isNotEmpty()) {
                     // Select a random item from the list
                     primaryWordForImage = allItemsInCategory.random() // <--- CHANGE THIS LINE
@@ -372,9 +368,9 @@ class SpellingFragment : Fragment() {
         // If categoryName is "Dog", it should return ["Dog"].
         Log.d(TAG, "getItemsForGeneralCategory for: $categoryName")
         return when (categoryName.lowercase(Locale.ROOT)) {
-            "animal" -> resources.getStringArray(R.array.animal)
+            "animals" -> resources.getStringArray(R.array.animal)
                 .toList() // Ensure R.array.animal exists
-            "objek" -> resources.getStringArray(R.array.objek)
+            "objects" -> resources.getStringArray(R.array.objek)
                 .toList() // Ensure R.array.object_array exists (XML uses "object" which is keyword)
             else -> listOf(categoryName) // Assume categoryName is the item itself
         }.also { Log.d(TAG, "Items for '$categoryName': $it") }

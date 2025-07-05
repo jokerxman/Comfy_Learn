@@ -14,15 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ComfyLearn">
         <activity
-            android:name=".ui.games.mathgame.MathGameActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.games.puzzle.PuzzleActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.games.DifficultySelectionActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.study.arithmetic.ArithmeticActivity"
             android:exported="false" />
         <activity
@@ -37,7 +28,7 @@
         <activity
             android:name=".ui.HomeActivity"
             android:exported="false"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.ComfyLearn.NoActionBar" />
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false" />
