@@ -5,54 +5,56 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.hompimpa.comfylearn.R
-import com.hompimpa.comfylearn.ui.Word
 
 class NumberFragment : Fragment() {
 
-    private lateinit var word: Word
+    private var currentLetter: Int = 0
+    private val letterImages = mapOf(
+        0 to R.drawable.number_0,
+        1 to R.drawable.number_1,
+        2 to R.drawable.number_2,
+        3 to R.drawable.number_3,
+        4 to R.drawable.number_4,
+        5 to R.drawable.number_5,
+        6 to R.drawable.number_6,
+        7 to R.drawable.number_7,
+        8 to R.drawable.number_8,
+        9 to R.drawable.number_9
+    )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            currentLetter = it.getInt(ARG_NUMBER, 0)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_number, container, false)
+        val view = inflater.inflate(R.layout.fragment_alphabet, container, false)
+        val letterImageView: ImageView = view.findViewById(R.id.letterImageView)
+        updateLetterImage(letterImageView)
+        return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // Retrieve the Word object passed as an argument
-        word = arguments?.getParcelable("WORD_KEY") ?: return
-
-        // Get the spell array for a specific index
-        val spellIndex = 0 // Change this to the index of the spell array you want
-        val spellArray = word.getSpellArray(spellIndex)
-
-        // Set up the TextView to display the spell array
-        val spellTextView: TextView = view.findViewById(R.id.numberTextView)
-        if (spellArray != null) {
-            spellTextView.text =
-                spellArray.joinToString(", ") // Display the spell array as a comma-separated string
-        } else {
-            spellTextView.text = "No spell array found for index $spellIndex"
-        }
-
-        // Set up the ImageView to display the image
-        val imageView: ImageView =
-            view.findViewById(R.id.numberImageView) // Make sure this ID matches your layout
-        imageView.setImageResource(word.imageResId) // Set the image resource from the Word object
+    private fun updateLetterImage(letterImageView: ImageView) {
+        val imageRes = letterImages[currentLetter] ?: R.drawable.ic_no_image
+        letterImageView.setImageResource(imageRes)
     }
 
     companion object {
-        fun newInstance(number: Int): NumberFragment {
-            val fragment = NumberFragment()
-            val args = Bundle()
-            args.putInt("NUMBER_KEY", number)
-            fragment.arguments = args
-            return fragment
-        }
+        private const val ARG_NUMBER = "number"
+
+        @JvmStatic
+        fun newInstance(number: Int) =
+            NumberFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_NUMBER, number)
+                }
+            }
     }
 }
