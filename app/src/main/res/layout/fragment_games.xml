@@ -6,49 +6,92 @@
     android:layout_height="match_parent"
     tools:context=".ui.games.GamesFragment">
 
-    <ImageButton
-        android:id="@+id/buttonOpenGameFill"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@android:color/transparent"
-        android:contentDescription="Button Games Fill"
-        android:src="@drawable/button_spelling"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-    <ImageButton
-        android:id="@+id/buttonOpenGameArithmetic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="164dp"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="@android:color/transparent"
-        android:contentDescription="Button Games Arithmetic"
-        android:src="@drawable/button_counting"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+
+            <ImageButton
+                android:id="@+id/buttonOpenGameFill"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Button Games Fill"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_spelling"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.45" />
+
+            <ImageButton
+                android:id="@+id/buttonOpenGameArithmetic"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="80dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Button Games Arithmetic"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_counting"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.45" />
+
+            <ImageButton
+                android:id="@+id/buttonOpenGameDrawing"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="80dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Button Games Drawing"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_drawing"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttonOpenGameFill"
+                app:layout_constraintWidth_percent="0.45" />
+
+            <ImageButton
+                android:id="@+id/buttonOpenGamePuzzle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="80dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Button Games Puzzle"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_puzzle"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttonOpenGameArithmetic"
+                app:layout_constraintWidth_percent="0.45" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- Animated scroll indicator -->
+    <ImageView
+        android:id="@+id/scroll_indicator"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_scroll_down"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/buttonOpenGameDrawing"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="132dp"
-        android:backgroundTint="@android:color/transparent"
-        android:contentDescription="Button Games Drawing"
-        android:src="@drawable/button_drawing"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonOpenGameFill" />
+        app:tint="@color/colorAccent" />
 
-    <ImageButton
-        android:id="@+id/buttonOpenGamePuzzle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="124dp"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="@android:color/transparent"
-        android:contentDescription="Button Games Puzzle"
-        android:src="@drawable/button_puzzle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonOpenGameArithmetic" />
 </androidx.constraintlayout.widget.ConstraintLayout>

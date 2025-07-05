@@ -6,49 +6,96 @@
     android:layout_height="match_parent"
     tools:context=".ui.study.StudyFragment">
 
-    <ImageButton
-        android:id="@+id/buttonOpenAlphabet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@android:color/transparent"
-        android:contentDescription="Button Alphabet dan Number"
-        android:src="@drawable/button_alphabetnumber"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-    <ImageButton
-        android:id="@+id/buttonOpenArithmetic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="164dp"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="@android:color/transparent"
-        android:contentDescription="Button Aritmatika Dasar"
-        android:src="@drawable/button_aritmatika"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <!--
+            The Guideline has been removed and buttons are now constrained
+            relative to each other to create a staggered effect.
+            -->
+
+            <ImageButton
+                android:id="@+id/buttonOpenAlphabet"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Button Alphabet dan Number"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_alphabetnumber"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.45" />
+
+            <ImageButton
+                android:id="@+id/buttonOpenArithmetic"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="80dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Button Aritmatika Dasar"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_aritmatika"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.45" />
+
+            <ImageButton
+                android:id="@+id/buttonOpenSpelling"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="80dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Button Membaca"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_membaca"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttonOpenAlphabet"
+                app:layout_constraintWidth_percent="0.45" />
+
+<!--            <ImageButton
+                android:id="@+id/buttonOpenTracing"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="80dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Button Tracing"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_tracing"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttonOpenArithmetic"
+                app:layout_constraintWidth_percent="0.45" /> -->
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- Animated scroll indicator -->
+    <ImageView
+        android:id="@+id/scroll_indicator"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_scroll_down"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/buttonOpenSpelling"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="132dp"
-        android:backgroundTint="@android:color/transparent"
-        android:contentDescription="Button Membaca"
-        android:src="@drawable/button_membaca"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonOpenAlphabet" />
+        app:tint="@color/colorAccent" />
 
-    <ImageButton
-        android:id="@+id/buttonOpenTracing"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="124dp"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="@android:color/transparent"
-        android:contentDescription="Button Tracing"
-        android:src="@drawable/button_tracing"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonOpenArithmetic" />
 </androidx.constraintlayout.widget.ConstraintLayout>

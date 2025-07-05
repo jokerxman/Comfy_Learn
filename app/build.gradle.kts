@@ -11,10 +11,10 @@ android {
 
     defaultConfig {
         applicationId = "com.hompimpa.comfylearn"
-        minSdk = 33
+        minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.flexbox)
 
 // Authentication
     implementation(platform(libs.firebase.bom))
