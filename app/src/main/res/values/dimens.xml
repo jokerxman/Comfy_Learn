@@ -5,7 +5,6 @@
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
     <!-- Using sp for text size -->
-    <dimen name="fab_margin">8dp</dimen>
     <dimen name="slot_padding_start_end">8dp</dimen>
     <dimen name="slot_padding_top_bottom">4dp</dimen>
     <dimen name="slot_min_width">40dp</dimen>
