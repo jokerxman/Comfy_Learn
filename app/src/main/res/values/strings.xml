@@ -1,37 +1,187 @@
 <resources>
     <string name="app_name">Comfy Learn</string>
-    <string name="sign_out">Sign Out</string>
-    <string name="your_web_client_id">1005345375717-0t16i8fe6aobkea28dd879qsfe3h622l.apps.googleusercontent.com</string>
-    <string name="title_activity_home">HomeActivity</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-
     <string name="menu_materi">All Study</string>
     <string name="menu_games">All Games</string>
     <string name="menu_learprog">Learning Progress</string>
     <string name="menu_setting">Settings</string>
     <string name="menu_rate">Rate App</string>
     <string name="nav_header_calltoaction">Subscribe</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="login">Sign In</string>
+    <string name="register">Sign Up</string>
+    <string name="password">Password</string>
+    <string name="email">E-Mail Address</string>
+    <string name="another_method">Or Use Another Method</string>
+    <string name="to_register">Don\'t have an account? Create an account now!</string>
+    <string name="to_login">Already have an account? Sign in here</string>
+    <string name="name">Your Name</string>
+    <string name="no_name">No name available</string>
+    <string name="no_email">No email available</string>
+    <string name="email_and_password_cannot_be_empty">Email and password cannot be empty</string>
+    <string name="authentication_failed">Authentication failed.</string>
+    <string name="please_log_in_to_continue">Please log in to continue.</string>
+    <string name="all_fields_must_not_be_empty">All fields must not be empty.</string>
+    <string name="invalid_email_format">Invalid email format.</string>
+    <string name="password_must_be_at_least_6_characters">Password must be at least 6 characters.</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="apply_changes">Apply Changes</string>
+    <string name="pick_color">Pick Color</string>
+    <string name="select_difficulty">Select Difficulty</string>
+    <string name="language_english">English</string>
+    <string name="language_indonesian">Indonesian</string>
+    <!-- Strings for DifficultySelectionActivity (if you don't have them already) -->
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Medium</string>
+    <string name="difficulty_hard">Hard</string>
+    <!-- Titles and General UI -->
+    <string name="puzzle_instructions_default">Unscramble the letters to form the word.</string>
+    <string name="puzzle_instructions_hard">Hard Mode: Unscramble the letters!</string>
+    <string name="button_check_word">Check Word</string>
+    <string name="button_play_again">Play Again</string>
+    <string name="button_next_word">Next Word</string>
+    <!-- Feedback Messages -->
+    <string name="feedback_correct">Correct!</string>
+    <string name="feedback_incorrect_try_again">Incorrect. Try again!</string>
+    <string name="feedback_incomplete_puzzle">Please fill all the slots.</string>
+    <string name="congratulations_all_words_category">Congratulations! You\'ve completed all words in the %1$s category!</string>
+    <string name="no_more_words_puzzle">No more %2$s words available for the %1$s category.</string>
+    <string name="no_changes_made">No Changes Made</string>
+    <string name="correct_answer">Correct!</string>
+    <string name="try_again_feedback">Try again! Expected %1$d, you have %2$d</string>
+    <string name="problems_solved_format">Solved: %1$d</string>
+    <string name="empty" translatable="false" />
+    <string name="start_game">Start Game</string>
+    <string name="undo">Undo</string>
+    <string name="hint">Hint</string>
+    <string name="error_exclamation">Error</string>
+    <string name="addition_problem_format" translatable="false">%1$d + %2$d = ?</string>
+    <string name="subtraction_problem_format" translatable="false">%1$d - %2$d = ?</string>
+    <string name="email_not_found">Your Email is not found</string>
+    <string name="wrong_password">Your password is wrong</string>
+    <string name="google_sign_in_cancelled">Login is canceled</string>
+    <string name="email_already_registered">Email is already registered</string>
+    <string name="password_is_too_weak">Password is weak</string>
+    <string name="registration_failed">Registration is failed</string>
+    <string name="password_must_be_at_least_8_characters">Password must be at least 8 character</string>
+    <string name="save_button_tooltip">Save</string>
+    <string name="clear_button_tooltip">Clear All</string>
+    <string name="color_picker_tooltip">Pick Color</string>
+    <string name="eraser_tooltip">Eraser</string>
+    <string name="small_brush_tooltip">Small Brush</string>
+    <string name="medium_brush_tooltip">Medium Brush</string>
+    <string name="large_brush_tooltip">Large Brush</string>
+    <string name="shape_tool_tooltip">Draw Shape</string>
+    <string name="save_drawing_description">Save Drawing</string>
+    <string name="clear_board_description">Clear Board</string>
+    <string name="pick_color_description">Pick Color</string>
+    <string name="eraser_tool_description">Eraser Tool</string>
+    <string name="small_brush_description">Small Brush</string>
+    <string name="medium_brush_description">Medium Brush</string>
+    <string name="large_brush_description">Large Brush</string>
+    <string name="draw_shape_description">Draw Shape Tool</string>
 
-    <string name="inference_time">Inference Time: %1$s ms</string>
-    <string name="label_confidence_threshold">Threshold</string>
-    <string name="label_max_results">Max Results</string>
-    <string name="label_threads">Number of Threads</string>
-    <string name="label_delegate">Delegate</string>
-    <string name="default_threshold">0.50</string>
-    <string name="default_max_results">3</string>
-    <string name="tv_predicted_results">Predicted results:</string>
-    <string name="btn_clear">Clear</string>
-
-    <string-array name="delegate_spinner_titles">
-        <item>CPU</item>
-        <item>GPU</item>
-        <item>NNAPI</item>
+    <string-array name="consonants">
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>F</item>
+        <item>G</item>
+        <item>H</item>
+        <item>J</item>
+        <item>K</item>
+        <item>L</item>
+        <item>M</item>
+        <item>N</item>
+        <item>P</item>
+        <item>Q</item>
+        <item>R</item>
+        <item>S</item>
+        <item>T</item>
+        <item>V</item>
+        <item>W</item>
+        <item>X</item>
+        <item>Y</item>
+        <item>Z</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="spell">
+        <item>ba,bi,bu,be,bo</item>
+        <item>ca,ci,cu,ce,co</item>
+        <item>da,di,du,de,do</item>
+        <item>fa,fi,fu,fe,fo</item>
+        <item>ga,gi,gu,ge,go</item>
+        <item>ha,hi,hu,he,ho</item>
+        <item>ja,ji,ju,je,jo</item>
+        <item>ka,ki,ku,ke,ko</item>
+        <item>la,li,lu,le,lo</item>
+        <item>ma,mi,mu,me,mo</item>
+        <item>na,ni,nu,ne,no</item>
+        <item>pa,pi,pu,pe,po</item>
+        <item>qa,qi,qu,qe,qo</item>
+        <item>ra,ri,ru,re,ro</item>
+        <item>sa,si,su,se,so</item>
+        <item>ta,ti,tu,te,to</item>
+        <item>va,vi,vu,ve,vo</item>
+        <item>wa,wi,wu,we,wo</item>
+        <item>xa,xi,xu,xe,xo</item>
+        <item>ya,yi,yu,ye,yo</item>
+        <item>za,zi,zu,ze,zo</item>
+    </string-array>
+    <string-array name="animal">
+        <item>Alligator</item>
+        <item>Beaver</item>
+        <item>Chicken</item>
+        <item>Dog</item>
+        <item>Duck</item>
+        <item>Fox</item>
+        <item>Goose</item>
+        <item>Horse</item>
+        <item>Kangaroo</item>
+        <item>Ladybug</item>
+        <item>Leopard</item>
+        <item>Lion</item>
+        <item>Panda</item>
+        <item>Parrot</item>
+        <item>Pig</item>
+        <item>Praying Mantis</item>
+        <item>Rabbit</item>
+        <item>Ram</item>
+        <item>Rhino</item>
+        <item>Sea Turtle</item>
+        <item>Sheep</item>
+        <item>Snail</item>
+        <item>Tortoise</item>
+        <item>Toucan</item>
+    </string-array>
+    <string-array name="objek">
+        <item>Air conditioner</item>
+        <item>Basket</item>
+        <item>Bed</item>
+        <item>Blender</item>
+        <item>Bottle</item>
+        <item>Broom</item>
+        <item>Bucket</item>
+        <item>Calendar</item>
+        <item>Chair</item>
+        <item>Cloth</item>
+        <item>Clothes stand</item>
+        <item>Comb</item>
+        <item>Couch</item>
+        <item>Curtains</item>
+        <item>Desk</item>
+        <item>Fan</item>
+        <item>Hanger</item>
+        <item>Kettle</item>
+        <item>Kitchen hood</item>
+        <item>Lamp</item>
+        <item>Lantern</item>
+        <item>Lightbulb</item>
+        <item>Microwave</item>
+        <item>Mop</item>
+        <item>Photo frame</item>
+        <item>Pot</item>
+        <item>Refrigerator</item>
+        <item>Speaker</item>
+        <item>Television</item>
+        <item>Toaster</item>
+    </string-array>
 </resources>

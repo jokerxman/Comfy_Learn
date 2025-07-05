@@ -1,21 +1,68 @@
 package com.hompimpa.comfylearn
 
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.lifecycleScope
+import com.hompimpa.comfylearn.helper.BaseActivity
+import com.hompimpa.comfylearn.helper.SettingPreferences
+import com.hompimpa.comfylearn.helper.dataStore
+import com.hompimpa.comfylearn.ui.auth.LoginActivity
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import java.util.Locale
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseActivity() {
+
+    private lateinit var settingPreferences: SettingPreferences
+
+    override fun attachBaseContext(newBase: Context) {
+        settingPreferences = SettingPreferences.getInstance(newBase.dataStore)
+        val languageCode = kotlinx.coroutines.runBlocking {
+            settingPreferences.getLanguageSetting().first() // Get the first/current value
+        }
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale) // Set for the entire app process
+
+        val configuration = Configuration(newBase.resources.configuration)
+        configuration.setLocale(locale)
+        configuration.setLayoutDirection(locale)
+
+        val updatedContext = newBase.createConfigurationContext(configuration)
+        super.attachBaseContext(updatedContext)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash) // Set the splash layout containing your full-screen image
+        lifecycleScope.launch {
+            val isDarkModeActive = settingPreferences.getThemeSetting().first()
+            if (isDarkModeActive) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            setContentView(R.layout.activity_splash)
+        }
 
-        // Delay for 3 seconds (3000 milliseconds) and then start MainActivity
+        setContentView(R.layout.activity_splash)
+
+        lifecycleScope.launch {
+            val isDarkModeActive = settingPreferences.getThemeSetting().first()
+            if (isDarkModeActive) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+
         Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(this@SplashActivity, LoginActivity::class.java)
             startActivity(intent)
-            finish() // Finish the SplashActivity so it doesn't stay in the back stack
-        }, 3000) // Adjust the delay time if needed
+            finish()
+        }, 1000)
     }
 }

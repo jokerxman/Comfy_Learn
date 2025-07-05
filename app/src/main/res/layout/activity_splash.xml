@@ -4,7 +4,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/splashscreen"
-    tools:context=".SplashActivity">
-
-    <!-- You can add additional content here if needed, such as a logo, etc. -->
-</androidx.constraintlayout.widget.ConstraintLayout>
+    tools:context=".SplashActivity"></androidx.constraintlayout.widget.ConstraintLayout>

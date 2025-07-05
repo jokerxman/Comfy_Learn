@@ -3,4 +3,8 @@
         <attr name="fullscreenBackgroundColor" format="color" />
         <attr name="fullscreenTextColor" format="color" />
     </declare-styleable>
+    <declare-styleable name="ScatteredPileLayout">
+        <attr name="maxRotationDegrees" format="float" />
+        <attr name="positionSpreadFactor" format="float" />
+    </declare-styleable>
 </resources>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    tools:context=".ui.games.puzzle.PuzzleActivity">
+
+    <TextView
+        android:id="@+id/textViewPuzzleInstructions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:text="@string/puzzle_instructions_default"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/layoutWordConstruction"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewPuzzleInstructions">
+
+        <!-- Target slots for the word letters -->
+        <LinearLayout
+            android:id="@+id/layoutTargetSlots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:minHeight="50dp"
+            android:orientation="horizontal" />
+
+        <!-- Character Options Pile -->
+        <com.hompimpa.comfylearn.views.ScatteredPileLayout
+            android:id="@+id/layoutCharacterOptions"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:minHeight="150dp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonCheckWord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/button_check_word"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutWordConstruction" />
+
+    <TextView
+        android:id="@+id/textViewFeedback"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="@string/feedback_correct"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonCheckWord"
+        tools:visibility="visible" />
+
+
+    <!-- Popup-like feedback layout -->
+    <LinearLayout
+        android:id="@+id/layoutFeedback"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#AA000000"
+        android:elevation="10dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"> <!-- Ensure popup is on top -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:minWidth="250dp"
+            android:minHeight="150dp"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/textViewFeedbackPopup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="@string/congratulations_all_words_category"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/buttonNextWord"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/button_next_word"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <Button
+                android:id="@+id/buttonPlayAgain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/button_play_again"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,84 +1,123 @@
 package com.hompimpa.comfylearn.ui.study.spelling
 
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.ImageButton
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commit
-import com.hompimpa.comfylearn.HomeActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.hompimpa.comfylearn.R
+import com.hompimpa.comfylearn.helper.BaseActivity
+import com.hompimpa.comfylearn.helper.CategoryAdapter
 
-class SpellingActivity : AppCompatActivity() {
+class SpellingActivity : BaseActivity() {
 
-    private lateinit var nextButton: ImageButton
-    private lateinit var backButton: ImageButton
     private lateinit var homeButton: ImageButton
-    private var currentSyllable: Int = 0 // Start from the first syllable
+    private lateinit var recyclerViewCategories: RecyclerView
+    private lateinit var categoryAdapter: CategoryAdapter
+    private val mainCategories = listOf("animal", "objek") // Keep these as defined
+    private lateinit var consonantCategories: List<String>
+    private lateinit var fragmentContainer: View
+    private var isFragmentDisplayed = false
 
-    // List of syllables
-    private val syllables = listOf(
-        "a", "i", "u", "e", "o",
-        "ba", "bi", "bu", "be", "bo",
-        "ca", "ci", "cu", "ce", "co",
-        "da", "di", "du", "de", "do",
-        "fa", "fi", "fu", "fe", "fo",
-        "ga", "gi", "gu", "ge", "go",
-        "ha", "hi", "hu", "he", "ho",
-        "ja", "ji", "ju", "je", "jo",
-        "ka", "ki", "ku", "ke", "ko",
-        "la", "li", "lu", "le", "lo",
-        "ma", "mi", "mu", "me", "mo",
-        "na", "ni", "nu", "ne", "no",
-        "pa", "pi", "pu", "pe", "po",
-        "ra", "ri", "ru", "re", "ro",
-        "sa", "si", "su", "se", "so",
-        "ta", "ti", "tu", "te", "to",
-        "va", "vi", "vu", "ve", "vo",
-        "wa", "wi", "wu", "we", "wo",
-        "xa", "xi", "xu", "xe", "xo",
-        "ya", "yi", "yu", "ye", "yo",
-        "za", "zi", "zu", "ze", "zo"
-    )
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_spelling)
-
-        nextButton = findViewById(R.id.nextButton)
-        backButton = findViewById(R.id.backButton)
-        homeButton = findViewById(R.id.homeButton)
-
-        // Retrieve the syllable passed from the intent
-        currentSyllable = intent.getIntExtra("syllable_index", 0)
-
-        loadSyllableFragment(currentSyllable)
-
-        nextButton.setOnClickListener { navigateToSyllable(currentSyllable + 1) }
-        backButton.setOnClickListener { navigateToSyllable(currentSyllable - 1) }
-        homeButton.setOnClickListener { navigateToHome() }
-    }
-
-    private fun loadSyllableFragment(syllableIndex: Int) {
-        if (syllableIndex in syllables.indices) {
-            supportFragmentManager.commit {
-                replace(
-                    R.id.fragment_container,
-                    SpellingFragment.newInstance(syllables[syllableIndex])
+    private val backPressedCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            Log.d(
+                "SpellingActivity",
+                "Activity's OnBackPressedCallback: handleOnBackPressed. BackStackCount: ${supportFragmentManager.backStackEntryCount}, isFragmentDisplayed: $isFragmentDisplayed"
+            )
+            if (supportFragmentManager.backStackEntryCount > 0 && isFragmentDisplayed) {
+                Log.d("SpellingActivity", "Popping fragment from back stack via callback.")
+                supportFragmentManager.popBackStackImmediate()
+                showCategoriesView()
+                if (supportFragmentManager.backStackEntryCount == 0) {
+                    this.isEnabled = false
+                }
+            } else {
+                Log.d(
+                    "SpellingActivity",
+                    "Callback: No fragment to pop or fragment not displayed, finishing activity."
                 )
+                this.isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
             }
         }
     }
 
-    private fun navigateToSyllable(syllableIndex: Int) {
-        if (syllableIndex in syllables.indices) {
-            currentSyllable = syllableIndex
-            loadSyllableFragment(syllableIndex)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_spelling)
+        Log.d("SpellingActivity", "onCreate called")
+
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
+
+        consonantCategories = resources.getStringArray(R.array.consonants).toList()
+
+        homeButton = findViewById(R.id.homeButton)
+        homeButton.setOnClickListener { finish() }
+        recyclerViewCategories = findViewById(R.id.recyclerView)
+        fragmentContainer = findViewById(R.id.fragment_container)
+
+        recyclerViewCategories.layoutManager = GridLayoutManager(this, 2)
+        val combinedCategories = mainCategories + consonantCategories // This is fine
+        categoryAdapter = CategoryAdapter(combinedCategories) { selectedCategory ->
+            onCategorySelected(selectedCategory)
         }
+        recyclerViewCategories.adapter = categoryAdapter
+        showCategoriesView()
     }
 
-    private fun navigateToHome() {
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
-        finish()
+    private fun onCategorySelected(category: String) {
+        Log.d("SpellingActivity", "onCategorySelected: $category")
+        showFragmentView()
+
+        val fragment = when {
+            mainCategories.contains(category) -> {
+                Log.d("SpellingActivity", "Creating fragment for general category: $category")
+                SpellingFragment.newInstance(category, false) // <--- CORRECTED
+            }
+
+            consonantCategories.contains(category) -> {
+                Log.d("SpellingActivity", "Creating fragment for letter category: $category")
+                SpellingFragment.newInstance(category, true)  // <--- CORRECTED
+            }
+
+            else -> {
+                Log.w("SpellingActivity", "Unknown category selected: $category")
+                showCategoriesView()
+                return
+            }
+        }
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack("SpellingFragmentFor_$category")
+            .commit()
+    }
+
+    private fun showCategoriesView() {
+        Log.d("SpellingActivity", "showCategoriesView called")
+        recyclerViewCategories.visibility = View.VISIBLE
+        fragmentContainer.visibility = View.GONE
+        isFragmentDisplayed = false
+        backPressedCallback.isEnabled = false
+        Log.d(
+            "SpellingActivity",
+            "Categories Visible: ${recyclerViewCategories.isVisible}, Fragment Container Visible: ${fragmentContainer.isVisible}, backPressedCallback enabled: ${backPressedCallback.isEnabled}"
+        )
+    }
+
+    private fun showFragmentView() {
+        Log.d("SpellingActivity", "showFragmentView called")
+        recyclerViewCategories.visibility = View.GONE
+        fragmentContainer.visibility = View.VISIBLE
+        isFragmentDisplayed = true
+        backPressedCallback.isEnabled = true
+        Log.d(
+            "SpellingActivity",
+            "Categories Visible: ${recyclerViewCategories.isVisible}, Fragment Container Visible: ${fragmentContainer.isVisible}, backPressedCallback enabled: ${backPressedCallback.isEnabled}"
+        )
     }
 }

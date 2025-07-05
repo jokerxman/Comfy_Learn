@@ -7,14 +7,14 @@ plugins {
 
 android {
     namespace = "com.hompimpa.comfylearn"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.hompimpa.comfylearn"
-        minSdk = 29
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 2
+        versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -25,20 +25,22 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         viewBinding = true
         buildConfig = true
         mlModelBinding = true
     }
+    buildToolsVersion = "35.0.0"
 }
 
 dependencies {
@@ -50,6 +52,9 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.viewpager2)
     implementation(libs.glide)
+    implementation(libs.androidsvg.aar)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.colorpicker)
 
 // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
@@ -60,8 +65,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.flexbox)
 
 // Authentication
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.googleid)
     implementation(libs.play.services.auth)
@@ -69,11 +76,16 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
 
 // Other
-//    implementation(libs.tensorflow.lite.task.vision)
     implementation(libs.tasks.vision)
     implementation(libs.tensorflow.lite.support)
     implementation(libs.tensorflow.lite.metadata)
     implementation(libs.tensorflow.lite.gpu)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.ui.text.android)
+    implementation(libs.appcompat)
 
 // Testing
     testImplementation(libs.junit)
