@@ -11,7 +11,6 @@ import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivityDifficultySelectionBinding
 import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.ui.games.fillIn.FillInActivity
-import com.hompimpa.comfylearn.ui.games.puzzle.PuzzleActivity
 
 private const val FILL_IN_GAME_REQUEST_CODE_INTERNAL = 202
 

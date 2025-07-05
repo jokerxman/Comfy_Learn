@@ -28,6 +28,7 @@
     <string name="invalid_email_format">Format email salah</string>
     <string name="password_must_be_at_least_6_characters">Sandi harus memiliki 6 atau lebih karakter</string>
     <string name="select_difficulty">Pilih Tingkat Kesulitan</string>
+    <string name="draw_shape_description">Gambar Bentuk</string>
 
     <string-array name="animal">
         <item>Buaya</item>
@@ -107,4 +108,28 @@
     <string name="start_game">Mulai</string>
     <string name="undo">Ulang</string>
     <string name="hint">Bantuan</string>
+    <string name="email_not_found">Email tidak ditemukan</string>
+    <string name="google_sign_in_cancelled">Login dibatalkan</string>
+    <string name="wrong_password">Password salah</string>
+    <string name="error_exclamation">Kesalahan</string>
+    <string name="correct_answer">Benar</string>
+    <string name="email_already_registered">Email telah terdaftar</string>
+    <string name="password_is_too_weak">Password terlalu mudah</string>
+    <string name="registration_failed">Pendaftaran gagal</string>
+    <string name="password_must_be_at_least_8_characters">Password minimal 8 karakter</string>
+    <string name="save_button_tooltip">Simpan</string>
+    <string name="clear_button_tooltip">Bersihkan</string>
+    <string name="color_picker_tooltip">Pilih Warna</string>
+    <string name="eraser_tooltip">Penghapus</string>
+    <string name="small_brush_tooltip">Kuas Kecil</string>
+    <string name="medium_brush_tooltip">Kuas Sedang</string>
+    <string name="large_brush_tooltip">Kuas Besar</string>
+    <string name="shape_tool_tooltip">Gambar Bentuk</string>
+    <string name="save_drawing_description">Simpan Gambar</string>
+    <string name="clear_board_description">Bersihkan Layar</string>
+    <string name="pick_color_description">Pilih Warna</string>
+    <string name="eraser_tool_description">Penghapus</string>
+    <string name="small_brush_description">Kuas Kecil</string>
+    <string name="medium_brush_description">Kuas Sedang</string>
+    <string name="large_brush_description">Kuas Besar</string>
 </resources>

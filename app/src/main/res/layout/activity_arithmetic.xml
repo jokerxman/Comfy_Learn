@@ -1,39 +1,98 @@
-<!-- res/layout/activity_quiz.xml -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context=".ui.study.arithmetic.ArithmeticActivity">
 
+    <!-- Views for Level Progress -->
     <TextView
-        android:id="@+id/question_text"
+        android:id="@+id/levelNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp" />
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Level 1: Simple Addition" />
 
-    <RadioGroup
-        android:id="@+id/answer_options"
-        android:layout_width="match_parent"
+    <ProgressBar
+        android:id="@+id/levelProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/levelNameText"
+        tools:progress="50" />
 
-    <EditText
-        android:id="@+id/answer_input"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/questionText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Your answer"
-        android:inputType="number" />
+        android:layout_marginTop="16dp"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/levelProgressBar"
+        tools:text="3 + 2 = 5" />
+
+    <!-- This container holds the visual representation of the problem -->
+    <LinearLayout
+        android:id="@+id/visualProblemContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/nextProblemButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/questionText">
+
+        <GridLayout
+            android:id="@+id/firstOperandObjectsGrid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:alignmentMode="alignMargins"
+            android:columnOrderPreserved="false"
+            tools:columnCount="2" />
+
+        <TextView
+            android:id="@+id/operatorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textSize="40sp"
+            tools:text="+" />
+
+        <GridLayout
+            android:id="@+id/secondOperandObjectsGrid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:alignmentMode="alignMargins"
+            android:columnOrderPreserved="false"
+            tools:columnCount="2" />
+
+    </LinearLayout>
 
     <Button
-        android:id="@+id/submit_button"
+        android:id="@+id/nextProblemButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit" />
+        android:layout_marginBottom="24dp"
+        android:text="Next Example"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/feedback_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:layout_marginTop="16dp" />
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
