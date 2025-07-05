@@ -17,27 +17,8 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             android:theme="@style/ToolbarTheme"
-            app:popupTheme="@style/Theme.ComfyLearn.PopupOverlay">
-
-            <!--
-            This RelativeLayout spans the full width of the Toolbar,
-            allowing the ImageView inside to be truly centered.
-            -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/logo"
-                    android:contentDescription="App Logo" />
-
-            </RelativeLayout>
-
-        </androidx.appcompat.widget.Toolbar>
+            app:logo="@drawable/logo"
+            app:popupTheme="@style/Theme.ComfyLearn.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

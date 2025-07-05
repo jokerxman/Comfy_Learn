@@ -9,5 +9,4 @@
     <dimen name="slot_padding_top_bottom">4dp</dimen>
     <dimen name="slot_min_width">40dp</dimen>
     <dimen name="slot_min_height">48dp</dimen>
-    <dimen name="slot_margin">4dp</dimen>
 </resources>
