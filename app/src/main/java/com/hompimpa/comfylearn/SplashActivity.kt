@@ -48,17 +48,6 @@ class SplashActivity : BaseActivity() {
             setContentView(R.layout.activity_splash)
         }
 
-        setContentView(R.layout.activity_splash)
-
-        lifecycleScope.launch {
-            val isDarkModeActive = settingPreferences.getThemeSetting().first()
-            if (isDarkModeActive) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-        }
-
         Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(this@SplashActivity, LoginActivity::class.java)
             startActivity(intent)

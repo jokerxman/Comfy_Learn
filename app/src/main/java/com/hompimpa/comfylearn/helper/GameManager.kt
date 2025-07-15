@@ -28,10 +28,4 @@ class GameManager(private val context: Context) {
             settings[PROBLEMS_SOLVED_KEY] = currentCount + 1
         }
     }
-
-    suspend fun resetProgress() {
-        context.mathGameDataStore.edit { settings ->
-            settings[PROBLEMS_SOLVED_KEY] = 0
-        }
-    }
 }

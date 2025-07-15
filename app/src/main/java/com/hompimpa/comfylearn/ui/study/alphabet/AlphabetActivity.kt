@@ -2,43 +2,42 @@ package com.hompimpa.comfylearn.ui.study.alphabet
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
+import android.widget.ImageButton
+import androidx.core.content.edit
 import androidx.fragment.app.commit
 import com.hompimpa.comfylearn.R
-import com.hompimpa.comfylearn.databinding.ActivityAlphabetBinding
+import com.hompimpa.comfylearn.helper.AppConstants
 import com.hompimpa.comfylearn.helper.BaseActivity
-import com.hompimpa.comfylearn.helper.setOnSoundClickListener
 import com.hompimpa.comfylearn.ui.HomeActivity
 import com.hompimpa.comfylearn.ui.study.number.NumberActivity
 
 class AlphabetActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityAlphabetBinding
-    private val viewModel: AlphabetViewModel by viewModels()
+    private lateinit var nextButton: ImageButton
+    private lateinit var backButton: ImageButton
+    private lateinit var homeButton: ImageButton
+    private lateinit var changeButton: ImageButton
+    private var currentLetter: Char = 'A'
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAlphabetBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_alphabet)
 
-        val startLetter = intent.getCharExtra("letter", 'A')
-        viewModel.setInitialLetter(startLetter)
-        viewModel.markAsVisited()
+        nextButton = findViewById(R.id.nextButton)
+        backButton = findViewById(R.id.backButton)
+        homeButton = findViewById(R.id.homeButton)
+        changeButton = findViewById(R.id.changeButton)
 
-        setupClickListeners()
-        observeViewModel()
-    }
+        currentLetter = intent.getCharExtra("letter", 'A')
 
-    private fun setupClickListeners() {
-        binding.nextButton.setOnSoundClickListener { viewModel.nextLetter() }
-        binding.backButton.setOnSoundClickListener { viewModel.previousLetter() }
-        binding.homeButton.setOnSoundClickListener { navigateToHome() }
-        binding.changeButton.setOnSoundClickListener { navigateToOther() }
-    }
+        loadAlphabetFragment(currentLetter)
 
-    private fun observeViewModel() {
-        viewModel.currentLetter.observe(this) { letter ->
-            loadAlphabetFragment(letter)
+        nextButton.setOnClickListener { navigateToLetter(currentLetter + 1) }
+        backButton.setOnClickListener { navigateToLetter(currentLetter - 1) }
+        homeButton.setOnClickListener { navigateToHome() }
+        changeButton.setOnClickListener { navigateToOther() }
+        getSharedPreferences(AppConstants.PREFS_PROGRESSION, MODE_PRIVATE).edit {
+            putBoolean(AppConstants.getAlphabetVisitedKey(), true)
         }
     }
 
@@ -48,13 +47,22 @@ class AlphabetActivity : BaseActivity() {
         }
     }
 
+    private fun navigateToLetter(letter: Char) {
+        if (letter in 'A'..'Z') {
+            currentLetter = letter
+            loadAlphabetFragment(letter)
+        }
+    }
+
     private fun navigateToHome() {
-        startActivity(Intent(this, HomeActivity::class.java))
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
         finish()
     }
 
     private fun navigateToOther() {
-        val intent = Intent(this, NumberActivity::class.java).putExtra("number", 1)
+        val intent = Intent(this, NumberActivity::class.java)
+        intent.putExtra("number", 1)
         startActivity(intent)
         finish()
     }
