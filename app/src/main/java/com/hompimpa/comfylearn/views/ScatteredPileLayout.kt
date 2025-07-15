@@ -18,25 +18,19 @@ class ScatteredPileLayout @JvmOverloads constructor(
 
     private val random = Random(System.currentTimeMillis())
     private val tempCurrentChildRect = RectF()
-    private val tempCheckRectWithPadding = RectF()
-    private val tempFallbackRect = RectF()
     private val placedChildRects = mutableListOf<RectF>()
 
     data class ChildState(
         var x: Float = 0f,
         var y: Float = 0f,
         var rotation: Float = 0f,
-        var initialized: Boolean = false,
-        var lastLayoutWidth: Int = 0,
-        var lastLayoutHeight: Int = 0,
-        var isUsed: Boolean = false
+        var initialized: Boolean = false
     )
 
     private val childStates = mutableMapOf<View, ChildState>()
 
     var maxRotationDegrees: Float = 25f
     var positionSpreadFactor: Float = 0.8f
-    var paddingBetweenViews: Int = 10
     private val maxPlacementAttempts: Int = 100
 
     init {
@@ -47,14 +41,8 @@ class ScatteredPileLayout @JvmOverloads constructor(
                 defStyleAttr,
                 0
             ) {
-                maxRotationDegrees = getFloat(
-                    R.styleable.ScatteredPileLayout_maxRotationDegrees,
-                    25f
-                )
-                positionSpreadFactor = getFloat(
-                    R.styleable.ScatteredPileLayout_positionSpreadFactor,
-                    0.8f
-                ).coerceIn(0.1f, 1.0f)
+                maxRotationDegrees = getFloat(R.styleable.ScatteredPileLayout_maxRotationDegrees, 25f)
+                positionSpreadFactor = getFloat(R.styleable.ScatteredPileLayout_positionSpreadFactor, 0.8f).coerceIn(0.1f, 1.0f)
             }
         }
     }
@@ -71,26 +59,6 @@ class ScatteredPileLayout @JvmOverloads constructor(
         return MarginLayoutParams(p)
     }
 
-    override fun checkLayoutParams(p: LayoutParams?): Boolean {
-        return p is MarginLayoutParams
-    }
-
-    override fun onViewAdded(child: View?) {
-        super.onViewAdded(child)
-        child?.let {
-            if (!childStates.containsKey(it)) {
-                childStates[it] = ChildState()
-            }
-        }
-    }
-
-    override fun onViewRemoved(child: View?) {
-        child?.let {
-            childStates.remove(it)
-        }
-        super.onViewRemoved(child)
-    }
-
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var maxChildWidthWithPadding = 0
         var maxChildHeightWithPadding = 0
@@ -102,44 +70,22 @@ class ScatteredPileLayout @JvmOverloads constructor(
             measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0)
 
             val lp = child.layoutParams as MarginLayoutParams
-            maxChildWidthWithPadding =
-                maxOf(maxChildWidthWithPadding, child.measuredWidth + lp.leftMargin + lp.rightMargin)
-            maxChildHeightWithPadding =
-                maxOf(maxChildHeightWithPadding, child.measuredHeight + lp.topMargin + lp.bottomMargin)
+            maxChildWidthWithPadding = maxOf(maxChildWidthWithPadding, child.measuredWidth + lp.leftMargin + lp.rightMargin)
+            maxChildHeightWithPadding = maxOf(maxChildHeightWithPadding, child.measuredHeight + lp.topMargin + lp.bottomMargin)
         }
 
         val desiredWidth = resolveSize(paddingLeft + paddingRight + maxChildWidthWithPadding, widthMeasureSpec)
-        val desiredHeight = resolveSize(
-            paddingTop + paddingBottom + maxChildHeightWithPadding,
-            heightMeasureSpec
-        )
+        val desiredHeight = resolveSize(paddingTop + paddingBottom + maxChildHeightWithPadding, heightMeasureSpec)
         setMeasuredDimension(desiredWidth, desiredHeight)
-
-        if (MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.UNSPECIFIED &&
-            MeasureSpec.getMode(heightMeasureSpec) != MeasureSpec.UNSPECIFIED) {
-            val currentLayoutWidth = MeasureSpec.getSize(widthMeasureSpec)
-            val currentLayoutHeight = MeasureSpec.getSize(heightMeasureSpec)
-            childStates.values.forEach { state ->
-                if (state.lastLayoutWidth != currentLayoutWidth || state.lastLayoutHeight != currentLayoutHeight) {
-                    state.initialized = false
-                    state.lastLayoutWidth = currentLayoutWidth
-                    state.lastLayoutHeight = currentLayoutHeight
-                }
-            }
-        }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         val parentLeft = paddingLeft
         val parentTop = paddingTop
-        val parentRight = r - l - paddingRight
-        val parentBottom = b - t - paddingBottom
-        val availableWidth = parentRight - parentLeft
-        val availableHeight = parentBottom - parentTop
+        val availableWidth = r - l - paddingLeft - paddingRight
+        val availableHeight = b - t - paddingTop - paddingBottom
 
-        if (availableWidth <= 0 || availableHeight <= 0) {
-            return
-        }
+        if (availableWidth <= 0 || availableHeight <= 0) return
 
         placedChildRects.clear()
 
@@ -164,24 +110,13 @@ class ScatteredPileLayout @JvmOverloads constructor(
             val childState = childStates.getOrPut(child) { ChildState() }
 
             if (changed || !childState.initialized) {
-                calculateAndSetChildPosition(
-                    child,
-                    childState,
-                    lp,
-                    childWidth,
-                    childHeight,
-                    parentLeft,
-                    parentTop,
-                    availableWidth,
-                    availableHeight
-                )
+                calculateAndSetChildPosition(childState, lp, childWidth, childHeight, parentLeft, parentTop, availableWidth, availableHeight)
             }
             applyChildState(child, childState, parentLeft + lp.leftMargin, parentTop + lp.topMargin)
         }
     }
 
     private fun calculateAndSetChildPosition(
-        child: View,
         childState: ChildState,
         lp: MarginLayoutParams,
         childWidth: Int,
@@ -204,35 +139,17 @@ class ScatteredPileLayout @JvmOverloads constructor(
             val randomOffsetX = if (constrainedPlacementWidth > 1) random.nextInt(constrainedPlacementWidth) else 0
             val randomOffsetY = if (constrainedPlacementHeight > 1) random.nextInt(constrainedPlacementHeight) else 0
 
-            val baseOffsetX = ((availableWidth - effectiveSpreadWidth) / 2f).toInt().coerceAtLeast(0)
-            val baseOffsetY = ((availableHeight - effectiveSpreadHeight) / 2f).toInt().coerceAtLeast(0)
+            val proposedX = (parentLeft + lp.leftMargin + randomOffsetX).toFloat()
+            val proposedY = (parentTop + lp.topMargin + randomOffsetY).toFloat()
 
-            val proposedX = (parentLeft + lp.leftMargin + baseOffsetX + randomOffsetX).toFloat()
-            val proposedY = (parentTop + lp.topMargin + baseOffsetY + randomOffsetY).toFloat()
+            tempCurrentChildRect[proposedX, proposedY, proposedX + childWidth] = proposedY + childHeight
 
-            tempCurrentChildRect.set(proposedX, proposedY, proposedX + childWidth, proposedY + childHeight)
-
-            var overlaps = false
-            for (placedRect in placedChildRects) {
-                tempCheckRectWithPadding.set(
-                    placedRect.left - paddingBetweenViews,
-                    placedRect.top - paddingBetweenViews,
-                    placedRect.right + paddingBetweenViews,
-                    placedRect.bottom + paddingBetweenViews
-                )
-                if (RectF.intersects(tempCurrentChildRect, tempCheckRectWithPadding)) {
-                    overlaps = true
-                    break
-                }
-            }
-
-            if (!overlaps) {
+            // Check for overlaps with already placed children
+            if (placedChildRects.none { RectF.intersects(tempCurrentChildRect, it) }) {
                 childState.x = proposedX
                 childState.y = proposedY
                 childState.rotation = (random.nextFloat() * maxRotationDegrees * 2) - maxRotationDegrees
                 childState.initialized = true
-                childState.lastLayoutWidth = availableWidth + this.paddingLeft + this.paddingRight
-                childState.lastLayoutHeight = availableHeight + this.paddingTop + this.paddingBottom
 
                 placedChildRects.add(RectF(tempCurrentChildRect))
                 positionFound = true
@@ -240,14 +157,12 @@ class ScatteredPileLayout @JvmOverloads constructor(
             attempt++
         }
 
+        // Fallback position if no valid position was found
         if (!positionFound) {
             childState.x = (parentLeft + lp.leftMargin + (availableWidth - childWidth) / 2f).toFloat()
             childState.y = (parentTop + lp.topMargin + (availableHeight - childHeight) / 2f).toFloat()
             childState.rotation = (random.nextFloat() * maxRotationDegrees * 2) - maxRotationDegrees
             childState.initialized = true
-
-            tempFallbackRect.set(childState.x, childState.y, childState.x + childWidth, childState.y + childHeight)
-            placedChildRects.add(RectF(tempFallbackRect))
         }
     }
 
@@ -274,24 +189,9 @@ class ScatteredPileLayout @JvmOverloads constructor(
         invalidate()
     }
 
-    fun requestChildLayoutUpdate(child: View, forceRecalculatePosition: Boolean = false) {
-        val childState = childStates[child]
-        if (childState != null) {
-            if (forceRecalculatePosition) {
-                childState.initialized = false
-            }
-            requestLayout()
-            invalidate()
-        } else {
-            rescatterChildren()
-        }
-    }
-
-    fun bringChildToFrontVisually(child: View) {
-        if (indexOfChild(child) < 0) {
-            return
-        }
-        super.bringChildToFront(child)
+    fun bringChildToFrontZ(child: View) {
+        removeView(child)
+        addView(child)
         invalidate()
     }
 }

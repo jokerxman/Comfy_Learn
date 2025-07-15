@@ -23,6 +23,7 @@ import com.hompimpa.comfylearn.databinding.ActivityFillInBinding
 import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.helper.LetterOptionsAdapter
 import com.hompimpa.comfylearn.helper.Question
+import com.hompimpa.comfylearn.helper.SoundManager
 import com.hompimpa.comfylearn.ui.games.DifficultySelectionActivity
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -93,6 +94,7 @@ class FillInActivity : BaseActivity() {
         Log.d(TAG, "Game Started - Category: $category, Difficulty: $difficulty")
 
         binding.customBackButton.setOnClickListener {
+            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
             setGameResultAndFinish()
         }
 
@@ -171,6 +173,7 @@ class FillInActivity : BaseActivity() {
         if (allRequiredLettersFilled) {
             if (userAnswer.equals(cq.word, ignoreCase = true)) {
                 if (!isRestoring) {
+                    SoundManager.playSound(SoundManager.Sound.CORRECT_ANSWER)
                     questionsSuccessfullyAnsweredThisSession++
                     answeredWordsThisSession.add(cq.word)
                     Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show()
@@ -178,11 +181,13 @@ class FillInActivity : BaseActivity() {
                 if (questions.isNotEmpty()) {
                     setupQuestion()
                 } else {
+                    SoundManager.playSound(SoundManager.Sound.CORRECT_ANSWER)
                     Toast.makeText(this, "Congratulations! You've completed all questions!", Toast.LENGTH_LONG).show()
                     setGameResultAndFinish()
                 }
             } else {
                 if (!isRestoring) {
+                    SoundManager.playSound(SoundManager.Sound.INCORRECT_ANSWER)
                     Toast.makeText(this, "Not quite, try again!", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -209,11 +214,21 @@ class FillInActivity : BaseActivity() {
         try {
             val appContext = applicationContext
             val currentConfig = appContext.resources.configuration
-            val englishConfig = Configuration(currentConfig)
-            englishConfig.setLocale(Locale.ENGLISH)
-            val englishContext = appContext.createConfigurationContext(englishConfig)
-            val englishResources = englishContext.resources
-            val wordArray = englishResources.getStringArray(categoryResourceId)
+            val selectedLocale = if (Locale.getDefault().language == "id") {
+                // If the language is Indonesian, set the locale to Indonesian
+                Configuration(currentConfig).apply {
+                    setLocale(Locale("id"))
+                }
+            } else {
+                // Default to English
+                Configuration(currentConfig).apply {
+                    setLocale(Locale.ENGLISH)
+                }
+            }
+
+            val localizedContext = appContext.createConfigurationContext(selectedLocale)
+            val localizedResources = localizedContext.resources
+            val wordArray = localizedResources.getStringArray(categoryResourceId)
 
             if (wordArray.isEmpty()) {
                 return
@@ -231,6 +246,7 @@ class FillInActivity : BaseActivity() {
                 .show()
         }
     }
+
 
     private fun getCategoryResourceId(): Int {
         return when (category.lowercase(Locale.getDefault())) {
@@ -451,7 +467,9 @@ class FillInActivity : BaseActivity() {
         binding.hintButton.visibility =
             if (difficulty == DIFFICULTY_EASY) View.VISIBLE else View.GONE
         if (difficulty == DIFFICULTY_EASY) {
-            binding.hintButton.setOnClickListener { giveHint() }
+            binding.hintButton.setOnClickListener {
+                SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
+                giveHint() }
         }
         updateHintButtonState()
     }
@@ -506,6 +524,7 @@ class FillInActivity : BaseActivity() {
 
     private fun setupUndoButton() {
         binding.deleteButton.setOnClickListener {
+            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
             for (i in letterSlots.indices.reversed()) {
                 val slot = letterSlots[i]
                 if (currentQuestion != null && i < currentQuestion!!.word.length &&

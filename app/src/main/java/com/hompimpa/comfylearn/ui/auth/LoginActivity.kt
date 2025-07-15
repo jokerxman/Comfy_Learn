@@ -24,6 +24,7 @@ import com.google.firebase.ktx.Firebase
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivityLoginBinding
 import com.hompimpa.comfylearn.helper.BaseActivity
+import com.hompimpa.comfylearn.helper.SoundManager
 import com.hompimpa.comfylearn.ui.HomeActivity
 import kotlinx.coroutines.launch
 
@@ -40,12 +41,17 @@ class LoginActivity : BaseActivity() {
 
         auth = Firebase.auth
 
-        binding.btnLogin.setOnClickListener { emailLogin() }
+        binding.btnLogin.setOnClickListener {
+            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
+            emailLogin() }
         binding.tvToRegister.setOnClickListener {
+            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
             startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
             finish()
         }
-        binding.signInButton.setOnClickListener { signIn() }
+        binding.signInButton.setOnClickListener {
+            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
+            signIn() }
     }
 
 

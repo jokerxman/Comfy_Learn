@@ -23,6 +23,7 @@ import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivityMathGameBinding
 import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.helper.GameManager
+import com.hompimpa.comfylearn.helper.SoundManager
 import kotlinx.coroutines.launch
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -77,10 +78,14 @@ class MathGameActivity : BaseActivity() {
             )
         )
         allAnswerButtons.forEach { button ->
-            button.setOnClickListener { onAnswerChoiceClicked(it as Button) }
+            button.setOnClickListener {
+                SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
+                onAnswerChoiceClicked(it as Button) }
         }
 
-        binding.nextProblemButton.setOnClickListener { generateNewProblem() }
+        binding.nextProblemButton.setOnClickListener {
+            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
+            generateNewProblem() }
 
         applyDifficultySettings()
         generateNewProblem()
@@ -351,12 +356,14 @@ class MathGameActivity : BaseActivity() {
         activeAnswerButtons.forEach { it.isEnabled = false }
 
         if (chosenAnswer == expectedAnswer) {
+            SoundManager.playSound(SoundManager.Sound.CORRECT_ANSWER)
             Toast.makeText(this, getString(R.string.feedback_correct), Toast.LENGTH_SHORT).show()
             lifecycleScope.launch { gameManager.incrementProblemsSolved() }
             button.setBackgroundColor(ContextCompat.getColor(this, R.color.green_balloon))
             animateCorrectAnswer(button)
             binding.nextProblemButton.visibility = View.VISIBLE
         } else {
+            SoundManager.playSound(SoundManager.Sound.INCORRECT_ANSWER)
             Toast.makeText(this, getString(R.string.feedback_incorrect_try_again), Toast.LENGTH_SHORT).show()
             button.setBackgroundColor(ContextCompat.getColor(this, R.color.feedback_incorrect_bg))
             Handler(Looper.getMainLooper()).postDelayed({

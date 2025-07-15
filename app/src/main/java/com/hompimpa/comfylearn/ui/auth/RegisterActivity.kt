@@ -12,6 +12,7 @@ import com.google.firebase.auth.userProfileChangeRequest
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivityRegisterBinding
 import com.hompimpa.comfylearn.helper.BaseActivity
+import com.hompimpa.comfylearn.helper.SoundManager
 import com.hompimpa.comfylearn.ui.HomeActivity
 
 class RegisterActivity : BaseActivity() {
@@ -29,6 +30,7 @@ class RegisterActivity : BaseActivity() {
         auth.setLanguageCode("en")
 
         binding.btnRegister.setOnClickListener {
+            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
             val email = binding.edRegisterEmail.text.toString().trim()
             val password = binding.edRegisterPassword.text.toString().trim()
             val fullName = binding.edRegisterName.text.toString().trim()
@@ -37,6 +39,7 @@ class RegisterActivity : BaseActivity() {
         }
 
         binding.tvToLogin.setOnClickListener {
+            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
             startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
             finish()
         }

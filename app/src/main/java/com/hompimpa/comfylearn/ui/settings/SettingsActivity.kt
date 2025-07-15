@@ -12,6 +12,7 @@ import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivitySettingsBinding
 import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.helper.SettingPreferences
+import com.hompimpa.comfylearn.helper.SoundManager
 import com.hompimpa.comfylearn.helper.dataStore
 import com.hompimpa.comfylearn.ui.auth.LoginActivity
 import kotlinx.coroutines.flow.first
@@ -58,6 +59,7 @@ class SettingsActivity : BaseActivity() {
 
     private fun setupListeners() {
         binding.btnApply.setOnClickListener {
+            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
             applyChanges()
         }
 

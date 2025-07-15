@@ -1,9 +1,13 @@
 package com.hompimpa.comfylearn.ui.games.puzzle
 
+import android.content.ContentValues.TAG
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.PictureDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -12,12 +16,18 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
+import com.caverock.androidsvg.SVG
+import com.caverock.androidsvg.SVGParseException
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivityPuzzleBinding
 import com.hompimpa.comfylearn.helper.AppConstants
 import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.helper.GameContentProvider
+import com.hompimpa.comfylearn.helper.SoundManager
 import com.hompimpa.comfylearn.ui.games.DifficultySelectionActivity
+import java.io.IOException
+import java.io.InputStream
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.random.Random as KotlinRandom
@@ -31,18 +41,22 @@ class PuzzleActivity : BaseActivity() {
 
     private val targetSlots = mutableListOf<TextView>()
     private val optionTileViews = mutableListOf<TextView>()
-    private val slotFilledBy = mutableMapOf<Int, Char?>()
-    private val optionTileDragStartRotations = mutableMapOf<View, Float>()
+
+    // FIX: This map is now critical. It tracks which tile view is in which slot.
+    private val slotFilledBy = mutableMapOf<Int, TextView?>()
     private val touchSlop by lazy { ViewConfiguration.get(this).scaledTouchSlop }
 
     private var currentlyDraggedView: View? = null
-    private var originalXOfDraggedView: Float = 0f
-    private var originalYOfDraggedView: Float = 0f
     private var dXTouch: Float = 0f
     private var dYTouch: Float = 0f
     private var isCurrentlyDragging: Boolean = false
     private var initialTouchXRaw: Float = 0f
     private var initialTouchYRaw: Float = 0f
+
+    // NEW: Store the original position in case a drag is invalid.
+    private var originalTileX: Float = 0f
+    private var originalTileY: Float = 0f
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,17 +69,22 @@ class PuzzleActivity : BaseActivity() {
             ?: "animal"
 
         title =
-            "Puzzle: ${currentCategory.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} ($currentDifficulty)"
+            "Puzzle: ${currentCategory.replaceFirstChar { it.titlecase(Locale.getDefault()) }} ($currentDifficulty)"
 
         loadNextWord()
 
-        binding.buttonCheckWord.setOnClickListener { checkWord() }
+        binding.buttonCheckWord.setOnClickListener {
+            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
+            checkWord()
+        }
         binding.buttonPlayAgain.setOnClickListener {
+            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
             binding.layoutFeedback.visibility = View.GONE
             GameContentProvider.resetUsedWordsForCategory(currentCategory)
             loadNextWord()
         }
         binding.buttonNextWord.setOnClickListener {
+            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
             binding.layoutFeedback.visibility = View.GONE
             loadNextWord()
         }
@@ -85,17 +104,18 @@ class PuzzleActivity : BaseActivity() {
         binding.textViewFeedback.visibility = View.INVISIBLE
         currentlyDraggedView = null
 
-        val word = GameContentProvider.getNextWord(this, currentCategory, currentDifficulty)
-
-        if (word == null) {
-            handleNoMoreWords()
-            return
-        }
+        val word =
+            GameContentProvider.getNextWord(this, currentCategory, currentDifficulty) ?: run {
+                handleNoMoreWords()
+                return
+            }
         currentWord = word.uppercase(Locale.getDefault())
+
+        displayImageFromAssets(currentWord, currentCategory)
 
         slotFilledBy.clear()
         setupTargetSlots(currentWord)
-        setupCharacterOptions(currentWord, currentDifficulty)
+        setupCharacterOptions(currentWord)
 
         binding.layoutCharacterOptions.post {
             binding.layoutCharacterOptions.rescatterChildren()
@@ -106,15 +126,9 @@ class PuzzleActivity : BaseActivity() {
         val allUsed = GameContentProvider.allWordsUsed(this, currentCategory, currentDifficulty)
         val message = if (allUsed) {
             savePuzzleProgress(currentCategory, currentDifficulty, isCompleted = true)
-            getString(
-                R.string.congratulations_all_words_category,
-                currentCategory.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
+            getString(R.string.congratulations_all_words_category, currentCategory)
         } else {
-            getString(
-                R.string.no_more_words_puzzle,
-                currentCategory.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
-                currentDifficulty
-            )
+            getString(R.string.no_more_words_puzzle, currentCategory, currentDifficulty)
         }
         showFeedback(message, allUsed, isGameEnd = true)
         binding.layoutWordConstruction.visibility = View.GONE
@@ -132,17 +146,19 @@ class PuzzleActivity : BaseActivity() {
             slotView.tag = i
             binding.layoutTargetSlots.addView(slotView)
             targetSlots.add(slotView)
-            slotFilledBy[i] = null
+            slotFilledBy[i] = null // Initialize all slots as empty
+
+            // NEW: Allow dragging a letter *out* of a slot
+            slotView.setOnTouchListener(TargetSlotTouchListener(slotView))
         }
     }
 
-    private fun setupCharacterOptions(word: String, difficulty: String) {
+    private fun setupCharacterOptions(word: String) {
         binding.layoutCharacterOptions.removeAllViews()
         optionTileViews.clear()
 
         val alphabetSource = GameContentProvider.getAlphabet(this)
-        val optionPool =
-            generateOptionPool(word.uppercase(Locale.getDefault()), alphabetSource)
+        val optionPool = generateOptionPool(word.uppercase(Locale.getDefault()), alphabetSource)
 
         if (optionPool.isEmpty()) {
             showTemporaryFeedback("Error: Could not generate character options.", false)
@@ -159,19 +175,15 @@ class PuzzleActivity : BaseActivity() {
             tileView.text = char.toString()
             tileView.visibility = View.VISIBLE
             tileView.setOnTouchListener(OptionTileTouchListener(tileView))
+
             binding.layoutCharacterOptions.addView(tileView)
             optionTileViews.add(tileView)
         }
 
-        binding.layoutCharacterOptions.post {
-            binding.layoutCharacterOptions.rescatterChildren()
-        }
+        binding.layoutCharacterOptions.requestLayout()
     }
 
-    private fun generateOptionPool(
-        word: String,
-        alphabet: List<Char>
-    ): List<Char> {
+    private fun generateOptionPool(word: String, alphabet: List<Char>): List<Char> {
         val distractorsToAddBasedOnDifficulty = when (currentDifficulty) {
             DifficultySelectionActivity.DIFFICULTY_EASY -> 1
             DifficultySelectionActivity.DIFFICULTY_MEDIUM -> 2
@@ -194,45 +206,11 @@ class PuzzleActivity : BaseActivity() {
         return currentPool.take(finalPoolSize).shuffled(KotlinRandom(System.nanoTime()))
     }
 
-    private fun returnCharToOptionsManual(charToReturn: Char) {
-        val tileToMakeVisible = optionTileViews.find {
-            it.text.firstOrNull() == charToReturn && it.isInvisible
-        }
-
-        if (tileToMakeVisible != null) {
-            tileToMakeVisible.visibility = View.VISIBLE
-            tileToMakeVisible.setOnTouchListener(OptionTileTouchListener(tileToMakeVisible))
-
-            val originalState = binding.layoutCharacterOptions.getChildState(tileToMakeVisible)
-
-            if (originalState != null && originalState.initialized) {
-                tileToMakeVisible.animate()
-                    .x(originalState.x)
-                    .y(originalState.y)
-                    .rotation(originalState.rotation)
-                    .setDuration(150)
-                    .withEndAction {
-                        binding.layoutCharacterOptions.requestLayout()
-                        binding.layoutCharacterOptions.invalidate()
-                    }
-                    .start()
-            } else {
-                originalState?.initialized = false
-                binding.layoutCharacterOptions.requestChildLayoutUpdate(tileToMakeVisible, true)
-            }
-        } else {
-            binding.layoutCharacterOptions.post {
-                binding.layoutCharacterOptions.rescatterChildren()
-            }
-        }
-    }
-
+    // REFACTORED: This entire listener is now much more robust.
     private inner class OptionTileTouchListener(private val tileView: TextView) :
         View.OnTouchListener {
         override fun onTouch(view: View, event: MotionEvent): Boolean {
             if (view != tileView || tileView.isInvisible) return false
-
-            val charOfTile = tileView.text.firstOrNull() ?: return false
 
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -240,19 +218,14 @@ class PuzzleActivity : BaseActivity() {
                     initialTouchXRaw = event.rawX
                     initialTouchYRaw = event.rawY
 
+                    originalTileX = tileView.x // Still useful for snapping back from outside
+                    originalTileY = tileView.y
+
                     currentlyDraggedView = tileView
-                    val locationOnScreen = IntArray(2)
-                    tileView.getLocationOnScreen(locationOnScreen)
-                    dXTouch = locationOnScreen[0] - event.rawX
-                    dYTouch = locationOnScreen[1] - event.rawY
+                    binding.layoutCharacterOptions.bringChildToFrontZ(tileView)
+                    dXTouch = tileView.x - event.rawX
+                    dYTouch = tileView.y - event.rawY
 
-                    originalXOfDraggedView = tileView.x
-                    originalYOfDraggedView = tileView.y
-                    optionTileDragStartRotations[tileView] = tileView.rotation
-
-                    if (tileView.parent == binding.layoutCharacterOptions) {
-                        binding.layoutCharacterOptions.bringChildToFrontVisually(tileView)
-                    }
                     return true
                 }
 
@@ -268,51 +241,44 @@ class PuzzleActivity : BaseActivity() {
                             return true
                         }
                     }
-                    val parentLocation = IntArray(2)
-                    (tileView.parent as View).getLocationOnScreen(parentLocation)
-                    tileView.x = (event.rawX + dXTouch) - parentLocation[0]
-                    tileView.y = (event.rawY + dYTouch) - parentLocation[1]
+
+                    tileView.x = event.rawX + dXTouch
+                    tileView.y = event.rawY + dYTouch
+
                     return true
                 }
 
                 MotionEvent.ACTION_UP -> {
                     if (currentlyDraggedView != tileView) return false
+                    isCurrentlyDragging = false
+                    currentlyDraggedView = null
 
-                    if (!isCurrentlyDragging) {
-                        currentlyDraggedView = null
-                        return true
-                    }
-
-                    var successfullyDropped = false
-                    for (i in targetSlots.indices) {
-                        val targetSlotView = targetSlots[i]
-                        if (isViewOverView(targetSlotView, event.rawX, event.rawY)) {
-                            handleDropOnSlot(charOfTile, i, tileView)
-                            successfullyDropped = true
+                    // 1. Check if dropped on a target slot
+                    var droppedOnSlot = false
+                    for (slotView in targetSlots) {
+                        if (isViewOverView(slotView, event.rawX, event.rawY)) {
+                            val slotIndex = slotView.tag as Int
+                            placeTileInSlot(tileView, slotView, slotIndex)
+                            droppedOnSlot = true
                             break
                         }
                     }
 
-                    if (!successfullyDropped) {
-                        tileView.animate()
-                            .x(originalXOfDraggedView)
-                            .y(originalYOfDraggedView)
-                            .rotation(optionTileDragStartRotations[tileView] ?: 0f)
-                            .setDuration(200)
-                            .withEndAction {
-                                val state = binding.layoutCharacterOptions.getChildState(tileView)
-                                state?.let {
-                                    it.x = tileView.x
-                                    it.y = tileView.y
-                                    it.rotation = tileView.rotation
-                                    it.initialized = true
-                                }
-                                binding.layoutCharacterOptions.requestLayout()
-                                binding.layoutCharacterOptions.invalidate()
-                            }.start()
+                    if (droppedOnSlot) {
+                        return true // We're done
                     }
-                    isCurrentlyDragging = false
-                    currentlyDraggedView = null
+
+                    // ADJUSTMENT: New logic for when not dropped on a slot
+                    // 2. Check if dropped back inside the options pile
+                    val optionsPile = binding.layoutCharacterOptions
+                    if (isViewOverView(optionsPile, event.rawX, event.rawY)) {
+                        // Yes, it's inside the pile. Let it stay at the new position.
+                        letTileStayAtNewPosition(tileView)
+                    } else {
+                        // 3. It was dropped outside all valid areas. Snap it back.
+                        returnTileToPile(tileView)
+                    }
+
                     return true
                 }
             }
@@ -320,31 +286,77 @@ class PuzzleActivity : BaseActivity() {
         }
     }
 
-    private fun handleDropOnSlot(
-        droppedChar: Char,
-        targetSlotIndex: Int,
-        fromOptionTile: TextView?
-    ) {
-        val targetSlotView = targetSlots[targetSlotIndex]
-        val charCurrentlyInTargetSlot = slotFilledBy[targetSlotIndex]
+    private fun letTileStayAtNewPosition(tile: TextView) {
+        // The tile's X and Y are already correct from the ACTION_MOVE event.
+        // We just need to update its state in the ScatteredPileLayout.
+        val state = binding.layoutCharacterOptions.getChildState(tile)
+        state?.let {
+            it.x = tile.x
+            it.y = tile.y
+            it.initialized = true
+        }
+    }
 
-        if (charCurrentlyInTargetSlot != null && charCurrentlyInTargetSlot != droppedChar) {
-            returnCharToOptionsManual(charCurrentlyInTargetSlot)
+    private inner class TargetSlotTouchListener(private val slotView: TextView) :
+        View.OnTouchListener {
+        override fun onTouch(view: View, event: MotionEvent): Boolean {
+            if (event.action == MotionEvent.ACTION_DOWN && slotView.text.isNotEmpty()) {
+                val slotIndex = slotView.tag as Int
+                val tileToMove = slotFilledBy[slotIndex] ?: return false
+
+                // Make the tile visible again and start dragging it
+                tileToMove.x = slotView.x + binding.layoutTargetSlots.x
+                tileToMove.y = slotView.y + binding.layoutTargetSlots.y
+                tileToMove.isVisible = true
+
+                // Clear the slot
+                slotView.text = ""
+                slotFilledBy[slotIndex] = null
+
+                // Manually dispatch a DOWN event to the tile's listener to initiate a drag
+                val downEvent = MotionEvent.obtain(event)
+                downEvent.action = MotionEvent.ACTION_DOWN
+                tileToMove.dispatchTouchEvent(downEvent)
+                downEvent.recycle()
+                return true
+            }
+            return false
+        }
+    }
+
+    private fun placeTileInSlot(tileView: TextView, slotView: TextView, slotIndex: Int) {
+        // If the slot is already filled, return the existing tile to the pile.
+        slotFilledBy[slotIndex]?.let { existingTile ->
+            returnTileToPile(existingTile)
         }
 
-        targetSlotView.text = droppedChar.toString()
-        slotFilledBy[targetSlotIndex] = droppedChar
-        targetSlotView.background =
-            ContextCompat.getDrawable(this, R.drawable.target_slot_background_selector)
-        targetSlotView.setOnTouchListener(null)
+        // Place the new tile
+        slotView.text = tileView.text
+        tileView.isInvisible = true // Hide the original tile from the options pile
+        slotFilledBy[slotIndex] = tileView // Associate the tile view with the slot index
 
-        fromOptionTile?.let {
-            it.visibility = View.INVISIBLE
-            it.setOnTouchListener(null)
-            val state = binding.layoutCharacterOptions.getChildState(it)
-            state?.let { s -> s.isUsed = true }
+        if (targetSlots.all { it.text.isNotEmpty() }) {
+            checkWord()
         }
-        checkWord()
+    }
+
+    private fun returnTileToPile(tile: TextView) {
+        tile.isVisible = true
+
+        val parent = tile.parent as View
+        val maxX = parent.width - tile.width
+        val maxY = parent.height - tile.height
+
+        // Return to original pre-drag position
+        tile.x = originalTileX.coerceIn(0f, maxX.toFloat())
+        tile.y = originalTileY.coerceIn(0f, maxY.toFloat())
+
+        val state = binding.layoutCharacterOptions.getChildState(tile)
+        state?.let {
+            it.x = tile.x
+            it.y = tile.y
+            it.initialized = true
+        }
     }
 
     private fun isViewOverView(
@@ -375,22 +387,26 @@ class PuzzleActivity : BaseActivity() {
             return
         }
 
+        // FIX: Build the word from the text in the target slots directly or via the map
         for (i in 0 until currentWord.length) {
-            val charInSlot = slotFilledBy[i]
+            val charInSlot = targetSlots[i].text.firstOrNull()
             if (charInSlot != null) {
                 formedWordBuilder.append(charInSlot)
             } else {
                 allSlotsFilled = false
+                SoundManager.playSound(SoundManager.Sound.INCORRECT_ANSWER)
             }
         }
 
-        if (!allSlotsFilled && formedWordBuilder.length != currentWord.length) {
+        if (!allSlotsFilled) {
             showTemporaryFeedback(getString(R.string.feedback_incomplete_puzzle), false)
+            SoundManager.playSound(SoundManager.Sound.INCORRECT_ANSWER)
             return
         }
 
         val formedWord = formedWordBuilder.toString()
         if (formedWord.equals(currentWord, ignoreCase = true)) {
+            SoundManager.playSound(SoundManager.Sound.CORRECT_ANSWER)
             savePuzzleProgress(
                 currentCategory,
                 currentDifficulty,
@@ -404,6 +420,7 @@ class PuzzleActivity : BaseActivity() {
             }
             showFeedback(getString(R.string.feedback_correct), true, isGameEnd = allWordsNowUsed)
         } else {
+            SoundManager.playSound(SoundManager.Sound.INCORRECT_ANSWER)
             showTemporaryFeedback(getString(R.string.feedback_incorrect_try_again), false)
         }
     }
@@ -460,5 +477,38 @@ class PuzzleActivity : BaseActivity() {
         binding.buttonNextWord.visibility =
             if (isCorrectOrGameEndReason && !isGameEnd) View.VISIBLE else View.GONE
         binding.buttonPlayAgain.visibility = if (isGameEnd) View.VISIBLE else View.GONE
+    }
+
+    private fun displayImageFromAssets(itemName: String, categoryName: String): Boolean {
+        // Normalize the image name
+        val normalizedImageName = itemName.lowercase(Locale.ROOT).replace(" ", "_")
+        // Construct the image path
+        val imagePath = "en/${categoryName}_${normalizedImageName}.svg"
+        Log.d(TAG, "Attempting to load image from assets: $imagePath")
+
+        try {
+            // Open the input stream for the SVG file
+            val inputStream: InputStream = assets.open(imagePath)
+            val svg: SVG = SVG.getFromInputStream(inputStream)
+            inputStream.close()
+
+            // Check if the SVG has a valid width
+            if (svg.documentWidth != -1f) {
+                val drawable: Drawable = PictureDrawable(svg.renderToPicture())
+                binding.itemImageView.setImageDrawable(drawable) // Assuming itemImageView is defined in your binding
+                Log.i(TAG, "SVG Image loaded successfully: $imagePath")
+                return true
+            } else {
+                Log.e(TAG, "SVG parsing error or invalid SVG for: $imagePath")
+                return false
+            }
+        } catch (e: IOException) {
+            Log.e(TAG, "IOException: Image not found or error reading: $imagePath", e)
+        } catch (e: SVGParseException) {
+            Log.e(TAG, "SVGParseException: Error parsing SVG: $imagePath", e)
+        } catch (e: Exception) {
+            Log.e(TAG, "General Exception loading image: $imagePath", e)
+        }
+        return false
     }
 }

@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".ui.study.arithmetic.ArithmeticActivity">
+    tools:context=".ArithmeticActivity">
 
     <!-- Views for Level Progress -->
     <TextView
         android:id="@+id/levelNameText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +35,7 @@
         android:id="@+id/questionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:textSize="48sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,38 +51,67 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:gravity="center"
+        android:baselineAligned="false"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/nextProblemButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/questionText">
 
-        <GridLayout
-            android:id="@+id/firstOperandObjectsGrid"
+        <!-- Use a nested LinearLayout for operands to manage weights -->
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:alignmentMode="alignMargins"
-            android:columnOrderPreserved="false"
-            tools:columnCount="2" />
+            android:layout_weight="3"
+            android:gravity="center_vertical">
+
+            <GridLayout
+                android:id="@+id/firstOperandObjectsGrid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:alignmentMode="alignMargins"
+                android:columnOrderPreserved="false"
+                tools:columnCount="3" />
+
+            <TextView
+                android:id="@+id/operatorTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textSize="40sp"
+                tools:text="+" />
+
+            <GridLayout
+                android:id="@+id/secondOperandObjectsGrid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:alignmentMode="alignMargins"
+                android:columnOrderPreserved="false"
+                tools:columnCount="2" />
+        </LinearLayout>
+
 
         <TextView
-            android:id="@+id/operatorTextView"
+            android:id="@+id/equalTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:textSize="40sp"
-            tools:text="+" />
+            android:text="="
+            android:textSize="40sp" />
 
+        <!-- GridLayout for the answer -->
         <GridLayout
-            android:id="@+id/secondOperandObjectsGrid"
+            android:id="@+id/answerObjectsGrid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:alignmentMode="alignMargins"
             android:columnOrderPreserved="false"
-            tools:columnCount="2" />
+            tools:columnCount="5" />
 
     </LinearLayout>
 
@@ -90,7 +120,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:text="Next Example"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

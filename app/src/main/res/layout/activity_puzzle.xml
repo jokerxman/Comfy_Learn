@@ -22,6 +22,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/itemImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@id/layoutWordConstruction"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewPuzzleInstructions"
+        app:layout_constraintDimensionRatio="H,1:1"/>
+
     <Button
         android:id="@+id/buttonCheckWord"
         android:layout_width="wrap_content"
@@ -44,7 +55,7 @@
         app:layout_constraintBottom_toTopOf="@id/buttonCheckWord"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewPuzzleInstructions">
+        app:layout_constraintTop_toBottomOf="@id/itemImageView"> <!-- Link to the ImageView -->
 
         <!-- Target slots for the word letters -->
         <LinearLayout
@@ -83,7 +94,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
-
 
     <!-- Popup-like feedback layout -->
     <LinearLayout

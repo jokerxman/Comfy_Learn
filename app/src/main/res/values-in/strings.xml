@@ -29,7 +29,13 @@
     <string name="password_must_be_at_least_6_characters">Sandi harus memiliki 6 atau lebih karakter</string>
     <string name="select_difficulty">Pilih Tingkat Kesulitan</string>
     <string name="draw_shape_description">Gambar Bentuk</string>
-
+    <string name="no_progress">Kamu Belum Menyelesaikan.</string>
+    <string name="simple_addition">Level 1: Penjumlahan Sederhana</string>
+    <string name="simple_substraction">Level 2: Pengurangan Sederhana</string>
+    <string name="addition_up">Level 3: Penjumlahan di atas 10</string>
+    <string name="substraction_up">Level 4: Pengurangan di atas 10</string>
+    <string name="congratulations">Selamat!</string>
+    <string name="start_over">Ulangi Lagi</string>
     <string-array name="animal">
         <item>Buaya</item>
         <item>Berang Berang</item>

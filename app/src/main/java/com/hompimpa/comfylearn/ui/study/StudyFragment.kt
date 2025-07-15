@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.animation.AnimationUtils
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.FragmentStudyBinding
@@ -68,7 +69,7 @@ class StudyFragment : Fragment() {
         })
 
         scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            if (scrollY > 0 && scrollIndicator.visibility == View.VISIBLE) {
+            if (scrollY > 0 && scrollIndicator.isVisible) {
                 scrollIndicator.animate().alpha(0f).setDuration(300).withEndAction {
                     scrollIndicator.visibility = View.GONE
                 }.start()
