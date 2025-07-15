@@ -17,7 +17,7 @@ class NumberActivity : BaseActivity() {
     private lateinit var backButton: ImageButton
     private lateinit var homeButton: ImageButton
     private lateinit var changeButton: ImageButton
-    private var currentLetter: Int = 0 // Default starting letter
+    private var currentLetter: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +28,6 @@ class NumberActivity : BaseActivity() {
         homeButton = findViewById(R.id.homeButton)
         changeButton = findViewById(R.id.changeButton)
 
-        // Retrieve the letter passed from the intent
         currentLetter = intent.getIntExtra("number", 0)
 
         loadAlphabetFragment(currentLetter)
@@ -58,7 +57,7 @@ class NumberActivity : BaseActivity() {
     private fun navigateToHome() {
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
-        finish() // Close AlphabetActivity to prevent back stack issues
+        finish()
     }
 
     private fun navigateToOther() {

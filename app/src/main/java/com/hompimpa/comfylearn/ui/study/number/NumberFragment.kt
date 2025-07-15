@@ -10,8 +10,8 @@ import com.hompimpa.comfylearn.R
 
 class NumberFragment : Fragment() {
 
-    private var currentLetter: Int = 0
-    private val letterImages = mapOf(
+    private var currentNumber: Int = 0
+    private val numberImages = mapOf(
         0 to R.drawable.number_0,
         1 to R.drawable.number_1,
         2 to R.drawable.number_2,
@@ -27,7 +27,7 @@ class NumberFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            currentLetter = it.getInt(ARG_NUMBER, 0)
+            currentNumber = it.getInt(ARG_NUMBER, 0)
         }
     }
 
@@ -36,14 +36,14 @@ class NumberFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_alphabet, container, false)
-        val letterImageView: ImageView = view.findViewById(R.id.letterImageView)
-        updateLetterImage(letterImageView)
+        val numberImageView: ImageView = view.findViewById(R.id.letterImageView)
+        updateNumberImage(numberImageView)
         return view
     }
 
-    private fun updateLetterImage(letterImageView: ImageView) {
-        val imageRes = letterImages[currentLetter] ?: R.drawable.ic_no_image
-        letterImageView.setImageResource(imageRes)
+    private fun updateNumberImage(numberImageView: ImageView) {
+        val imageRes = numberImages[currentNumber] ?: R.drawable.ic_no_image
+        numberImageView.setImageResource(imageRes)
     }
 
     companion object {

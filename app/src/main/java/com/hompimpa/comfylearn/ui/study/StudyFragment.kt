@@ -32,7 +32,7 @@ class StudyFragment : Fragment() {
 
         binding.buttonOpenAlphabet.setOnClickListener {
             val intent = Intent(requireContext(), AlphabetActivity::class.java)
-            intent.putExtra("letter", 'A') // Start with letter 'A'
+            intent.putExtra("letter", 'A')
             startActivity(intent)
         }
 
@@ -40,12 +40,12 @@ class StudyFragment : Fragment() {
             val intent = Intent(requireContext(), SpellingActivity::class.java)
             startActivity(intent)
         }
+
         binding.buttonOpenArithmetic.setOnClickListener {
             val intent = Intent(requireContext(), ArithmeticActivity::class.java)
             startActivity(intent)
         }
 
-        // Add the scroll indicator logic
         setupScrollIndicator()
     }
 

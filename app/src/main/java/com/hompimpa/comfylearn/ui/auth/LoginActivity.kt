@@ -43,7 +43,8 @@ class LoginActivity : BaseActivity() {
 
         binding.btnLogin.setOnClickListener {
             SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
-            emailLogin() }
+            emailLogin()
+        }
         binding.tvToRegister.setOnClickListener {
             SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
             startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
@@ -51,9 +52,9 @@ class LoginActivity : BaseActivity() {
         }
         binding.signInButton.setOnClickListener {
             SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
-            signIn() }
+            signIn()
+        }
     }
-
 
     private fun emailLogin() {
         val email = binding.edLoginEmail.text.toString().trim()
@@ -88,7 +89,6 @@ class LoginActivity : BaseActivity() {
             }
     }
 
-
     private fun signIn() {
         showLoading(true)
         val credentialManager = CredentialManager.create(this)
@@ -109,7 +109,7 @@ class LoginActivity : BaseActivity() {
                     context = this@LoginActivity,
                 )
                 handleSignIn(result)
-            } catch (e: GetCredentialException) {
+            } catch (_: GetCredentialException) {
                 showLoading(false)
                 Toast.makeText(this@LoginActivity, getString(R.string.google_sign_in_cancelled), Toast.LENGTH_SHORT).show()
             }
@@ -124,7 +124,7 @@ class LoginActivity : BaseActivity() {
                         val googleIdTokenCredential =
                             GoogleIdTokenCredential.createFrom(credential.data)
                         firebaseAuthWithGoogle(googleIdTokenCredential.idToken)
-                    } catch (e: GoogleIdTokenParsingException) {
+                    } catch (_: GoogleIdTokenParsingException) {
                         showLoading(false)
                     }
                 } else {
@@ -143,7 +143,7 @@ class LoginActivity : BaseActivity() {
             .addOnCompleteListener(this) { task ->
                 showLoading(false)
                 if (task.isSuccessful) {
-                    val user: FirebaseUser? = auth.currentUser
+                    val user: FirebaseUser ? = auth.currentUser
                     updateUI(user)
                 } else {
                     Toast.makeText(this, getString(R.string.authentication_failed), Toast.LENGTH_SHORT).show()
@@ -152,8 +152,8 @@ class LoginActivity : BaseActivity() {
             }
     }
 
-    private fun updateUI(currentUser: FirebaseUser?) {
-        if (currentUser != null) {
+    private fun updateUI(currentUser: FirebaseUser ?) {
+        if (currentUser  != null) {
             startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
             finish()
         }
@@ -169,13 +169,9 @@ class LoginActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
+        val currentUser  = auth.currentUser
+        if (currentUser  != null) {
             updateUI(currentUser)
         }
-    }
-
-    companion object {
-        private const val TAG = "LoginActivity"
     }
 }

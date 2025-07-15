@@ -12,6 +12,8 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.edit
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.FragmentGamesBinding
@@ -35,10 +37,6 @@ class GamesFragment : Fragment() {
     private var lastSelectedDifficultyPuzzle: String = DifficultySelectionActivity.DIFFICULTY_MEDIUM
     private var lastSelectedDifficultyMath: String = DifficultySelectionActivity.DIFFICULTY_MEDIUM
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
     private fun updatePuzzleProgressInPrefsFromGamesFragment(
         category: String,
         difficulty: String,
@@ -48,24 +46,24 @@ class GamesFragment : Fragment() {
             AppConstants.PREFS_PROGRESSION,
             Context.MODE_PRIVATE
         )
-        val editor = prefs.edit()
-        val progressKeyBase = AppConstants.getPuzzleProgressKey(category, difficulty)
-        val wordsSolvedKey = progressKeyBase + "_words_solved"
-        val completedKey = progressKeyBase + "_completed"
-        val previouslySolved = prefs.getInt(wordsSolvedKey, 0)
-        val currentTotalSolved = previouslySolved + newWordsSolvedCount
-        editor.putInt(wordsSolvedKey, currentTotalSolved)
-        val totalWordsInLevel = GameContentProvider.getTotalWordsForPuzzleCategory(
-            requireContext().applicationContext,
-            category,
-            difficulty
-        )
-        if (totalWordsInLevel > 0 && currentTotalSolved >= totalWordsInLevel) {
-            editor.putBoolean(completedKey, true)
-        } else {
-            editor.putBoolean(completedKey, false)
+        prefs.edit {
+            val progressKeyBase = AppConstants.getPuzzleProgressKey(category, difficulty)
+            val wordsSolvedKey = progressKeyBase + "_words_solved"
+            val completedKey = progressKeyBase + "_completed"
+            val previouslySolved = prefs.getInt(wordsSolvedKey, 0)
+            val currentTotalSolved = previouslySolved + newWordsSolvedCount
+            putInt(wordsSolvedKey, currentTotalSolved)
+            val totalWordsInLevel = GameContentProvider.getTotalWordsForPuzzleCategory(
+                requireContext().applicationContext,
+                category,
+                difficulty
+            )
+            if (totalWordsInLevel > 0 && currentTotalSolved >= totalWordsInLevel) {
+                putBoolean(completedKey, true)
+            } else {
+                putBoolean(completedKey, false)
+            }
         }
-        editor.apply()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +76,8 @@ class GamesFragment : Fragment() {
                 val data = result.data
                 if (data != null) {
                     val categoryPlayed = data.getStringExtra(FillInActivity.EXTRA_CATEGORY_PLAYED)
-                    val questionsCompleted = data.getIntExtra(FillInActivity.EXTRA_QUESTIONS_COMPLETED, 0)
+                    val questionsCompleted =
+                        data.getIntExtra(FillInActivity.EXTRA_QUESTIONS_COMPLETED, 0)
                     val difficultyPlayed = data.getStringExtra("DIFFICULTY_PLAYED_BACK")
 
                     if (categoryPlayed != null && difficultyPlayed != null) {
@@ -93,7 +92,8 @@ class GamesFragment : Fragment() {
                     }
                 }
             } else {
-                Toast.makeText(requireContext(), "Game cancelled or error.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Game cancelled or error.", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -101,16 +101,23 @@ class GamesFragment : Fragment() {
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val selectedDifficulty = result.data?.getStringExtra(DifficultySelectionActivity.EXTRA_SELECTED_DIFFICULTY)
+                val selectedDifficulty =
+                    result.data?.getStringExtra(DifficultySelectionActivity.EXTRA_SELECTED_DIFFICULTY)
                 if (selectedDifficulty != null) {
                     lastSelectedDifficultyPuzzle = selectedDifficulty
-                    val category = binding.buttonOpenGamePuzzle.tag as? String ?: "default_puzzle_category"
+                    val category =
+                        binding.buttonOpenGamePuzzle.tag as? String ?: "default_puzzle_category"
                     launchPuzzleGame(category, selectedDifficulty)
                 } else {
-                    Toast.makeText(requireContext(), "Difficulty not selected.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Difficulty not selected.", Toast.LENGTH_SHORT)
+                        .show()
                 }
             } else {
-                Toast.makeText(requireContext(), "Difficulty selection cancelled.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Difficulty selection cancelled.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -118,15 +125,24 @@ class GamesFragment : Fragment() {
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val selectedDifficulty = result.data?.getStringExtra(DifficultySelectionActivity.EXTRA_SELECTED_DIFFICULTY)
+                val selectedDifficulty =
+                    result.data?.getStringExtra(DifficultySelectionActivity.EXTRA_SELECTED_DIFFICULTY)
                 if (selectedDifficulty != null) {
                     lastSelectedDifficultyMath = selectedDifficulty
                     launchMathGame(selectedDifficulty)
                 } else {
-                    Toast.makeText(requireContext(), "Difficulty not selected for Math Game.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Difficulty not selected for Math Game.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } else {
-                Toast.makeText(requireContext(), "Math Game difficulty selection cancelled.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Math Game difficulty selection cancelled.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -181,7 +197,6 @@ class GamesFragment : Fragment() {
             mathGameDifficultyLauncher.launch(intent)
         }
 
-        // Add the scroll indicator logic
         setupScrollIndicator()
     }
 
@@ -190,7 +205,8 @@ class GamesFragment : Fragment() {
         val scrollIndicator = binding.scrollIndicator
         val contentLayout = scrollView.getChildAt(0)
 
-        contentLayout.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        contentLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 contentLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
@@ -205,7 +221,7 @@ class GamesFragment : Fragment() {
         })
 
         scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            if (scrollY > 0 && scrollIndicator.visibility == View.VISIBLE) {
+            if (scrollY > 0 && scrollIndicator.isVisible) {
                 scrollIndicator.animate().alpha(0f).setDuration(300).withEndAction {
                     scrollIndicator.visibility = View.GONE
                 }.start()

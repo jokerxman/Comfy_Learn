@@ -7,9 +7,7 @@ import android.graphics.drawable.PictureDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
-import android.view.animation.OvershootInterpolator
 import android.widget.Button
 import android.widget.GridLayout
 import android.widget.ImageView
@@ -19,7 +17,6 @@ import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.caverock.androidsvg.SVG
-import com.caverock.androidsvg.SVGParseException
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivityMathGameBinding
 import com.hompimpa.comfylearn.helper.AppConstants
@@ -27,8 +24,6 @@ import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.helper.GameManager
 import com.hompimpa.comfylearn.helper.SoundManager
 import kotlinx.coroutines.launch
-import java.io.FileNotFoundException
-import java.io.IOException
 import kotlin.random.Random
 
 class MathGameActivity : BaseActivity() {
@@ -51,7 +46,6 @@ class MathGameActivity : BaseActivity() {
     private var currentDifficultyStr: String = DIFFICULTY_MEDIUM_STR
 
     companion object {
-        private const val TAG = "MathGameActivity"
         const val EXTRA_SELECTED_DIFFICULTY = "com.hompimpa.comfylearn.SELECTED_DIFFICULTY"
         const val DIFFICULTY_EASY_STR = "EASY"
         const val DIFFICULTY_MEDIUM_STR = "MEDIUM"
@@ -82,12 +76,14 @@ class MathGameActivity : BaseActivity() {
         allAnswerButtons.forEach { button ->
             button.setOnClickListener {
                 SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
-                onAnswerChoiceClicked(it as Button) }
+                onAnswerChoiceClicked(it as Button)
+            }
         }
 
         binding.nextProblemButton.setOnClickListener {
             SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
-            generateNewProblem() }
+            generateNewProblem()
+        }
 
         applyDifficultySettings()
         generateNewProblem()
@@ -99,25 +95,19 @@ class MathGameActivity : BaseActivity() {
         }
     }
 
-    /**
-     * This function has been updated to be compatible with older Android versions.
-     * It creates a temporary context with the "en" locale to fetch the correct string array.
-     */
     private fun loadCountingItemFilenames() {
         try {
             val config = Configuration(applicationContext.resources.configuration)
             config.setLocale(java.util.Locale.ENGLISH)
             val englishContext = applicationContext.createConfigurationContext(config)
-            availableCountingItemFilenames = englishContext.resources.getStringArray(R.array.animal).toList()
-        } catch (e: Exception) {
-            Log.e(TAG, "Error loading animal names: ${e.message}", e)
-            availableCountingItemFilenames = listOf("apple") // Fallback
-            Toast.makeText(this, "Error loading items, using fallback.", Toast.LENGTH_SHORT)
-                .show()
+            availableCountingItemFilenames =
+                englishContext.resources.getStringArray(R.array.animal).toList()
+        } catch (_: Exception) {
+            availableCountingItemFilenames = listOf("apple")
+            Toast.makeText(this, "Error loading items, using fallback.", Toast.LENGTH_SHORT).show()
         }
 
         if (availableCountingItemFilenames.isEmpty()) {
-            Log.e(TAG, "Critical: No counting items available. Fallback to 'apple'.")
             availableCountingItemFilenames = listOf("apple")
             Toast.makeText(this, "Item list empty, using fallback.", Toast.LENGTH_LONG).show()
         }
@@ -155,7 +145,6 @@ class MathGameActivity : BaseActivity() {
 
     private fun generateNewProblem() {
         if (availableCountingItemFilenames.isEmpty()) {
-            Log.e(TAG, "Cannot generate problem, no counting items available.")
             binding.problemTextView.text = getString(R.string.error_exclamation)
             Toast.makeText(this, "Error generating problem.", Toast.LENGTH_SHORT).show()
             return
@@ -193,7 +182,8 @@ class MathGameActivity : BaseActivity() {
             operand2Value = Random.nextInt(1, maxVal + 1)
             expectedAnswer = operand1Value + operand2Value
             if (binding.problemTextView.isVisible) {
-                binding.problemTextView.text = getString(R.string.addition_problem_format, operand1Value, operand2Value)
+                binding.problemTextView.text =
+                    getString(R.string.addition_problem_format, operand1Value, operand2Value)
             }
             binding.operatorTextView.text = "+"
         } else {
@@ -208,7 +198,8 @@ class MathGameActivity : BaseActivity() {
             expectedAnswer = operand1Value - operand2Value
 
             if (binding.problemTextView.isVisible) {
-                binding.problemTextView.text = getString(R.string.subtraction_problem_format, operand1Value, operand2Value)
+                binding.problemTextView.text =
+                    getString(R.string.subtraction_problem_format, operand1Value, operand2Value)
             }
             binding.operatorTextView.text = "-"
         }
@@ -266,7 +257,6 @@ class MathGameActivity : BaseActivity() {
             imageView.setImageDrawable(pictureDrawable)
         } else {
             imageView.setImageResource(R.drawable.ic_placeholder_image)
-            Log.w(TAG, "Failed to load SVG: $fullAssetPath. Using placeholder.")
         }
         return imageView
     }
@@ -279,25 +269,15 @@ class MathGameActivity : BaseActivity() {
             assets.open(path).use { inputStream ->
                 val svg = SVG.getFromInputStream(inputStream)
                 if (svg?.documentWidth == -1f || svg?.documentHeight == -1f) {
-                    Log.w(TAG, "SVG document dimensions invalid for: $path")
+                    return null
                 }
                 val picture = svg?.renderToPicture()
                 return if (picture != null) PictureDrawable(picture) else null
             }
-        } catch (e: Exception) {
-            handleSvgLoadingException(e, path)
+        } catch (_: Exception) {
+            0
         }
         return null
-    }
-
-    private fun handleSvgLoadingException(e: Exception, path: String) {
-        val errorMessage = when (e) {
-            is FileNotFoundException -> "SVG file not found: $path"
-            is SVGParseException -> "SVG parsing error: $path"
-            is IOException -> "IOException reading SVG: $path"
-            else -> "Unexpected error loading SVG: $path"
-        }
-        Log.e(TAG, errorMessage, e)
     }
 
     private fun setupAnswerChoices() {
@@ -319,8 +299,11 @@ class MathGameActivity : BaseActivity() {
 
         while (choices.size < numChoices && attemptsToFindUnique < maxAttemptsForUnique) {
             var wrongAnswerOffset = Random.nextInt(-maxWrongAnswerOffset, maxWrongAnswerOffset + 1)
-            if (wrongAnswerOffset == 0 && maxWrongAnswerOffset != 0) {
-                wrongAnswerOffset = Random.nextInt(1, maxWrongAnswerOffset + 1) * if (Random.nextBoolean()) 1 else -1
+            if (wrongAnswerOffset == 0) {
+                wrongAnswerOffset = Random.nextInt(
+                    1,
+                    maxWrongAnswerOffset + 1
+                ) * if (Random.nextBoolean()) 1 else -1
             }
             val potentialWrongAnswer = (expectedAnswer + wrongAnswerOffset).coerceAtLeast(0)
             choices.add(potentialWrongAnswer)
@@ -328,7 +311,6 @@ class MathGameActivity : BaseActivity() {
         }
 
         if (choices.size < numChoices) {
-            Log.w(TAG, "Could not generate enough unique choices, filling deterministically.")
             for (i in 1..(numChoices + maxWrongAnswerOffset)) {
                 if (choices.size >= numChoices) break
                 choices.add((expectedAnswer + i).coerceAtLeast(0))
@@ -336,9 +318,9 @@ class MathGameActivity : BaseActivity() {
                 choices.add((expectedAnswer - i).coerceAtLeast(0))
             }
         }
+
         while (choices.size < numChoices) {
             choices.add(Random.nextInt(0, expectedAnswer + maxWrongAnswerOffset + 5))
-            Log.w(TAG, "Forced to add potentially non-ideal choices to meet button count.")
         }
 
         val shuffledChoices = choices.toList().shuffled()
@@ -360,7 +342,8 @@ class MathGameActivity : BaseActivity() {
         if (chosenAnswer == expectedAnswer) {
             SoundManager.playSound(SoundManager.Sound.CORRECT_ANSWER)
             Toast.makeText(this, getString(R.string.feedback_correct), Toast.LENGTH_SHORT).show()
-            lifecycleScope.launch { gameManager.incrementProblemsSolved()
+            lifecycleScope.launch {
+                gameManager.incrementProblemsSolved()
                 val prefs = getSharedPreferences(AppConstants.PREFS_PROGRESSION, MODE_PRIVATE)
                 val currentSolved = prefs.getInt(AppConstants.getMathGameProgressKey(), 0)
                 prefs.edit { putInt(AppConstants.getMathGameProgressKey(), currentSolved + 1) }
@@ -370,7 +353,11 @@ class MathGameActivity : BaseActivity() {
             binding.nextProblemButton.visibility = View.VISIBLE
         } else {
             SoundManager.playSound(SoundManager.Sound.INCORRECT_ANSWER)
-            Toast.makeText(this, getString(R.string.feedback_incorrect_try_again), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                getString(R.string.feedback_incorrect_try_again),
+                Toast.LENGTH_SHORT
+            ).show()
             button.setBackgroundColor(ContextCompat.getColor(this, R.color.feedback_incorrect_bg))
             Handler(Looper.getMainLooper()).postDelayed({
                 activeAnswerButtons.find { (it.tag as? Int) == expectedAnswer }
@@ -384,8 +371,6 @@ class MathGameActivity : BaseActivity() {
     private fun animateCorrectAnswer(button: Button) {
         val scaleX = ObjectAnimator.ofFloat(button, View.SCALE_X, 1f, 1.2f, 1f)
         val scaleY = ObjectAnimator.ofFloat(button, View.SCALE_Y, 1f, 1.2f, 1f)
-        scaleX.interpolator = OvershootInterpolator()
-        scaleY.interpolator = OvershootInterpolator()
         AnimatorSet().apply {
             playTogether(scaleX, scaleY)
             duration = 500

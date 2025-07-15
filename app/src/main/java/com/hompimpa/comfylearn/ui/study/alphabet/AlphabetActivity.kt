@@ -17,7 +17,7 @@ class AlphabetActivity : BaseActivity() {
     private lateinit var backButton: ImageButton
     private lateinit var homeButton: ImageButton
     private lateinit var changeButton: ImageButton
-    private var currentLetter: Char = 'A' // Default starting letter
+    private var currentLetter: Char = 'A'
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +28,6 @@ class AlphabetActivity : BaseActivity() {
         homeButton = findViewById(R.id.homeButton)
         changeButton = findViewById(R.id.changeButton)
 
-        // Retrieve the letter passed from the intent
         currentLetter = intent.getCharExtra("letter", 'A')
 
         loadAlphabetFragment(currentLetter)
@@ -58,7 +57,7 @@ class AlphabetActivity : BaseActivity() {
     private fun navigateToHome() {
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
-        finish() // Close AlphabetActivity to prevent back stack issues
+        finish()
     }
 
     private fun navigateToOther() {

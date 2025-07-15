@@ -7,7 +7,6 @@ object AppConstants {
 
     private fun String.normalize() = this.replace(" ", "_").lowercase(Locale.ROOT)
 
-    // Existing keys
     fun getSpellingCategoryProgressKey(categoryName: String): String {
         return "progress_spelling_${categoryName.normalize()}"
     }
@@ -16,7 +15,6 @@ object AppConstants {
         return "progress_puzzle_${categoryName.normalize()}_${difficulty.normalize()}"
     }
 
-    // ✅ ADD THESE NEW KEYS
     fun getMathGameProgressKey(): String = "progress_mathgame_solved"
     fun getDrawingVisitedKey(): String = "visited_drawing"
     fun getAlphabetVisitedKey(): String = "visited_alphabet"

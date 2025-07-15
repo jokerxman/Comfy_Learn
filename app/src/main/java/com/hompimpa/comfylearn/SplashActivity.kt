@@ -23,10 +23,10 @@ class SplashActivity : BaseActivity() {
     override fun attachBaseContext(newBase: Context) {
         settingPreferences = SettingPreferences.getInstance(newBase.dataStore)
         val languageCode = kotlinx.coroutines.runBlocking {
-            settingPreferences.getLanguageSetting().first() // Get the first/current value
+            settingPreferences.getLanguageSetting().first()
         }
         val locale = Locale(languageCode)
-        Locale.setDefault(locale) // Set for the entire app process
+        Locale.setDefault(locale)
 
         val configuration = Configuration(newBase.resources.configuration)
         configuration.setLocale(locale)
@@ -46,17 +46,6 @@ class SplashActivity : BaseActivity() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
             setContentView(R.layout.activity_splash)
-        }
-
-        setContentView(R.layout.activity_splash)
-
-        lifecycleScope.launch {
-            val isDarkModeActive = settingPreferences.getThemeSetting().first()
-            if (isDarkModeActive) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
         }
 
         Handler(Looper.getMainLooper()).postDelayed({

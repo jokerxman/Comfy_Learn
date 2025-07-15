@@ -35,7 +35,7 @@ class RegisterActivity : BaseActivity() {
             val password = binding.edRegisterPassword.text.toString().trim()
             val fullName = binding.edRegisterName.text.toString().trim()
 
-            registerUser(email, password, fullName)
+            registerUser (email, password, fullName)
         }
 
         binding.tvToLogin.setOnClickListener {
@@ -45,7 +45,7 @@ class RegisterActivity : BaseActivity() {
         }
     }
 
-    private fun registerUser(email: String, password: String, fullName: String) {
+    private fun registerUser (email: String, password: String, fullName: String) {
         if (email.isEmpty() || password.isEmpty() || fullName.isEmpty()) {
             Toast.makeText(this, getString(R.string.all_fields_must_not_be_empty), Toast.LENGTH_SHORT).show()
             return
@@ -63,33 +63,32 @@ class RegisterActivity : BaseActivity() {
 
         showLoading(true)
 
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    auth.currentUser?.let { user ->
-                        val profileUpdates = userProfileChangeRequest {
-                            displayName = fullName
-                        }
-                        user.updateProfile(profileUpdates).addOnCompleteListener { profileTask ->
-                            showLoading(false)
-                            if (profileTask.isSuccessful) {
-                                updateUI(user)
-                            } else {
-                                Toast.makeText(this, "Registration succeeded, but failed to set display name.", Toast.LENGTH_LONG).show()
-                                updateUI(user)
-                            }
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                auth.currentUser ?.let { user ->
+                    val profileUpdates = userProfileChangeRequest {
+                        displayName = fullName
+                    }
+                    user.updateProfile(profileUpdates).addOnCompleteListener { profileTask ->
+                        showLoading(false)
+                        if (profileTask.isSuccessful) {
+                            updateUI(user)
+                        } else {
+                            Toast.makeText(this, "Registration succeeded, but failed to set display name.", Toast.LENGTH_LONG).show()
+                            updateUI(user)
                         }
                     }
-                } else {
-                    showLoading(false)
-                    val errorMessage = when (task.exception) {
-                        is FirebaseAuthUserCollisionException -> getString(R.string.email_already_registered)
-                        is FirebaseAuthWeakPasswordException -> getString(R.string.password_is_too_weak)
-                        else -> getString(R.string.registration_failed)
-                    }
-                    Toast.makeText(baseContext, errorMessage, Toast.LENGTH_LONG).show()
                 }
+            } else {
+                showLoading(false)
+                val errorMessage = when (task.exception) {
+                    is FirebaseAuthUserCollisionException -> getString(R.string.email_already_registered)
+                    is FirebaseAuthWeakPasswordException -> getString(R.string.password_is_too_weak)
+                    else -> getString(R.string.registration_failed)
+                }
+                Toast.makeText(baseContext, errorMessage, Toast.LENGTH_LONG).show()
             }
+        }
     }
 
     private fun showLoading(isLoading: Boolean) {
@@ -100,16 +99,12 @@ class RegisterActivity : BaseActivity() {
         binding.edRegisterName.isEnabled = !isLoading
     }
 
-    private fun updateUI(user: FirebaseUser?) {
+    private fun updateUI(user: FirebaseUser ?) {
         if (user != null) {
             val intent = Intent(this@RegisterActivity, HomeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
         }
-    }
-
-    companion object {
-        private const val TAG = "RegisterActivity"
     }
 }

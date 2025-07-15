@@ -90,6 +90,7 @@
     <string name="all_levels_completed">All Level Completed!</string>
     <string name="level_up">Level Up</string>
     <string name="level_name_format">Level %1$d: %2$s</string>
+    <string name="not_started">Not Started</string>
     <string-array name="game_category_keys">
         <item>Animal</item>
         <item>Objek</item>

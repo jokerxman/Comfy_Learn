@@ -1,7 +1,6 @@
 package com.hompimpa.comfylearn.ui.study.arithmetic
 
 import android.content.res.Configuration
-import android.graphics.drawable.PictureDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.GridLayout
@@ -13,7 +12,6 @@ import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivityArithmeticBinding
 import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.helper.GameContentProvider
-import java.io.IOException
 import java.util.Locale
 import kotlin.random.Random
 

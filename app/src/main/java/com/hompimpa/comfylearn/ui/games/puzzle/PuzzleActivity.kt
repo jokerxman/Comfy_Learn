@@ -1,6 +1,5 @@
 package com.hompimpa.comfylearn.ui.games.puzzle
 
-import android.content.ContentValues.TAG
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
@@ -8,7 +7,6 @@ import android.graphics.drawable.PictureDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -19,7 +17,6 @@ import androidx.core.content.edit
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.caverock.androidsvg.SVG
-import com.caverock.androidsvg.SVGParseException
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivityPuzzleBinding
 import com.hompimpa.comfylearn.helper.AppConstants
@@ -40,7 +37,6 @@ class PuzzleActivity : BaseActivity() {
     private lateinit var currentDifficulty: String
     private lateinit var currentCategory: String
 
-    // Helper data class to hold both the display word and the English base word for the image
     private data class WordPair(val display: String, val base: String)
 
     private val targetSlots = mutableListOf<TextView>()
@@ -59,7 +55,6 @@ class PuzzleActivity : BaseActivity() {
     private var originalTileX: Float = 0f
     private var originalTileY: Float = 0f
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPuzzleBinding.inflate(layoutInflater)
@@ -67,8 +62,7 @@ class PuzzleActivity : BaseActivity() {
 
         currentDifficulty = intent.getStringExtra("DIFFICULTY")
             ?: DifficultySelectionActivity.DIFFICULTY_MEDIUM
-        currentCategory = intent.getStringExtra("CATEGORY")
-            ?: "animal"
+        currentCategory = intent.getStringExtra("CATEGORY") ?: "animal"
 
         title =
             "Puzzle: ${currentCategory.replaceFirstChar { it.titlecase(Locale.getDefault()) }} ($currentDifficulty)"
@@ -82,7 +76,7 @@ class PuzzleActivity : BaseActivity() {
         binding.buttonPlayAgain.setOnClickListener {
             SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
             binding.layoutFeedback.visibility = View.GONE
-            GameContentProvider.resetUsedWordsForCategory(this, currentCategory) // Pass context
+            GameContentProvider.resetUsedWordsForCategory(this, currentCategory)
             loadNextWord()
         }
         binding.buttonNextWord.setOnClickListener {
@@ -100,17 +94,12 @@ class PuzzleActivity : BaseActivity() {
         }
     }
 
-    /**
-     * *** MODIFIED FUNCTION ***
-     * Loads word lists for both English and the current locale, then selects an unused word pair.
-     */
     private fun loadNextWord() {
         binding.layoutWordConstruction.visibility = View.VISIBLE
         binding.buttonCheckWord.visibility = View.VISIBLE
         binding.textViewFeedback.visibility = View.INVISIBLE
         currentlyDraggedView = null
 
-        // 1. Load both localized and English word arrays
         val categoryResId = GameContentProvider.getCategoryResourceId(currentCategory)
         if (categoryResId == 0) {
             handleNoMoreWords()
@@ -129,12 +118,10 @@ class PuzzleActivity : BaseActivity() {
         val englishBaseWords = englishContext.resources.getStringArray(categoryResId)
 
         if (localizedWords.size != englishBaseWords.size) {
-            Log.e(TAG, "Word list mismatch for category $currentCategory")
             handleNoMoreWords()
             return
         }
 
-        // 2. Get used words and find an available word pair
         val usedWords = GameContentProvider.getUsedWords(this, currentCategory)
         val availableWordPairs = localizedWords.mapIndexedNotNull { index, displayWord ->
             if (usedWords.contains(displayWord)) {
@@ -151,9 +138,8 @@ class PuzzleActivity : BaseActivity() {
             return
         }
 
-        // 3. Setup the game with the selected word pair
         currentWord = wordPair.display.uppercase(Locale.getDefault())
-        displayImageFromAssets(wordPair.base, currentCategory) // Use the English base word for the image
+        displayImageFromAssets(wordPair.base, currentCategory)
 
         slotFilledBy.clear()
         setupTargetSlots(currentWord)
@@ -163,7 +149,6 @@ class PuzzleActivity : BaseActivity() {
             binding.layoutCharacterOptions.rescatterChildren()
         }
     }
-
 
     private fun handleNoMoreWords() {
         val allUsed = GameContentProvider.allWordsUsed(this, currentCategory, currentDifficulty)
@@ -189,7 +174,7 @@ class PuzzleActivity : BaseActivity() {
             slotView.tag = i
             binding.layoutTargetSlots.addView(slotView)
             targetSlots.add(slotView)
-            slotFilledBy[i] = null // Initialize all slots as empty
+            slotFilledBy[i] = null
 
             slotView.setOnTouchListener(TargetSlotTouchListener(slotView))
         }
@@ -203,7 +188,7 @@ class PuzzleActivity : BaseActivity() {
         val optionPool = generateOptionPool(word.uppercase(Locale.getDefault()), alphabetSource)
 
         if (optionPool.isEmpty()) {
-            showTemporaryFeedback("Error: Could not generate character options.", false)
+            showTemporaryFeedback("Error: Could not generate character options.")
             return
         }
 
@@ -387,11 +372,7 @@ class PuzzleActivity : BaseActivity() {
         }
     }
 
-    private fun isViewOverView(
-        targetView: View,
-        touchRawX: Float,
-        touchRawY: Float
-    ): Boolean {
+    private fun isViewOverView(targetView: View, touchRawX: Float, touchRawY: Float): Boolean {
         val targetLocation = IntArray(2)
         targetView.getLocationOnScreen(targetLocation)
         val targetRect = Rect(
@@ -426,14 +407,13 @@ class PuzzleActivity : BaseActivity() {
 
         if (!allSlotsFilled) {
             SoundManager.playSound(SoundManager.Sound.INCORRECT_ANSWER)
-            showTemporaryFeedback(getString(R.string.feedback_incomplete_puzzle), false)
+            showTemporaryFeedback(getString(R.string.feedback_incomplete_puzzle))
             return
         }
 
         val formedWord = formedWordBuilder.toString()
         if (formedWord.equals(currentWord, ignoreCase = true)) {
             SoundManager.playSound(SoundManager.Sound.CORRECT_ANSWER)
-            // *** MODIFIED: Add the successfully solved word to the used list ***
             GameContentProvider.addUsedWord(this, currentCategory, currentWord)
             savePuzzleProgress(
                 currentCategory,
@@ -449,7 +429,7 @@ class PuzzleActivity : BaseActivity() {
             showFeedback(getString(R.string.feedback_correct), true, isGameEnd = allWordsNowUsed)
         } else {
             SoundManager.playSound(SoundManager.Sound.INCORRECT_ANSWER)
-            showTemporaryFeedback(getString(R.string.feedback_incorrect_try_again), false)
+            showTemporaryFeedback(getString(R.string.feedback_incorrect_try_again))
         }
     }
 
@@ -473,12 +453,12 @@ class PuzzleActivity : BaseActivity() {
         }
     }
 
-    private fun showTemporaryFeedback(message: String, isCorrect: Boolean) {
+    private fun showTemporaryFeedback(message: String) {
         binding.textViewFeedback.text = message
         binding.textViewFeedback.setBackgroundColor(
             ContextCompat.getColor(
                 this,
-                if (isCorrect) R.color.feedback_correct_bg else R.color.feedback_incorrect_bg
+                R.color.feedback_incorrect_bg
             )
         )
         binding.textViewFeedback.visibility = View.VISIBLE
@@ -507,16 +487,9 @@ class PuzzleActivity : BaseActivity() {
         binding.buttonPlayAgain.visibility = if (isGameEnd) View.VISIBLE else View.GONE
     }
 
-    /**
-     * *** MODIFIED FUNCTION ***
-     * Now takes the English base word to construct the path.
-     * @param baseItemName The English word for the filename.
-     * @param categoryName The category folder name.
-     */
     private fun displayImageFromAssets(baseItemName: String, categoryName: String): Boolean {
         val normalizedImageName = baseItemName.lowercase(Locale.ROOT).replace(" ", "_")
         val imagePath = "en/${categoryName}_${normalizedImageName}.svg"
-        Log.d(TAG, "Attempting to load image from assets: $imagePath")
 
         try {
             val inputStream: InputStream = assets.open(imagePath)
@@ -526,18 +499,10 @@ class PuzzleActivity : BaseActivity() {
             if (svg.documentWidth != -1f) {
                 val drawable: Drawable = PictureDrawable(svg.renderToPicture())
                 binding.itemImageView.setImageDrawable(drawable)
-                Log.i(TAG, "SVG Image loaded successfully: $imagePath")
                 return true
-            } else {
-                Log.e(TAG, "SVG parsing error or invalid SVG for: $imagePath")
-                return false
             }
-        } catch (e: IOException) {
-            Log.e(TAG, "IOException: Image not found or error reading: $imagePath", e)
-        } catch (e: SVGParseException) {
-            Log.e(TAG, "SVGParseException: Error parsing SVG: $imagePath", e)
-        } catch (e: Exception) {
-            Log.e(TAG, "General Exception loading image: $imagePath", e)
+        } catch (_: IOException) {
+            0
         }
         return false
     }

@@ -17,9 +17,7 @@ import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.FragmentLearnprogBinding
 import com.hompimpa.comfylearn.helper.AppConstants
 import com.hompimpa.comfylearn.helper.GameContentProvider
-import com.hompimpa.comfylearn.ui.games.DifficultySelectionActivity
 import com.hompimpa.comfylearn.ui.games.drawing.DrawingActivity
-import com.hompimpa.comfylearn.ui.games.fillIn.FillInActivity
 import com.hompimpa.comfylearn.ui.games.mathgame.MathGameActivity
 import com.hompimpa.comfylearn.ui.games.puzzle.PuzzleActivity
 import com.hompimpa.comfylearn.ui.study.alphabet.AlphabetActivity
@@ -49,7 +47,11 @@ class LearnProgFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentLearnprogBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -71,22 +73,53 @@ class LearnProgFragment : Fragment() {
     }
 
     private fun loadProgressionData(): List<ProgressionItem> {
-        val prefs = requireActivity().getSharedPreferences(AppConstants.PREFS_PROGRESSION, Context.MODE_PRIVATE)
+        val prefs = requireActivity().getSharedPreferences(
+            AppConstants.PREFS_PROGRESSION,
+            Context.MODE_PRIVATE
+        )
         val gameCategories = GameContentProvider.getGameCategories(requireContext())
         val puzzleDifficulties = GameContentProvider.getPuzzleDifficulties(requireContext())
         val items = mutableListOf<ProgressionItem>()
-        val arithmeticPrefs = requireActivity().getSharedPreferences("ArithmeticProgress", Context.MODE_PRIVATE)
+        val arithmeticPrefs =
+            requireActivity().getSharedPreferences("ArithmeticProgress", Context.MODE_PRIVATE)
         val arithCurrentLevel = arithmeticPrefs.getInt("currentLevel", 1)
         val isArithVisited = arithCurrentLevel > 1
-        // Study Activities
-        items.add(createSimpleProgressItem("ALPHABET", "Alphabet", prefs.getBoolean(AppConstants.getAlphabetVisitedKey(), false)))
-        items.add(createSimpleProgressItem("NUMBER", "Number", prefs.getBoolean(AppConstants.getNumberVisitedKey(), false)))
-        items.add(createSimpleProgressItem("ARITHMETIC", "Arithmetic", isArithVisited))
 
-        // Game Activities
-        items.add(createSimpleProgressItem("DRAWING", "Drawing", prefs.getBoolean(AppConstants.getDrawingVisitedKey(), false)))
+        items.add(
+            createSimpleProgressItem(
+                "ALPHABET",
+                "Alphabet",
+                prefs.getBoolean(AppConstants.getAlphabetVisitedKey(), false)
+            )
+        )
+        items.add(
+            createSimpleProgressItem(
+                "NUMBER",
+                "Number",
+                prefs.getBoolean(AppConstants.getNumberVisitedKey(), false)
+            )
+        )
+        items.add(createSimpleProgressItem("ARITHMETIC", "Arithmetic", isArithVisited))
+        items.add(
+            createSimpleProgressItem(
+                "DRAWING",
+                "Drawing",
+                prefs.getBoolean(AppConstants.getDrawingVisitedKey(), false)
+            )
+        )
+
         val mathProblemsSolved = prefs.getInt(AppConstants.getMathGameProgressKey(), 0)
-        items.add(ProgressionItem("MATH", "Math Game", null, "Math Game", if (mathProblemsSolved > 0) "$mathProblemsSolved problems solved" else "Not Started"))
+        items.add(
+            ProgressionItem(
+                "MATH",
+                "Math Game",
+                null,
+                "Math Game",
+                if (mathProblemsSolved > 0) "$mathProblemsSolved problems solved" else getString(
+                    R.string.not_started
+                )
+            )
+        )
 
         gameCategories.forEach { category ->
             val spellingKey = AppConstants.getSpellingCategoryProgressKey(category)
@@ -94,7 +127,9 @@ class LearnProgFragment : Fragment() {
                 ProgressionItem(
                     gameType = "SPELLING", category = category, difficulty = null,
                     activityName = "Spelling: ${category.replaceFirstChar { it.titlecase(Locale.getDefault()) }}",
-                    status = if (prefs.getBoolean(spellingKey, false)) "Visited" else "Not Started"
+                    status = if (prefs.getBoolean(spellingKey, false)) "Visited" else getString(
+                        R.string.not_started
+                    )
                 )
             )
         }
@@ -104,7 +139,11 @@ class LearnProgFragment : Fragment() {
                 val progressKeyBase = AppConstants.getPuzzleProgressKey(category, difficulty)
                 val isCompleted = prefs.getBoolean(progressKeyBase + "_completed", false)
                 val wordsSolved = prefs.getInt(progressKeyBase + "_words_solved", 0)
-                val totalWords = GameContentProvider.getTotalWordsForPuzzleCategory(requireContext(), category, difficulty)
+                val totalWords = GameContentProvider.getTotalWordsForPuzzleCategory(
+                    requireContext(),
+                    category,
+                    difficulty
+                )
                 val status = when {
                     isCompleted -> "Completed"
                     wordsSolved > 0 -> "$wordsSolved / $totalWords words"
@@ -122,7 +161,11 @@ class LearnProgFragment : Fragment() {
         return items
     }
 
-    private fun createSimpleProgressItem(gameType: String, name: String, isVisited: Boolean): ProgressionItem {
+    private fun createSimpleProgressItem(
+        gameType: String,
+        name: String,
+        isVisited: Boolean
+    ): ProgressionItem {
         return ProgressionItem(
             gameType = gameType, category = name, difficulty = null,
             activityName = name, status = if (isVisited) "Visited" else "Not Started"
@@ -143,7 +186,11 @@ class LearnProgFragment : Fragment() {
         }
 
         items.forEach { item ->
-            val itemView = inflater.inflate(R.layout.item_progression, binding.layoutProgressionContainer, false)
+            val itemView = inflater.inflate(
+                R.layout.item_progression,
+                binding.layoutProgressionContainer,
+                false
+            )
             val itemLayout: LinearLayout = itemView.findViewById(R.id.progression_item_layout)
             val nameTextView: TextView = itemView.findViewById(R.id.activityNameTextView)
             val statusTextView: TextView = itemView.findViewById(R.id.statusTextView)
@@ -161,15 +208,24 @@ class LearnProgFragment : Fragment() {
             "NUMBER" -> Intent(activity, NumberActivity::class.java)
             "ARITHMETIC" -> Intent(activity, ArithmeticActivity::class.java)
             "DRAWING" -> Intent(activity, DrawingActivity::class.java)
-            "SPELLING" -> Intent(activity, SpellingActivity::class.java).apply { putExtra("category", item.category) }
+            "SPELLING" -> Intent(
+                activity,
+                SpellingActivity::class.java
+            ).apply { putExtra("category", item.category) }
+
             "PUZZLE" -> Intent(activity, PuzzleActivity::class.java).apply {
                 putExtra("CATEGORY", item.category)
                 putExtra("DIFFICULTY", item.difficulty)
             }
-            "MATH" -> Intent(activity, MathGameActivity::class.java) // Math game might need a difficulty selector first
+
+            "MATH" -> Intent(activity, MathGameActivity::class.java)
             else -> null
         }
-        intent?.let { gameLauncher.launch(it) } ?: Toast.makeText(requireContext(), "Coming soon!", Toast.LENGTH_SHORT).show()
+        intent?.let { gameLauncher.launch(it) } ?: Toast.makeText(
+            requireContext(),
+            "Coming soon!",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     override fun onDestroyView() {

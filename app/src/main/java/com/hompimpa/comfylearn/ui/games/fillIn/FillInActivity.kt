@@ -1,6 +1,5 @@
 package com.hompimpa.comfylearn.ui.games.fillIn
 
-import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.PictureDrawable
@@ -38,7 +37,6 @@ private const val STATE_LETTER_SLOTS_TEXT = "letterSlotsText"
 private const val STATE_HINTS_AVAILABLE = "hintsAvailable"
 private const val STATE_QUESTIONS_ANSWERED_THIS_SESSION = "questionsAnsweredThisSession"
 private const val STATE_ANSWERED_WORDS = "answeredWordsThisSession"
-
 
 class FillInActivity : BaseActivity() {
 
@@ -99,52 +97,47 @@ class FillInActivity : BaseActivity() {
             setGameResultAndFinish()
         }
 
-        if (savedInstanceState != null) {
-            val savedWord = savedInstanceState.getString(STATE_CURRENT_WORD)
-            val savedImageUrl = savedInstanceState.getString(STATE_CURRENT_IMAGE_URL)
-            hintsAvailable = savedInstanceState.getInt(
-                STATE_HINTS_AVAILABLE,
-                if (difficulty == DIFFICULTY_EASY) 1 else 0
-            )
-            questionsSuccessfullyAnsweredThisSession =
-                savedInstanceState.getInt(STATE_QUESTIONS_ANSWERED_THIS_SESSION, 0)
-            val savedAnsweredWords = savedInstanceState.getStringArrayList(STATE_ANSWERED_WORDS)
-            if (savedAnsweredWords != null) {
-                answeredWordsThisSession.addAll(savedAnsweredWords) // Restore
-            }
+        val savedWord = savedInstanceState!!.getString(STATE_CURRENT_WORD)
+        val savedImageUrl = savedInstanceState.getString(STATE_CURRENT_IMAGE_URL)
+        hintsAvailable = savedInstanceState.getInt(
+            STATE_HINTS_AVAILABLE,
+            if (difficulty == DIFFICULTY_EASY) 1 else 0
+        )
+        questionsSuccessfullyAnsweredThisSession =
+            savedInstanceState.getInt(STATE_QUESTIONS_ANSWERED_THIS_SESSION, 0)
+        val savedAnsweredWords = savedInstanceState.getStringArrayList(STATE_ANSWERED_WORDS)
+        if (savedAnsweredWords != null) {
+            answeredWordsThisSession.addAll(savedAnsweredWords)
+        }
 
-            if (savedWord != null && savedImageUrl != null) {
-                currentQuestion = Question(savedWord, savedImageUrl)
-                loadQuestions()
-                questions.removeAll { it.word == savedWord }
-                setupLetterSlots()
-                val savedSlotTexts = savedInstanceState.getStringArray(STATE_LETTER_SLOTS_TEXT)
-                if (savedSlotTexts != null && savedSlotTexts.size == letterSlots.size) {
-                    letterSlots.forEachIndexed { index, textView ->
-                        textView.text = savedSlotTexts[index]
-                    }
+        if (savedWord != null && savedImageUrl != null) {
+            currentQuestion = Question(savedWord, savedImageUrl)
+            loadQuestions()
+            questions.removeAll { it.word == savedWord }
+            setupLetterSlots()
+            val savedSlotTexts = savedInstanceState.getStringArray(STATE_LETTER_SLOTS_TEXT)
+            if (savedSlotTexts != null && savedSlotTexts.size == letterSlots.size) {
+                letterSlots.forEachIndexed { index, textView ->
+                    textView.text = savedSlotTexts[index]
                 }
-                val imageDrawable = loadSvgFromAssets(currentQuestion?.imageUrl)
-                if (imageDrawable != null) {
-                    binding.imagePrompt.setImageDrawable(imageDrawable)
-                } else {
-                    binding.imagePrompt.setImageResource(R.drawable.ic_placeholder_image)
-                }
-                generateKeyboardLetters()
-                if (currentKeyboardLetters.isNotEmpty()) currentKeyboardLetters.shuffle()
-                setupLetterOptions()
-                setupHintButton()
-                setupUndoButton()
-                checkAnswer(isRestoring = true)
-                updateHintButtonState()
-            } else {
-                loadQuestionsAndSetup()
             }
+            val imageDrawable = loadSvgFromAssets(currentQuestion?.imageUrl)
+            if (imageDrawable != null) {
+                binding.imagePrompt.setImageDrawable(imageDrawable)
+            } else {
+                binding.imagePrompt.setImageResource(R.drawable.ic_placeholder_image)
+            }
+            generateKeyboardLetters()
+            if (currentKeyboardLetters.isNotEmpty()) currentKeyboardLetters.shuffle()
+            setupLetterOptions()
+            setupHintButton()
+            setupUndoButton()
+            checkAnswer(isRestoring = true)
+            updateHintButtonState()
         } else {
             loadQuestionsAndSetup()
         }
     }
-
     private fun loadQuestionsAndSetup() {
         questionsSuccessfullyAnsweredThisSession = 0
         loadQuestions()
@@ -157,10 +150,6 @@ class FillInActivity : BaseActivity() {
         }
     }
 
-    /**
-     * *** MODIFIED FUNCTION ***
-     * Loads questions by matching the localized word to its English equivalent via array index.
-     */
     private fun loadQuestions() {
         questions.clear()
         val categoryResId = getCategoryResourceId()
@@ -171,32 +160,26 @@ class FillInActivity : BaseActivity() {
 
         try {
             val currentConfig = resources.configuration
-
-            // 1. Get the localized words for the current user's language
             val localizedContext = createConfigurationContext(Configuration(currentConfig).apply {
                 setLocale(Locale.getDefault())
             })
             val localizedWords = localizedContext.resources.getStringArray(categoryResId)
 
-            // 2. Get the English words to use as a base for filenames
             val englishContext = createConfigurationContext(Configuration(currentConfig).apply {
                 setLocale(Locale.ENGLISH)
             })
             val englishBaseWords = englishContext.resources.getStringArray(categoryResId)
 
-            // 3. Ensure arrays are parallel
             if (localizedWords.size != englishBaseWords.size) {
                 Log.e(TAG, "Mismatch between localized and English word arrays for category: $category")
                 Toast.makeText(this, "Error: Word list mismatch.", Toast.LENGTH_SHORT).show()
                 return
             }
 
-            // 4. Create questions using the paired words
             localizedWords.forEachIndexed { index, displayWord ->
                 if (!answeredWordsThisSession.contains(displayWord)) {
                     val baseWord = englishBaseWords[index]
                     val filenameWord = baseWord.replace(" ", "_").lowercase(Locale.ENGLISH)
-                    // The image path is always constructed from the English base word and 'en' folder.
                     val svgPath = "en/${category.lowercase(Locale.ENGLISH)}_${filenameWord}.svg"
                     questions.add(Question(displayWord, svgPath))
                 }
@@ -207,20 +190,13 @@ class FillInActivity : BaseActivity() {
         }
     }
 
-    /**
-     * *** RESTORED FUNCTION ***
-     * Gets the resource ID for the category's word array.
-     */
     private fun getCategoryResourceId(): Int {
         return when (category.lowercase(Locale.getDefault())) {
             "animal" -> R.array.animal
             "objek" -> R.array.objek
-            else -> R.array.animal // Default case
+            else -> R.array.animal
         }
     }
-
-    // --- NO OTHER CHANGES ARE NEEDED BELOW THIS LINE ---
-    // ... (All other functions like setupQuestion, setupLetterSlots, createLetterSlot, etc., remain unchanged)
 
     private fun checkAnswer(isRestoring: Boolean = false) {
         val cq = currentQuestion ?: return
@@ -261,16 +237,12 @@ class FillInActivity : BaseActivity() {
         updateHintButtonState()
     }
 
-    override fun onBackPressed() {
-        setGameResultAndFinish()
-    }
-
     private fun setGameResultAndFinish() {
         val resultIntent = Intent()
         resultIntent.putExtra(EXTRA_CATEGORY_PLAYED, category)
         resultIntent.putExtra(EXTRA_QUESTIONS_COMPLETED, questionsSuccessfullyAnsweredThisSession)
         resultIntent.putExtra("DIFFICULTY_PLAYED_BACK", difficulty)
-        setResult(Activity.RESULT_OK, resultIntent)
+        setResult(RESULT_OK, resultIntent)
         finish()
     }
 
@@ -413,18 +385,16 @@ class FillInActivity : BaseActivity() {
 
         if (currentKeyboardLetters.size < maxKeyboardSize) {
             val remainingSlots = maxKeyboardSize - currentKeyboardLetters.size
-            if (remainingSlots > 0) {
-                val lettersAlreadyOnKeyboard = currentKeyboardLetters.toSet()
-                val morePotentialDistractors: List<String> =
-                    fullAlphabet.filterNot { lettersAlreadyOnKeyboard.contains(it) }.shuffled()
-                val additionalDistractorsCount = min(remainingSlots, morePotentialDistractors.size)
-                if (morePotentialDistractors.isNotEmpty() && additionalDistractorsCount > 0) {
-                    currentKeyboardLetters.addAll(
-                        morePotentialDistractors.take(
-                            additionalDistractorsCount
-                        )
+            val lettersAlreadyOnKeyboard = currentKeyboardLetters.toSet()
+            val morePotentialDistractors: List<String> =
+                fullAlphabet.filterNot { lettersAlreadyOnKeyboard.contains(it) }.shuffled()
+            val additionalDistractorsCount = min(remainingSlots, morePotentialDistractors.size)
+            if (morePotentialDistractors.isNotEmpty() && additionalDistractorsCount > 0) {
+                currentKeyboardLetters.addAll(
+                    morePotentialDistractors.take(
+                        additionalDistractorsCount
                     )
-                }
+                )
             }
         }
         if (currentKeyboardLetters.size > maxKeyboardSize) currentKeyboardLetters =
@@ -477,7 +447,8 @@ class FillInActivity : BaseActivity() {
         if (difficulty == DIFFICULTY_EASY) {
             binding.hintButton.setOnClickListener {
                 SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
-                giveHint() }
+                giveHint()
+            }
         }
         updateHintButtonState()
     }

@@ -46,11 +46,9 @@ class SettingsActivity : BaseActivity() {
 
     private fun observeSettings() {
         lifecycleScope.launch {
-            // Set the switch to its correct initial state
             val isDarkMode = settingPreferences.getThemeSetting().first()
             binding.switchTheme.isChecked = isDarkMode
 
-            // Set the spinner to its correct initial state
             val languageCode = settingPreferences.getLanguageSetting().first()
             val languagePosition = if (languageCode == "in") 1 else 0
             binding.spinnerLanguage.setSelection(languagePosition, false)
@@ -72,14 +70,12 @@ class SettingsActivity : BaseActivity() {
         val selectedLanguageCode = if (binding.spinnerLanguage.selectedItemPosition == 0) "en" else "in"
         val isDarkModeEnabled = binding.switchTheme.isChecked
 
-        // Apply and save the theme
         lifecycleScope.launch {
             settingPreferences.saveThemeSetting(isDarkModeEnabled)
             val mode = if (isDarkModeEnabled) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
             AppCompatDelegate.setDefaultNightMode(mode)
         }
 
-        // Apply and save the language
         lifecycleScope.launch {
             settingPreferences.saveLanguageSetting(selectedLanguageCode)
             val appLocale = LocaleListCompat.forLanguageTags(selectedLanguageCode)
@@ -87,8 +83,6 @@ class SettingsActivity : BaseActivity() {
         }
 
         Toast.makeText(this, getString(R.string.apply_changes), Toast.LENGTH_SHORT).show()
-        // The changes will be applied automatically by the system.
-        // We can simply finish the activity.
         finish()
     }
 

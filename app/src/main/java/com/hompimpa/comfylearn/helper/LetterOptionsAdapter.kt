@@ -15,10 +15,6 @@ class LetterOptionsAdapter(
 
     private var itemSize: Int = 0
 
-    /**
-     * This new function allows the Activity to tell the adapter the correct size for each item.
-     * It will trigger a redraw of the list to apply the new sizes.
-     */
     fun updateItemSize(size: Int) {
         if (itemSize != size) {
             itemSize = size
@@ -30,7 +26,6 @@ class LetterOptionsAdapter(
         val letterTextView: TextView = itemView.findViewById(R.id.letterTextView)
 
         fun bind(letter: String) {
-            // Apply the calculated size if it has been set
             if (itemSize > 0) {
                 val params = itemView.layoutParams
                 params.width = itemSize
@@ -39,7 +34,6 @@ class LetterOptionsAdapter(
             }
 
             letterTextView.text = letter
-            // Ensure text auto-sizes to fit within the tile
             TextViewCompat.setAutoSizeTextTypeWithDefaults(letterTextView, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM)
 
             itemView.setOnClickListener {

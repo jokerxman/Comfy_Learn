@@ -12,6 +12,8 @@ import android.graphics.PorterDuffXfermode
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
 
 class Board @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -69,13 +71,13 @@ class Board @JvmOverloads constructor(
     }
 
     fun setBackgroundImage(bitmap: Bitmap) {
-        backgroundBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
+        backgroundBitmap = bitmap.scale(width, height, false)
         clearDrawing()
         invalidate()
     }
 
     fun getDrawingBitmap(): Bitmap {
-        val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val resultBitmap = createBitmap(width, height)
         val resultCanvas = Canvas(resultBitmap)
         resultCanvas.drawColor(canvasBackgroundColor)
         drawingBitmap?.let { resultCanvas.drawBitmap(it, 0f, 0f, null) }
@@ -109,11 +111,11 @@ class Board @JvmOverloads constructor(
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         if (w > 0 && h > 0) {
-            drawingBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+            drawingBitmap = createBitmap(w, h)
             drawingCanvas = Canvas(drawingBitmap!!)
         }
         backgroundBitmap?.let {
-            backgroundBitmap = Bitmap.createScaledBitmap(it, w, h, false)
+            backgroundBitmap = it.scale(w, h, false)
         }
     }
 

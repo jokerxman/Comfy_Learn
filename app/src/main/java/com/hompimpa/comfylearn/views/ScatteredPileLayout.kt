@@ -144,7 +144,6 @@ class ScatteredPileLayout @JvmOverloads constructor(
 
             tempCurrentChildRect[proposedX, proposedY, proposedX + childWidth] = proposedY + childHeight
 
-            // Check for overlaps with already placed children
             if (placedChildRects.none { RectF.intersects(tempCurrentChildRect, it) }) {
                 childState.x = proposedX
                 childState.y = proposedY
@@ -157,7 +156,6 @@ class ScatteredPileLayout @JvmOverloads constructor(
             attempt++
         }
 
-        // Fallback position if no valid position was found
         if (!positionFound) {
             childState.x = (parentLeft + lp.leftMargin + (availableWidth - childWidth) / 2f).toFloat()
             childState.y = (parentTop + lp.topMargin + (availableHeight - childHeight) / 2f).toFloat()

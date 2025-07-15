@@ -52,18 +52,12 @@ class DrawingActivity : BaseActivity() {
         }
     }
 
-    /**
-     * Sets up listeners for primary actions like saving, clearing, and loading pages.
-     */
     private fun setupActionListeners() {
         binding.btnClear.setOnClickListener { binding.board.clear() }
         binding.btnSave.setOnClickListener { checkPermissionAndSave() }
         binding.btnColoringPage.setOnClickListener { showColoringPageSelectionDialog() }
     }
 
-    /**
-     * Sets up listeners for the various drawing tools.
-     */
     private fun setupToolListeners() {
         binding.btnPickColor.setOnClickListener { showColorPickerDialog() }
         binding.btnEraser.setOnClickListener { binding.board.setEraserMode(true) }
@@ -97,7 +91,7 @@ class DrawingActivity : BaseActivity() {
                         val outlineBitmap = BitmapFactory.decodeResource(resources, it)
                         binding.board.setBackgroundImage(outlineBitmap)
                         Toast.makeText(this, "$selectedPageName page loaded!", Toast.LENGTH_SHORT).show()
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         Toast.makeText(this, "Coloring page image not found.", Toast.LENGTH_SHORT).show()
                     }
                 }

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.FragmentSpellingBinding
@@ -60,8 +61,9 @@ class SpellingFragment : Fragment() {
     }
 
     private fun saveSpellingProgress(categoryName: String) {
-        activity?.getSharedPreferences(AppConstants.PREFS_PROGRESSION, Context.MODE_PRIVATE)?.edit()
-            ?.putBoolean(AppConstants.getSpellingCategoryProgressKey(categoryName), true)?.apply()
+        activity?.getSharedPreferences(AppConstants.PREFS_PROGRESSION, Context.MODE_PRIVATE)?.edit {
+            putBoolean(AppConstants.getSpellingCategoryProgressKey(categoryName), true)
+        }
     }
 
     private fun loadAndDisplayCategory() {
@@ -153,7 +155,7 @@ class SpellingFragment : Fragment() {
             if (index < spellArray.size) {
                 spellArray[index].split(",").map { it.trim() }.filter { it.isNotEmpty() }
             } else { emptyList() }
-        } catch (e: Exception) { emptyList() }
+        } catch (_: Exception) { emptyList() }
     }
 
     private fun resetUI() {
@@ -171,7 +173,6 @@ class SpellingFragment : Fragment() {
     }
 
     private fun displayImage(imageName: String, categoryName: String) {
-        // ✅ FIXED: Uses the central provider for both path and loading
         val imagePath = GameContentProvider.getImagePath(categoryName.lowercase(), imageName)
         val drawable = GameContentProvider.loadSvgFromAssets(requireContext(), imagePath)
 

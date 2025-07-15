@@ -38,7 +38,7 @@ class HomeActivity : BaseActivity() {
         setContentView(binding.root)
 
         auth = Firebase.auth
-        if (auth.currentUser == null) {
+        if (auth.currentUser  == null) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return
@@ -81,7 +81,7 @@ class HomeActivity : BaseActivity() {
         val userEmailTextView: TextView = headerView.findViewById(R.id.email_text)
         val userProfileImageView: ImageView = headerView.findViewById(R.id.imageView)
 
-        auth.currentUser?.let { user ->
+        auth.currentUser ?.let { user ->
             userNameTextView.text = user.displayName?.takeIf { it.isNotBlank() } ?: getString(R.string.no_name)
             userEmailTextView.text = user.email ?: getString(R.string.no_email)
             Glide.with(this)

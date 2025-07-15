@@ -97,6 +97,7 @@
         <item>Pemanggang roti</item>
     </string-array>
 
+    <string name="not_started">Belum Dimulai</string>
     <string name="no_more_words_puzzle">Tidak ada %2$s kata tersedia dalam kategori %1$s</string>
     <string name="no_changes_made">Tidak Ada Perubahan</string>
     <string name="language_english">Inggris</string>
