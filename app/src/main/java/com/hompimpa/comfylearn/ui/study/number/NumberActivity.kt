@@ -3,8 +3,10 @@ package com.hompimpa.comfylearn.ui.study.number
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
+import androidx.core.content.edit
 import androidx.fragment.app.commit
 import com.hompimpa.comfylearn.R
+import com.hompimpa.comfylearn.helper.AppConstants
 import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.ui.HomeActivity
 import com.hompimpa.comfylearn.ui.study.alphabet.AlphabetActivity
@@ -35,6 +37,9 @@ class NumberActivity : BaseActivity() {
         backButton.setOnClickListener { navigateToLetter(currentLetter - 1) }
         homeButton.setOnClickListener { navigateToHome() }
         changeButton.setOnClickListener { navigateToOther() }
+        getSharedPreferences(AppConstants.PREFS_PROGRESSION, MODE_PRIVATE).edit {
+            putBoolean(AppConstants.getNumberVisitedKey(), true)
+        }
     }
 
     private fun loadAlphabetFragment(letter: Int) {

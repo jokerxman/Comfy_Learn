@@ -15,12 +15,14 @@ import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivityMathGameBinding
+import com.hompimpa.comfylearn.helper.AppConstants
 import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.helper.GameManager
 import com.hompimpa.comfylearn.helper.SoundManager
@@ -358,7 +360,11 @@ class MathGameActivity : BaseActivity() {
         if (chosenAnswer == expectedAnswer) {
             SoundManager.playSound(SoundManager.Sound.CORRECT_ANSWER)
             Toast.makeText(this, getString(R.string.feedback_correct), Toast.LENGTH_SHORT).show()
-            lifecycleScope.launch { gameManager.incrementProblemsSolved() }
+            lifecycleScope.launch { gameManager.incrementProblemsSolved()
+                val prefs = getSharedPreferences(AppConstants.PREFS_PROGRESSION, MODE_PRIVATE)
+                val currentSolved = prefs.getInt(AppConstants.getMathGameProgressKey(), 0)
+                prefs.edit { putInt(AppConstants.getMathGameProgressKey(), currentSolved + 1) }
+            }
             button.setBackgroundColor(ContextCompat.getColor(this, R.color.green_balloon))
             animateCorrectAnswer(button)
             binding.nextProblemButton.visibility = View.VISIBLE

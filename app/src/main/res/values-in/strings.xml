@@ -36,6 +36,8 @@
     <string name="substraction_up">Level 4: Pengurangan di atas 10</string>
     <string name="congratulations">Selamat!</string>
     <string name="start_over">Ulangi Lagi</string>
+    <string name="next_example">Contoh Berikut</string>
+    <string name="level_name_format">Level %1$d: %2$s</string>
     <string-array name="animal">
         <item>Buaya</item>
         <item>Berang Berang</item>
@@ -63,41 +65,44 @@
         <item>Tukan</item>
     </string-array>
     <string-array name="objek">
-        <item>Air conditioner</item>
-        <item>Basket</item>
-        <item>Bed</item>
+        <item>Pendingin Udara</item>
+        <item>Keranjang</item>
+        <item>Tempat tidur</item>
         <item>Blender</item>
-        <item>Bottle</item>
-        <item>Broom</item>
-        <item>Bucket</item>
-        <item>Calendar</item>
-        <item>Chair</item>
-        <item>Cloth</item>
-        <item>Clothes stand</item>
-        <item>Comb</item>
-        <item>Couch</item>
-        <item>Curtains</item>
-        <item>Desk</item>
-        <item>Fan</item>
-        <item>Hanger</item>
-        <item>Kettle</item>
-        <item>Kitchen hood</item>
-        <item>Lamp</item>
-        <item>Lantern</item>
-        <item>Lightbulb</item>
+        <item>Botol</item>
+        <item>Sapu</item>
+        <item>Ember</item>
+        <item>Kalender</item>
+        <item>Kursi</item>
+        <item>Kain</item>
+        <item>Jemuran</item>
+        <item>Sisir</item>
+        <item>Sofa</item>
+        <item>Gorden</item>
+        <item>Meja</item>
+        <item>Kipas angin</item>
+        <item>Gantungan baju</item>
+        <item>Teko</item>
+        <item>Penyedot asap</item>
+        <item>Lampu</item>
+        <item>Lentera</item>
+        <item>Bohlam</item>
         <item>Microwave</item>
-        <item>Mop</item>
-        <item>Photo frame</item>
-        <item>Pot</item>
-        <item>Refrigerator</item>
+        <item>Pel</item>
+        <item>Bingkai foto</item>
+        <item>Panci</item>
+        <item>Kulkas</item>
         <item>Speaker</item>
-        <item>Television</item>
-        <item>Toaster</item>
+        <item>Televisi</item>
+        <item>Pemanggang roti</item>
     </string-array>
+
     <string name="no_more_words_puzzle">Tidak ada %2$s kata tersedia dalam kategori %1$s</string>
     <string name="no_changes_made">Tidak Ada Perubahan</string>
     <string name="language_english">Inggris</string>
     <string name="language_indonesian">Bahasa Indonesia</string>
+    <string name="try_again_feedback">Coba Lagi! Dibutuhkan %1$d, kamu punya %2$d</string>
+    <string name="problems_solved_format">Selesai: %1$d</string>
     <string name="empty" />
     <string name="difficulty_easy">Mudah</string>
     <string name="difficulty_medium">Sedang</string>
@@ -138,4 +143,6 @@
     <string name="small_brush_description">Kuas Kecil</string>
     <string name="medium_brush_description">Kuas Sedang</string>
     <string name="large_brush_description">Kuas Besar</string>
+    <string name="all_levels_completed">Semu Level Selesai</string>
+    <string name="level_up">Naik Level</string>
 </resources>

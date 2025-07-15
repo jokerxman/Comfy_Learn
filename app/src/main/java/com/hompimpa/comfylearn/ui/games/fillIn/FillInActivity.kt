@@ -39,6 +39,7 @@ private const val STATE_HINTS_AVAILABLE = "hintsAvailable"
 private const val STATE_QUESTIONS_ANSWERED_THIS_SESSION = "questionsAnsweredThisSession"
 private const val STATE_ANSWERED_WORDS = "answeredWordsThisSession"
 
+
 class FillInActivity : BaseActivity() {
 
     private lateinit var binding: ActivityFillInBinding
@@ -156,6 +157,71 @@ class FillInActivity : BaseActivity() {
         }
     }
 
+    /**
+     * *** MODIFIED FUNCTION ***
+     * Loads questions by matching the localized word to its English equivalent via array index.
+     */
+    private fun loadQuestions() {
+        questions.clear()
+        val categoryResId = getCategoryResourceId()
+        if (categoryResId == 0) {
+            Log.e(TAG, "Could not find resource ID for category: $category")
+            return
+        }
+
+        try {
+            val currentConfig = resources.configuration
+
+            // 1. Get the localized words for the current user's language
+            val localizedContext = createConfigurationContext(Configuration(currentConfig).apply {
+                setLocale(Locale.getDefault())
+            })
+            val localizedWords = localizedContext.resources.getStringArray(categoryResId)
+
+            // 2. Get the English words to use as a base for filenames
+            val englishContext = createConfigurationContext(Configuration(currentConfig).apply {
+                setLocale(Locale.ENGLISH)
+            })
+            val englishBaseWords = englishContext.resources.getStringArray(categoryResId)
+
+            // 3. Ensure arrays are parallel
+            if (localizedWords.size != englishBaseWords.size) {
+                Log.e(TAG, "Mismatch between localized and English word arrays for category: $category")
+                Toast.makeText(this, "Error: Word list mismatch.", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            // 4. Create questions using the paired words
+            localizedWords.forEachIndexed { index, displayWord ->
+                if (!answeredWordsThisSession.contains(displayWord)) {
+                    val baseWord = englishBaseWords[index]
+                    val filenameWord = baseWord.replace(" ", "_").lowercase(Locale.ENGLISH)
+                    // The image path is always constructed from the English base word and 'en' folder.
+                    val svgPath = "en/${category.lowercase(Locale.ENGLISH)}_${filenameWord}.svg"
+                    questions.add(Question(displayWord, svgPath))
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error loading questions for $category.", e)
+            Toast.makeText(this, "Error loading questions.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /**
+     * *** RESTORED FUNCTION ***
+     * Gets the resource ID for the category's word array.
+     */
+    private fun getCategoryResourceId(): Int {
+        return when (category.lowercase(Locale.getDefault())) {
+            "animal" -> R.array.animal
+            "objek" -> R.array.objek
+            else -> R.array.animal // Default case
+        }
+    }
+
+    // --- NO OTHER CHANGES ARE NEEDED BELOW THIS LINE ---
+    // ... (All other functions like setupQuestion, setupLetterSlots, createLetterSlot, etc., remain unchanged)
+
     private fun checkAnswer(isRestoring: Boolean = false) {
         val cq = currentQuestion ?: return
         val userAnswerBuilder = StringBuilder()
@@ -208,54 +274,6 @@ class FillInActivity : BaseActivity() {
         finish()
     }
 
-    private fun loadQuestions() {
-        questions.clear()
-        val categoryResourceId = getCategoryResourceId()
-        try {
-            val appContext = applicationContext
-            val currentConfig = appContext.resources.configuration
-            val selectedLocale = if (Locale.getDefault().language == "id") {
-                // If the language is Indonesian, set the locale to Indonesian
-                Configuration(currentConfig).apply {
-                    setLocale(Locale("id"))
-                }
-            } else {
-                // Default to English
-                Configuration(currentConfig).apply {
-                    setLocale(Locale.ENGLISH)
-                }
-            }
-
-            val localizedContext = appContext.createConfigurationContext(selectedLocale)
-            val localizedResources = localizedContext.resources
-            val wordArray = localizedResources.getStringArray(categoryResourceId)
-
-            if (wordArray.isEmpty()) {
-                return
-            }
-
-            wordArray.forEach { wordWithSpaces ->
-                if (!answeredWordsThisSession.contains(wordWithSpaces)) {
-                    val filenameWord = wordWithSpaces.replace(" ", "_").lowercase(Locale.ENGLISH)
-                    val svgPath = "en/${category.lowercase(Locale.ENGLISH)}_${filenameWord}.svg"
-                    questions.add(Question(wordWithSpaces, svgPath))
-                }
-            }
-        } catch (e: Exception) {
-            Toast.makeText(this, "Error loading questions for $category.", Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
-
-
-    private fun getCategoryResourceId(): Int {
-        return when (category.lowercase(Locale.getDefault())) {
-            "animal" -> R.array.animal
-            "objek" -> R.array.objek
-            else -> R.array.animal
-        }
-    }
-
     private fun setupQuestion() {
         if (questions.isEmpty()) {
             Toast.makeText(
@@ -295,12 +313,10 @@ class FillInActivity : BaseActivity() {
         val wordChars = currentQ.word.toList()
         val revealedIndices = determineRevealedIndices(currentQ.word, difficulty)
 
-        // Use post to wait for the layout to be measured
         binding.letterSlots.post {
             val containerWidth = binding.letterSlots.width
             if (containerWidth == 0 || wordChars.isEmpty()) return@post
 
-            // Calculate the size for each slot
             val slotMargin = resources.getDimensionPixelSize(R.dimen.slot_margin)
             val totalMargin = slotMargin * (wordChars.size - 1)
             val slotSize = (containerWidth - totalMargin) / wordChars.size
@@ -355,7 +371,6 @@ class FillInActivity : BaseActivity() {
 
     private fun createLetterSlot(charToShow: Char, isRevealed: Boolean, size: Int): TextView {
         return TextView(this).apply {
-            // Set LayoutParams to control size
             val margin = resources.getDimensionPixelSize(R.dimen.slot_margin)
             val params = LinearLayout.LayoutParams(size, size).also {
                 it.setMargins(0, 0, margin, 0)
@@ -364,8 +379,6 @@ class FillInActivity : BaseActivity() {
 
             gravity = Gravity.CENTER
             background = ContextCompat.getDrawable(this@FillInActivity, R.drawable.letter_slot_bg)
-
-            // Enable auto-sizing text
             TextViewCompat.setAutoSizeTextTypeWithDefaults(this, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM)
 
             text = when {
@@ -444,21 +457,16 @@ class FillInActivity : BaseActivity() {
         binding.letterOptions.layoutManager = GridLayoutManager(this, columns)
         binding.letterOptions.adapter = adapter
 
-        // Add a listener to calculate item size after layout
         binding.letterOptions.doOnLayout { view ->
             val rv = view as RecyclerView
             val totalWidth = rv.width
             val totalHeight = rv.height
             if (totalWidth == 0 || totalHeight == 0 || adapter.itemCount == 0) return@doOnLayout
 
-            val rows = (adapter.itemCount + columns - 1) / columns // Calculate rows needed
-
-            // Calculate size based on width and height, choose the smaller to ensure fit
+            val rows = (adapter.itemCount + columns - 1) / columns
             val sizeFromWidth = totalWidth / columns
             val sizeFromHeight = totalHeight / rows
             val itemSize = min(sizeFromWidth, sizeFromHeight)
-
-            // Update the adapter with the new size
             (rv.adapter as? LetterOptionsAdapter)?.updateItemSize(itemSize)
         }
     }

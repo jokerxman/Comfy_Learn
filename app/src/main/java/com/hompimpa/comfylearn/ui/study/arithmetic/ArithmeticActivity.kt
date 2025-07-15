@@ -1,5 +1,6 @@
 package com.hompimpa.comfylearn.ui.study.arithmetic
 
+import android.content.res.Configuration
 import android.graphics.drawable.PictureDrawable
 import android.os.Bundle
 import android.view.View
@@ -8,12 +9,12 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.content.edit
-import com.caverock.androidsvg.SVG
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivityArithmeticBinding
 import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.helper.GameContentProvider
 import java.io.IOException
+import java.util.Locale
 import kotlin.random.Random
 
 class ArithmeticActivity : BaseActivity() {
@@ -48,12 +49,13 @@ class ArithmeticActivity : BaseActivity() {
             handleGameCompletion()
             return
         }
+        binding.nextProblemButton.isEnabled = true
         updateProgressUI()
         generateQuestion()
     }
 
     private fun handleGameCompletion() {
-        Toast.makeText(this, "Congratulations! You have completed all levels!", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, getString(R.string.all_levels_completed), Toast.LENGTH_LONG).show()
         binding.nextProblemButton.isEnabled = false
     }
 
@@ -67,11 +69,14 @@ class ArithmeticActivity : BaseActivity() {
 
     private fun generateQuestion() {
         val visualCategory = GameContentProvider.getGameCategories(this).random()
-        val itemsInCategory = GameContentProvider.getWordsForCategory(this, visualCategory)
-        if (itemsInCategory.isEmpty()) return
+        val localizedWords = GameContentProvider.getWordsForCategory(this, visualCategory)
+        if (localizedWords.isEmpty()) return
 
-        val randomItemName = itemsInCategory.random()
-        val imagePath = GameContentProvider.getImagePath(visualCategory, randomItemName)
+        val randomLocalizedWord = localizedWords.random()
+        val englishEquivalent = getEnglishEquivalent(randomLocalizedWord, visualCategory)
+        if (englishEquivalent == null) return
+
+        val imagePath = GameContentProvider.getImagePath(visualCategory, englishEquivalent)
         val level = levels[currentLevel - 1]
         val isAddition = level.isAddition ?: Random.nextBoolean()
 
@@ -113,7 +118,7 @@ class ArithmeticActivity : BaseActivity() {
         repeat(count) {
             val imageView = ImageView(this).apply {
                 setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-                setImageDrawable(loadSvgFromAssets(imagePath))
+                setImageDrawable(GameContentProvider.loadSvgFromAssets(this@ArithmeticActivity, imagePath))
                 layoutParams = GridLayout.LayoutParams().apply {
                     width = itemSize
                     height = itemSize
@@ -124,21 +129,26 @@ class ArithmeticActivity : BaseActivity() {
         }
     }
 
-    private fun loadSvgFromAssets(path: String): PictureDrawable? {
-        return try {
-            assets.open(path).use { stream ->
-                SVG.getFromInputStream(stream)?.renderToPicture()?.let { PictureDrawable(it) }
-            }
-        } catch (e: IOException) {
-            null
-        }
+    private fun getEnglishEquivalent(localizedWord: String, categoryName: String): String? {
+        val resId = resources.getIdentifier(categoryName, "array", packageName)
+        if (resId == 0) return null
+
+        val localizedArray = resources.getStringArray(resId)
+        val wordIndex = localizedArray.indexOfFirst { it.equals(localizedWord, ignoreCase = true) }
+        if (wordIndex == -1) return null
+
+        val englishConfig = Configuration(resources.configuration).apply { setLocale(Locale.ENGLISH) }
+        val englishContext = createConfigurationContext(englishConfig)
+        val englishArray = englishContext.resources.getStringArray(resId)
+
+        return if (wordIndex < englishArray.size) englishArray[wordIndex] else null
     }
 
     private fun levelUp() {
         if (currentLevel < levels.size) {
             currentLevel++
             problemsCompletedInLevel = 0
-            Toast.makeText(this, "Level Up! Now on Level $currentLevel", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.level_up), Toast.LENGTH_SHORT).show()
             saveProgress()
         } else {
             handleGameCompletion()
@@ -147,7 +157,8 @@ class ArithmeticActivity : BaseActivity() {
 
     private fun updateProgressUI() {
         val level = levels[currentLevel - 1]
-        binding.levelNameText.text = getString(level.nameResId)
+        val levelName = getString(level.nameResId)
+        binding.levelNameText.text = getString(R.string.level_name_format, currentLevel, levelName)
         binding.levelProgressBar.max = problemsPerLevel
         binding.levelProgressBar.progress = problemsCompletedInLevel
     }

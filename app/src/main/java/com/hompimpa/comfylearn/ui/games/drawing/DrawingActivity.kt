@@ -14,10 +14,12 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import com.github.dhaval2404.colorpicker.ColorPickerDialog
 import com.github.dhaval2404.colorpicker.model.ColorShape
 import com.hompimpa.comfylearn.R
 import com.hompimpa.comfylearn.databinding.ActivityDrawingBinding
+import com.hompimpa.comfylearn.helper.AppConstants
 import com.hompimpa.comfylearn.helper.BaseActivity
 import com.hompimpa.comfylearn.views.Board
 import java.io.OutputStream
@@ -45,6 +47,9 @@ class DrawingActivity : BaseActivity() {
 
         setupActionListeners()
         setupToolListeners()
+        getSharedPreferences(AppConstants.PREFS_PROGRESSION, MODE_PRIVATE).edit {
+            putBoolean(AppConstants.getDrawingVisitedKey(), true)
+        }
     }
 
     /**

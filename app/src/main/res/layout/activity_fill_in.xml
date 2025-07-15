@@ -12,12 +12,10 @@
         android:id="@+id/customBackButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:src="@drawable/ic_home"
         android:background="?attr/selectableItemBackgroundBorderless"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="8dp" />
+        android:src="@drawable/ic_home"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- The ImageView now has a dynamic height based on constraints and weight -->
     <ImageView
