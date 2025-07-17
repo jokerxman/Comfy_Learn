@@ -30,7 +30,7 @@ class PuzzleViewModel(application: Application) : AndroidViewModel(application) 
 
     fun loadNextWord(category: String, difficulty: String) {
         val wordPair = GameContentProvider.getNextWordPair(getApplication(), category, difficulty)
-        if (wordPair!!.equals(null)) {
+        if (wordPair == null) {
             handleNoMoreWords(category, difficulty)
             return
         }
@@ -50,7 +50,7 @@ class PuzzleViewModel(application: Application) : AndroidViewModel(application) 
             return
         }
 
-        if (formedWord.equals(currentWordPair.display, ignoreCase = true)) {
+        if (formedWord == currentWordPair.display.lowercase()) {
             SoundManager.playSound(SoundManager.Sound.CORRECT_ANSWER)
 
             GameContentProvider.addUsedWord(context, category, currentWordPair.base)
