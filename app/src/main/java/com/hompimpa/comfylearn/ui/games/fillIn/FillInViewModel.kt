@@ -9,7 +9,6 @@ import com.hompimpa.comfylearn.helper.GameContentProvider
 import com.hompimpa.comfylearn.helper.SoundManager
 import com.hompimpa.comfylearn.helper.WordPair
 
-// ✅ FIXED: The UiState no longer needs revealedIndices.
 data class FillInUiState(
     val word: String,
     val imagePath: String,
@@ -60,7 +59,6 @@ class FillInViewModel(application: Application) : AndroidViewModel(application) 
         _slotsState.value = initialSlots
 
         val keyboardLetters = generateKeyboardLetters(wordPair.display)
-        // ✅ FIXED: Now correctly creates the FillInUiState with 3 arguments
         _uiState.value = FillInUiState(wordPair.display, imagePath, keyboardLetters)
     }
 
@@ -76,7 +74,6 @@ class FillInViewModel(application: Application) : AndroidViewModel(application) 
 
     fun onUndo() {
         val currentSlots = _slotsState.value?.toMutableList() ?: return
-        // Only allow undoing letters the user typed (which are lowercase in the state)
         val lastFilledIndex =
             currentSlots.indexOfLast { it != null && it != ' ' && it.isLowerCase() }
         if (lastFilledIndex != -1) {
