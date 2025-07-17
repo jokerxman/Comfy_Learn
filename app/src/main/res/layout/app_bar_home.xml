@@ -19,10 +19,6 @@
             android:theme="@style/ToolbarTheme"
             app:popupTheme="@style/Theme.ComfyLearn.PopupOverlay">
 
-            <!--
-            This RelativeLayout spans the full width of the Toolbar,
-            allowing the ImageView inside to be truly centered.
-            -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
