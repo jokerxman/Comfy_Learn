@@ -16,7 +16,6 @@ object SoundManager {
     }
 
     private lateinit var soundPool: SoundPool
-    // This map now caches both enum sounds and dynamic sounds
     private val soundMap = mutableMapOf<String, Int>()
 
     private var isInitialized = false
@@ -34,11 +33,19 @@ object SoundManager {
             .setAudioAttributes(audioAttributes)
             .build()
 
-        // Pre-load fixed sounds
+        soundPool.setOnLoadCompleteListener { _, sampleId, status ->
+            if (status == 0) {
+                Log.d("SoundManager", "Sound ID $sampleId loaded successfully.")
+            } else {
+                Log.e("SoundManager", "Failed to load sound ID $sampleId. Status: $status")
+            }
+        }
+
         val appContext = context.applicationContext
         soundMap[Sound.CORRECT_ANSWER.name] = soundPool.load(appContext, R.raw.correct_answer, 1)
-         soundMap[Sound.BUTTON_CLICK.name] = soundPool.load(appContext, R.raw.button_click, 1)
-         soundMap[Sound.INCORRECT_ANSWER.name] = soundPool.load(appContext, R.raw.incorrect_answer, 1)
+        soundMap[Sound.BUTTON_CLICK.name] = soundPool.load(appContext, R.raw.button_click, 1)
+        soundMap[Sound.INCORRECT_ANSWER.name] =
+            soundPool.load(appContext, R.raw.incorrect_answer, 1)
 
         isInitialized = true
     }
@@ -50,13 +57,11 @@ object SoundManager {
         }
     }
 
-    // NEW FUNCTION: Plays sounds dynamically based on a word/item name
     fun playSoundByName(context: Context, itemName: String) {
         if (!isInitialized) return
 
         val soundKey = itemName.lowercase(Locale.ROOT)
 
-        // 1. Check if the sound is already loaded in our cache
         if (soundMap.containsKey(soundKey)) {
             val soundId = soundMap[soundKey]!!
             if (soundId > 0) {
@@ -68,27 +73,21 @@ object SoundManager {
             return
         }
 
-        // 2. If not cached, find the resource ID dynamically
+        @Suppress("DiscouragedApi")
         val resourceName = "item_" + soundKey.replace(" ", "_")
+
+        @Suppress("DiscouragedApi")
         val resourceId = context.resources.getIdentifier(resourceName, "raw", context.packageName)
 
         if (resourceId != 0) {
             Log.d("SoundManager", "Loading dynamic sound for '$soundKey' (Resource: $resourceName)")
-            // Mark as loading (value 0) and then load it
-            soundMap[soundKey] = 0
             val loadedSoundId = soundPool.load(context, resourceId, 1)
-            // The onLoadComplete listener will update the map, but we can play immediately if it loads fast
-            soundPool.setOnLoadCompleteListener { _, sampleId, status ->
-                if (status == 0) {
-                    // Update the cache with the real sound ID
-                    if (soundMap[soundKey] == 0) { // check if it was the one we just loaded
-                        soundMap[soundKey] = sampleId
-                    }
-                } else {
-                    soundMap.remove(soundKey) // Remove on failure
-                }
-            }
+            soundMap[soundKey] = loadedSoundId
 
+            if (loadedSoundId == 0) {
+                Log.e("SoundManager", "Failed to load dynamic sound for '$soundKey' immediately.")
+                soundMap.remove(soundKey)
+            }
         } else {
             Log.e("SoundManager", "Dynamic sound resource not found: R.raw.$resourceName")
         }

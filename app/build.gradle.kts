@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -15,13 +17,12 @@ android {
         targetSdk = 35
         versionCode = 2
         versionName = "1.2"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
@@ -32,42 +33,41 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.fromTarget("17")
+        }
     }
     buildFeatures {
         viewBinding = true
         buildConfig = true
-        mlModelBinding = true
     }
     buildToolsVersion = "35.0.0"
 }
 
 dependencies {
-
-    // UI
+    // AndroidX UI Components
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.viewpager2)
-    implementation(libs.glide)
-    implementation(libs.androidsvg.aar)
+    implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.colorpicker)
+    implementation(libs.androidx.ui.text.android) // Often used with Compose, ensure correct usage
 
-// Navigation
+    // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
-// Architecture Components
+    // Architecture Components & Data
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.fragment.ktx)
-    implementation(libs.flexbox)
+    implementation(libs.androidx.datastore.preferences)
 
-// Authentication
+    // Authentication
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.googleid)
@@ -75,19 +75,17 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
 
-// Other
-    implementation(libs.tasks.vision)
-    implementation(libs.tensorflow.lite.support)
-    implementation(libs.tensorflow.lite.metadata)
-    implementation(libs.tensorflow.lite.gpu)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.datastore.preferences)
+    // Kotlin Coroutines
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.androidx.ui.text.android)
-    implementation(libs.appcompat)
 
-// Testing
+    // Graphics & Utilities
+    implementation(libs.glide)
+    implementation(libs.androidsvg.aar)
+    implementation(libs.colorpicker)
+    implementation(libs.flexbox)
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

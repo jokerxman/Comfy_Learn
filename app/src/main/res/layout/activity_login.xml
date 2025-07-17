@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main"
+    android:fitsSystemWindows="true"
     android:background="@drawable/img_background_credentials"
     tools:context=".ui.auth.LoginActivity">
 

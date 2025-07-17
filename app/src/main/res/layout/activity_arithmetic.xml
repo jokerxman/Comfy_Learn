@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:padding="16dp"
     tools:context=".ui.study.arithmetic.ArithmeticActivity">
 
@@ -42,12 +43,14 @@
         app:layout_constraintTop_toBottomOf="@id/levelProgressBar"
         tools:text="3 + 2 = 5" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/visualProblemContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/nextProblemButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,60 +60,47 @@
             android:id="@+id/firstOperandObjectsGrid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/operatorTextView"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_weight="1"
+            android:layout_gravity="center" />
 
         <TextView
             android:id="@+id/operatorTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="8dp"
             android:textSize="40sp"
-            app:layout_constraintBottom_toBottomOf="@id/firstOperandObjectsGrid"
-            app:layout_constraintEnd_toStartOf="@+id/secondOperandObjectsGrid"
-            app:layout_constraintStart_toEndOf="@id/firstOperandObjectsGrid"
-            app:layout_constraintTop_toTopOf="@id/firstOperandObjectsGrid"
             tools:text="+" />
 
         <GridLayout
             android:id="@+id/secondOperandObjectsGrid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/equalTextView"
-            app:layout_constraintStart_toEndOf="@id/operatorTextView"
-            app:layout_constraintTop_toTopOf="@id/firstOperandObjectsGrid" />
+            android:layout_weight="1"
+            android:layout_gravity="center" />
 
         <TextView
             android:id="@+id/equalTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
+            android:paddingHorizontal="8dp"
             android:text="="
-            android:textSize="40sp"
-            app:layout_constraintBottom_toBottomOf="@id/firstOperandObjectsGrid"
-            app:layout_constraintEnd_toStartOf="@+id/answerObjectsGrid"
-            app:layout_constraintStart_toEndOf="@id/secondOperandObjectsGrid"
-            app:layout_constraintTop_toTopOf="@id/firstOperandObjectsGrid" />
+            android:textSize="40sp" />
 
         <GridLayout
             android:id="@+id/answerObjectsGrid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/equalTextView"
-            app:layout_constraintTop_toTopOf="@id/firstOperandObjectsGrid" />
+            android:layout_weight="1"
+            android:layout_gravity="center" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/nextProblemButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:text="@string/next_example"
+        android:text="@string/button_next"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

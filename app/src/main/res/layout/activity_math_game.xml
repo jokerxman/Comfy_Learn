@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     tools:context=".ui.games.mathgame.MathGameActivity">
-
-    <!-- Themed background would go here on the root ConstraintLayout or an ImageView behind everything -->
 
     <TextView
         android:id="@+id/problemTextView"
@@ -21,7 +20,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="3 + 2 = ?" />
 
-    <!-- This container will hold the grids and dynamically resize to fill available space -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/visualProblemContainer"
         android:layout_width="0dp"
@@ -33,7 +31,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- ScrollView added to ensure the grids don't get clipped on smaller screens or with many items -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -43,14 +40,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- A new ConstraintLayout to manage the horizontal layout of the grids inside the ScrollView -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp">
 
-                <!-- Area to display objects for the first number -->
                 <GridLayout
                     android:id="@+id/firstOperandObjectsGrid"
                     android:layout_width="0dp"
@@ -80,7 +75,6 @@
                     app:layout_constraintTop_toTopOf="@id/firstOperandObjectsGrid"
                     tools:text="+" />
 
-                <!-- Area to display objects for the second number -->
                 <GridLayout
                     android:id="@+id/secondOperandObjectsGrid"
                     android:layout_width="0dp"
@@ -101,22 +95,19 @@
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Next button is now anchored to the bottom -->
     <Button
         android:id="@+id/nextProblemButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/colorAccent"
-        android:text="Next"
+        android:text="@string/button_next"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible" />
 
-    <!-- Answer Choices are anchored above the Next button -->
-    <!-- The buttons now use layout_weight and auto-sizing text -->
     <LinearLayout
         android:id="@+id/answerChoicesLayout"
         android:layout_width="match_parent"

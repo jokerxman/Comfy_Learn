@@ -12,6 +12,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        SoundManager.release()
         super.onDestroy()
     }
 }

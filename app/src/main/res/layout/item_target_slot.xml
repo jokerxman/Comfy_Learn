@@ -1,4 +1,3 @@
-<!-- item_target_slot.xml -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="40dp"
     android:layout_height="40dp"

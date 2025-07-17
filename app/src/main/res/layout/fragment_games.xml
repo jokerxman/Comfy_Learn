@@ -81,7 +81,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <!-- Animated scroll indicator -->
     <ImageView
         android:id="@+id/scroll_indicator"
         android:layout_width="48dp"
