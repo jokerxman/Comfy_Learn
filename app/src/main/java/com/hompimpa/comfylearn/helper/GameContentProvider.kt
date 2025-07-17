@@ -62,7 +62,6 @@ object GameContentProvider {
         }
     }
 
-    // ✅ ADDED BACK: This function is needed by SpellingDetailViewModel
     fun getEnglishEquivalent(
         context: Context,
         localizedWord: String,

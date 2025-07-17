@@ -22,16 +22,15 @@ class GamesFragment : Fragment() {
 
     private val viewModel: GamesViewModel by viewModels()
 
-    // One launcher is used for any activity that needs to return a result
     private val activityLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data = result.data ?: return@registerForActivityResult
-            // When DifficultySelectionActivity returns a result, tell the ViewModel
             val gameType = data.getStringExtra(DifficultySelectionActivity.EXTRA_GAME_TYPE)
             val category = data.getStringExtra(DifficultySelectionActivity.EXTRA_GAME_CATEGORY)
-            val difficulty = data.getStringExtra(DifficultySelectionActivity.EXTRA_SELECTED_DIFFICULTY)
+            val difficulty =
+                data.getStringExtra(DifficultySelectionActivity.EXTRA_SELECTED_DIFFICULTY)
 
             if (gameType != null && category != null && difficulty != null) {
                 viewModel.onGameReady(gameType, category, difficulty)
@@ -39,7 +38,11 @@ class GamesFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentGamesBinding.inflate(inflater, container, false)
         return binding.root
     }
