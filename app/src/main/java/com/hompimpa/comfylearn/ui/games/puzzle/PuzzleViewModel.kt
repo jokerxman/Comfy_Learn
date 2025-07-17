@@ -30,7 +30,7 @@ class PuzzleViewModel(application: Application) : AndroidViewModel(application) 
 
     fun loadNextWord(category: String, difficulty: String) {
         val wordPair = GameContentProvider.getNextWordPair(getApplication(), category, difficulty)
-        if (wordPair == null) {
+        if (wordPair!!.equals(null)) {
             handleNoMoreWords(category, difficulty)
             return
         }
