@@ -11,6 +11,7 @@ import com.hompimpa.comfylearn.ui.games.fillIn.FillInActivity
 import com.hompimpa.comfylearn.ui.games.mathgame.MathGameActivity
 import com.hompimpa.comfylearn.ui.games.puzzle.PuzzleActivity
 
+// A clean data class to represent a navigation event
 data class NavigationAction(
     val targetClass: Class<out Activity>,
     val extras: Bundle = Bundle(),
@@ -49,12 +50,6 @@ class GamesViewModel : ViewModel() {
             putString(DifficultySelectionActivity.EXTRA_GAME_CATEGORY, category)
             putString(DifficultySelectionActivity.EXTRA_GAME_TYPE, gameType)
         }
-        _navigationEvent.value = Event(
-            NavigationAction(
-                DifficultySelectionActivity::class.java,
-                extras,
-                forResult = true
-            )
-        )
+        _navigationEvent.value = Event(NavigationAction(DifficultySelectionActivity::class.java, extras, forResult = true))
     }
 }

@@ -3,6 +3,7 @@ package com.hompimpa.comfylearn.helper
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.SoundPool
+import android.util.Log
 import com.hompimpa.comfylearn.R
 import java.util.Locale
 
@@ -16,6 +17,7 @@ object SoundManager {
 
     private lateinit var soundPool: SoundPool
     private val soundMap = mutableMapOf<String, Int>()
+
     private var isInitialized = false
 
     fun initialize(context: Context) {
@@ -31,10 +33,19 @@ object SoundManager {
             .setAudioAttributes(audioAttributes)
             .build()
 
+        soundPool.setOnLoadCompleteListener { _, sampleId, status ->
+            if (status == 0) {
+                Log.d("SoundManager", "Sound ID $sampleId loaded successfully.")
+            } else {
+                Log.e("SoundManager", "Failed to load sound ID $sampleId. Status: $status")
+            }
+        }
+
         val appContext = context.applicationContext
         soundMap[Sound.CORRECT_ANSWER.name] = soundPool.load(appContext, R.raw.correct_answer, 1)
         soundMap[Sound.BUTTON_CLICK.name] = soundPool.load(appContext, R.raw.button_click, 1)
-        soundMap[Sound.INCORRECT_ANSWER.name] = soundPool.load(appContext, R.raw.incorrect_answer, 1)
+        soundMap[Sound.INCORRECT_ANSWER.name] =
+            soundPool.load(appContext, R.raw.incorrect_answer, 1)
 
         isInitialized = true
     }
@@ -54,25 +65,39 @@ object SoundManager {
         if (soundMap.containsKey(soundKey)) {
             val soundId = soundMap[soundKey]!!
             if (soundId > 0) {
+                Log.d("SoundManager", "Playing cached sound for '$soundKey'")
                 soundPool.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f)
+            } else {
+                Log.w("SoundManager", "Sound for '$soundKey' is still loading.")
             }
             return
         }
 
+        @Suppress("DiscouragedApi")
         val resourceName = "item_" + soundKey.replace(" ", "_")
+
+        @Suppress("DiscouragedApi")
         val resourceId = context.resources.getIdentifier(resourceName, "raw", context.packageName)
 
         if (resourceId != 0) {
-            soundMap[soundKey] = 0
-            soundPool.setOnLoadCompleteListener { _, sampleId, status ->
-                if (status == 0) {
-                    if (soundMap[soundKey] == 0) {
-                        soundMap[soundKey] = sampleId
-                    }
-                } else {
-                    soundMap.remove(soundKey)
-                }
+            Log.d("SoundManager", "Loading dynamic sound for '$soundKey' (Resource: $resourceName)")
+            val loadedSoundId = soundPool.load(context, resourceId, 1)
+            soundMap[soundKey] = loadedSoundId
+
+            if (loadedSoundId == 0) {
+                Log.e("SoundManager", "Failed to load dynamic sound for '$soundKey' immediately.")
+                soundMap.remove(soundKey)
             }
+        } else {
+            Log.e("SoundManager", "Dynamic sound resource not found: R.raw.$resourceName")
+        }
+    }
+
+    fun release() {
+        if (isInitialized) {
+            soundPool.release()
+            soundMap.clear()
+            isInitialized = false
         }
     }
 }

@@ -18,7 +18,7 @@ class LetterOptionsAdapter(
     fun updateItemSize(size: Int) {
         if (itemSize != size) {
             itemSize = size
-            notifyDataSetChanged()
+            notifyItemRangeChanged(0, itemCount)
         }
     }
 
@@ -34,9 +34,12 @@ class LetterOptionsAdapter(
             }
 
             letterTextView.text = letter
-            TextViewCompat.setAutoSizeTextTypeWithDefaults(letterTextView, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM)
+            TextViewCompat.setAutoSizeTextTypeWithDefaults(
+                letterTextView,
+                TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM
+            )
 
-            itemView.setOnClickListener {
+            itemView.setOnSoundClickListener {
                 onLetterClick(letter)
             }
         }

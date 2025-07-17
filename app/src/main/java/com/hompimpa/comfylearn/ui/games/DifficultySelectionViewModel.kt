@@ -33,8 +33,7 @@ class DifficultySelectionViewModel(application: Application) : AndroidViewModel(
     }
 
     private fun loadLastSelectedDifficulty(): String {
-        return sharedPreferences.getString("last_selected_universal_difficulty", "MEDIUM")
-            ?: "MEDIUM"
+        return sharedPreferences.getString("last_selected_universal_difficulty", "MEDIUM") ?: "MEDIUM"
     }
 
     fun onConfirmButtonClicked(selectedDifficulty: String) {

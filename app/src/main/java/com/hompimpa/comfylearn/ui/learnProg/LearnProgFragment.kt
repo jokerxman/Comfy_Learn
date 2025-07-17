@@ -1,49 +1,55 @@
 package com.hompimpa.comfylearn.ui.learnProg
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.hompimpa.comfylearn.R
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hompimpa.comfylearn.databinding.FragmentLearnprogBinding
-import com.hompimpa.comfylearn.helper.AppConstants
-import com.hompimpa.comfylearn.helper.GameContentProvider
+import com.hompimpa.comfylearn.helper.ProgressionAdapter
+import com.hompimpa.comfylearn.ui.games.DifficultySelectionActivity
 import com.hompimpa.comfylearn.ui.games.drawing.DrawingActivity
 import com.hompimpa.comfylearn.ui.games.mathgame.MathGameActivity
 import com.hompimpa.comfylearn.ui.games.puzzle.PuzzleActivity
 import com.hompimpa.comfylearn.ui.study.alphabet.AlphabetActivity
 import com.hompimpa.comfylearn.ui.study.arithmetic.ArithmeticActivity
 import com.hompimpa.comfylearn.ui.study.number.NumberActivity
-import com.hompimpa.comfylearn.ui.study.spelling.SpellingActivity
-import java.util.Locale
-
-data class ProgressionItem(
-    val gameType: String,
-    val category: String,
-    val difficulty: String?,
-    val activityName: String,
-    val status: String
-)
+import com.hompimpa.comfylearn.ui.study.spelling.SpellingDetailActivity
 
 class LearnProgFragment : Fragment() {
 
     private var _binding: FragmentLearnprogBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel: LearnProgViewModel by viewModels()
+    private lateinit var progressionAdapter: ProgressionAdapter
+
     private val gameLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        viewModel.loadProgression()
+    }
+
+    private val difficultyLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            loadAndDisplayProgression()
+            val data = result.data ?: return@registerForActivityResult
+            val gameType = data.getStringExtra(DifficultySelectionActivity.EXTRA_GAME_TYPE)
+            val category = data.getStringExtra(DifficultySelectionActivity.EXTRA_GAME_CATEGORY)
+            val difficulty =
+                data.getStringExtra(DifficultySelectionActivity.EXTRA_SELECTED_DIFFICULTY)
+
+            if (gameType != null && category != null && difficulty != null) {
+                launchGameWithDifficulty(gameType, category, difficulty)
+            }
         }
     }
 
@@ -58,174 +64,80 @@ class LearnProgFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadAndDisplayProgression()
+        setupRecyclerView()
+        setupObservers()
     }
 
     override fun onResume() {
         super.onResume()
-        loadAndDisplayProgression()
+        viewModel.loadProgression()
     }
 
-    private fun loadAndDisplayProgression() {
-        binding.layoutProgressionContainer.removeAllViews()
-        val progressionItems = loadProgressionData()
-        updateProgressionUI(progressionItems)
-    }
-
-    private fun loadProgressionData(): List<ProgressionItem> {
-        val prefs = requireActivity().getSharedPreferences(
-            AppConstants.PREFS_PROGRESSION,
-            Context.MODE_PRIVATE
-        )
-        val gameCategories = GameContentProvider.getGameCategories(requireContext())
-        val puzzleDifficulties = GameContentProvider.getPuzzleDifficulties(requireContext())
-        val items = mutableListOf<ProgressionItem>()
-        val arithmeticPrefs =
-            requireActivity().getSharedPreferences("ArithmeticProgress", Context.MODE_PRIVATE)
-        val arithCurrentLevel = arithmeticPrefs.getInt("currentLevel", 1)
-        val isArithVisited = arithCurrentLevel > 1
-
-        items.add(
-            createSimpleProgressItem(
-                "ALPHABET",
-                "Alphabet",
-                prefs.getBoolean(AppConstants.getAlphabetVisitedKey(), false)
-            )
-        )
-        items.add(
-            createSimpleProgressItem(
-                "NUMBER",
-                "Number",
-                prefs.getBoolean(AppConstants.getNumberVisitedKey(), false)
-            )
-        )
-        items.add(createSimpleProgressItem("ARITHMETIC", "Arithmetic", isArithVisited))
-        items.add(
-            createSimpleProgressItem(
-                "DRAWING",
-                "Drawing",
-                prefs.getBoolean(AppConstants.getDrawingVisitedKey(), false)
-            )
-        )
-
-        val mathProblemsSolved = prefs.getInt(AppConstants.getMathGameProgressKey(), 0)
-        items.add(
-            ProgressionItem(
-                "MATH",
-                "Math Game",
-                null,
-                "Math Game",
-                if (mathProblemsSolved > 0) "$mathProblemsSolved problems solved" else getString(
-                    R.string.not_started
-                )
-            )
-        )
-
-        gameCategories.forEach { category ->
-            val spellingKey = AppConstants.getSpellingCategoryProgressKey(category)
-            items.add(
-                ProgressionItem(
-                    gameType = "SPELLING", category = category, difficulty = null,
-                    activityName = "Spelling: ${category.replaceFirstChar { it.titlecase(Locale.getDefault()) }}",
-                    status = if (prefs.getBoolean(spellingKey, false)) "Visited" else getString(
-                        R.string.not_started
-                    )
-                )
-            )
+    private fun setupRecyclerView() {
+        progressionAdapter = ProgressionAdapter(emptyList()) { item ->
+            handleItemClick(item)
         }
+        binding.progressionRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = progressionAdapter
+        }
+    }
 
-        gameCategories.forEach { category ->
-            puzzleDifficulties.forEach { difficulty ->
-                val progressKeyBase = AppConstants.getPuzzleProgressKey(category, difficulty)
-                val isCompleted = prefs.getBoolean(progressKeyBase + "_completed", false)
-                val wordsSolved = prefs.getInt(progressKeyBase + "_words_solved", 0)
-                val totalWords = GameContentProvider.getTotalWordsForPuzzleCategory(
+    private fun setupObservers() {
+        viewModel.progressionItems.observe(viewLifecycleOwner) { items ->
+            binding.noDataTextView.isVisible = items.isEmpty()
+            progressionAdapter = ProgressionAdapter(items) { item ->
+                handleItemClick(item)
+            }
+            binding.progressionRecyclerView.adapter = progressionAdapter
+        }
+    }
+
+    private fun handleItemClick(item: ProgressionItem) {
+        val intent: Intent?
+
+        when (item.gameType) {
+            "MATH", "PUZZLE" -> {
+                val difficultyIntent = DifficultySelectionActivity.newIntent(
                     requireContext(),
-                    category,
-                    difficulty
+                    item.category,
+                    item.gameType
                 )
-                val status = when {
-                    isCompleted -> "Completed"
-                    wordsSolved > 0 -> "$wordsSolved / $totalWords words"
-                    else -> "Not Started"
-                }
-                items.add(
-                    ProgressionItem(
-                        gameType = "PUZZLE", category = category, difficulty = difficulty,
-                        activityName = "Puzzle: ${category.replaceFirstChar { it.titlecase(Locale.getDefault()) }} - $difficulty",
-                        status = status
-                    )
-                )
-            }
-        }
-        return items
-    }
-
-    private fun createSimpleProgressItem(
-        gameType: String,
-        name: String,
-        isVisited: Boolean
-    ): ProgressionItem {
-        return ProgressionItem(
-            gameType = gameType, category = name, difficulty = null,
-            activityName = name, status = if (isVisited) "Visited" else "Not Started"
-        )
-    }
-
-    private fun updateProgressionUI(items: List<ProgressionItem>) {
-        binding.layoutProgressionContainer.removeAllViews()
-        val inflater = LayoutInflater.from(requireContext())
-
-        if (items.isEmpty()) {
-            val noDataView = TextView(context).apply {
-                text = getString(R.string.no_progress)
-                gravity = Gravity.CENTER
-            }
-            binding.layoutProgressionContainer.addView(noDataView)
-            return
-        }
-
-        items.forEach { item ->
-            val itemView = inflater.inflate(
-                R.layout.item_progression,
-                binding.layoutProgressionContainer,
-                false
-            )
-            val itemLayout: LinearLayout = itemView.findViewById(R.id.progression_item_layout)
-            val nameTextView: TextView = itemView.findViewById(R.id.activityNameTextView)
-            val statusTextView: TextView = itemView.findViewById(R.id.statusTextView)
-
-            nameTextView.text = item.activityName
-            statusTextView.text = item.status
-            itemLayout.setOnClickListener { startGame(item) }
-            binding.layoutProgressionContainer.addView(itemView)
-        }
-    }
-
-    private fun startGame(item: ProgressionItem) {
-        val intent: Intent? = when (item.gameType) {
-            "ALPHABET" -> Intent(activity, AlphabetActivity::class.java)
-            "NUMBER" -> Intent(activity, NumberActivity::class.java)
-            "ARITHMETIC" -> Intent(activity, ArithmeticActivity::class.java)
-            "DRAWING" -> Intent(activity, DrawingActivity::class.java)
-            "SPELLING" -> Intent(
-                activity,
-                SpellingActivity::class.java
-            ).apply { putExtra("category", item.category) }
-
-            "PUZZLE" -> Intent(activity, PuzzleActivity::class.java).apply {
-                putExtra("CATEGORY", item.category)
-                putExtra("DIFFICULTY", item.difficulty)
+                difficultyLauncher.launch(difficultyIntent)
+                return
             }
 
-            "MATH" -> Intent(activity, MathGameActivity::class.java)
+            "ALPHABET" -> intent = Intent(activity, AlphabetActivity::class.java)
+            "NUMBER" -> intent = Intent(activity, NumberActivity::class.java)
+            "ARITHMETIC" -> intent = Intent(activity, ArithmeticActivity::class.java)
+            "DRAWING" -> intent = Intent(activity, DrawingActivity::class.java)
+            "SPELLING" -> intent = Intent(activity, SpellingDetailActivity::class.java).apply {
+                putExtra("category", item.category)
+            }
+
+            else -> {
+                intent = null
+                Toast.makeText(requireContext(), "Coming soon!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        intent?.let { gameLauncher.launch(it) }
+    }
+
+    private fun launchGameWithDifficulty(gameType: String, category: String, difficulty: String) {
+        val intent = when (gameType) {
+            "PUZZLE" -> Intent(requireContext(), PuzzleActivity::class.java)
+            "MATH" -> Intent(requireContext(), MathGameActivity::class.java)
             else -> null
         }
-        intent?.let { gameLauncher.launch(it) } ?: Toast.makeText(
-            requireContext(),
-            "Coming soon!",
-            Toast.LENGTH_SHORT
-        ).show()
+
+        intent?.apply {
+            putExtra("CATEGORY", category)
+            putExtra("DIFFICULTY", difficulty)
+            putExtra(MathGameActivity.EXTRA_SELECTED_DIFFICULTY, difficulty)
+        }?.let {
+            gameLauncher.launch(it)
+        }
     }
 
     override fun onDestroyView() {

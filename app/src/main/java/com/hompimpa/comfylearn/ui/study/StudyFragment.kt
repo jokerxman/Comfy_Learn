@@ -5,23 +5,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.view.animation.AnimationUtils
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.hompimpa.comfylearn.R
+import androidx.fragment.app.viewModels
 import com.hompimpa.comfylearn.databinding.FragmentStudyBinding
-import com.hompimpa.comfylearn.ui.study.alphabet.AlphabetActivity
-import com.hompimpa.comfylearn.ui.study.arithmetic.ArithmeticActivity
-import com.hompimpa.comfylearn.ui.study.spelling.SpellingActivity
+import com.hompimpa.comfylearn.helper.setOnSoundClickListener
+import com.hompimpa.comfylearn.helper.setupScrollIndicator
+import com.hompimpa.comfylearn.ui.study.spelling.SpellingCategoryActivity
 
 class StudyFragment : Fragment() {
 
     private var _binding: FragmentStudyBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel: StudyViewModel by viewModels()
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentStudyBinding.inflate(inflater, container, false)
         return binding.root
@@ -29,50 +30,29 @@ class StudyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.buttonOpenAlphabet.setOnClickListener {
-            val intent = Intent(requireContext(), AlphabetActivity::class.java)
-            intent.putExtra("letter", 'A')
-            startActivity(intent)
-        }
-
-        binding.buttonOpenSpelling.setOnClickListener {
-            val intent = Intent(requireContext(), SpellingActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding.buttonOpenArithmetic.setOnClickListener {
-            val intent = Intent(requireContext(), ArithmeticActivity::class.java)
-            startActivity(intent)
-        }
-
-        setupScrollIndicator()
+        setupClickListeners()
+        setupObservers()
+        binding.scrollView.setupScrollIndicator(binding.scrollIndicator)
     }
 
-    private fun setupScrollIndicator() {
-        val scrollView = binding.scrollView
-        val scrollIndicator = binding.scrollIndicator
-        val contentLayout = scrollView.getChildAt(0)
+    private fun setupClickListeners() {
+        binding.buttonOpenAlphabet.setOnSoundClickListener {
+            viewModel.onAlphabetSelected('A')
+        }
+        binding.buttonOpenSpelling.setOnSoundClickListener {
+            startActivity(Intent(requireContext(), SpellingCategoryActivity::class.java))
+        }
+        binding.buttonOpenArithmetic.setOnSoundClickListener {
+            viewModel.onArithmeticSelected()
+        }
+    }
 
-        contentLayout.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                contentLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                if (contentLayout.height > scrollView.height) {
-                    scrollIndicator.visibility = View.VISIBLE
-                    val bounceAnimation = AnimationUtils.loadAnimation(context, R.anim.bounce)
-                    scrollIndicator.startAnimation(bounceAnimation)
-                } else {
-                    scrollIndicator.visibility = View.GONE
-                }
-            }
-        })
-
-        scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            if (scrollY > 0 && scrollIndicator.isVisible) {
-                scrollIndicator.animate().alpha(0f).setDuration(300).withEndAction {
-                    scrollIndicator.visibility = View.GONE
-                }.start()
+    private fun setupObservers() {
+        viewModel.navigationEvent.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let { (activityClass, bundle) ->
+                val intent = Intent(requireContext(), activityClass)
+                bundle?.let { intent.putExtras(it) }
+                startActivity(intent)
             }
         }
     }

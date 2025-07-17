@@ -75,6 +75,7 @@ class ArithmeticViewModel(application: Application) : AndroidViewModel(applicati
         val context = getApplication<Application>()
         val visualCategory = GameContentProvider.getGameCategories(context).random()
 
+        // ✅ This is the cleaner way to get the word and image info
         val wordPair =
             GameContentProvider.getNextWordPair(context, visualCategory, "easy") ?: return
         val imagePath = GameContentProvider.getImagePath(visualCategory, wordPair.base)

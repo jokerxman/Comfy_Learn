@@ -4,89 +4,59 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.userProfileChangeRequest
-import com.hompimpa.comfylearn.R
+import androidx.activity.viewModels
 import com.hompimpa.comfylearn.databinding.ActivityRegisterBinding
+import com.hompimpa.comfylearn.helper.AuthResult
 import com.hompimpa.comfylearn.helper.BaseActivity
-import com.hompimpa.comfylearn.helper.SoundManager
+import com.hompimpa.comfylearn.helper.setOnSoundClickListener
 import com.hompimpa.comfylearn.ui.HomeActivity
 
 class RegisterActivity : BaseActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
-    private lateinit var auth: FirebaseAuth
+    private val viewModel: RegisterViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        auth = FirebaseAuth.getInstance()
-        auth.setLanguageCode("en")
+        setupClickListeners()
+        setupObservers()
+    }
 
-        binding.btnRegister.setOnClickListener {
-            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
+    private fun setupClickListeners() {
+        binding.btnRegister.setOnSoundClickListener {
             val email = binding.edRegisterEmail.text.toString().trim()
             val password = binding.edRegisterPassword.text.toString().trim()
             val fullName = binding.edRegisterName.text.toString().trim()
-
-            registerUser (email, password, fullName)
+            viewModel.registerUser(email, password, fullName)
         }
-
-        binding.tvToLogin.setOnClickListener {
-            SoundManager.playSound(SoundManager.Sound.BUTTON_CLICK)
-            startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
+        binding.tvToLogin.setOnSoundClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
     }
 
-    private fun registerUser (email: String, password: String, fullName: String) {
-        if (email.isEmpty() || password.isEmpty() || fullName.isEmpty()) {
-            Toast.makeText(this, getString(R.string.all_fields_must_not_be_empty), Toast.LENGTH_SHORT).show()
-            return
+    private fun setupObservers() {
+        viewModel.isLoading.observe(this) { isLoading ->
+            showLoading(isLoading)
         }
 
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, getString(R.string.invalid_email_format), Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (password.length < 8) {
-            Toast.makeText(this, getString(R.string.password_must_be_at_least_8_characters), Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        showLoading(true)
-
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
-            if (task.isSuccessful) {
-                auth.currentUser ?.let { user ->
-                    val profileUpdates = userProfileChangeRequest {
-                        displayName = fullName
-                    }
-                    user.updateProfile(profileUpdates).addOnCompleteListener { profileTask ->
-                        showLoading(false)
-                        if (profileTask.isSuccessful) {
-                            updateUI(user)
-                        } else {
-                            Toast.makeText(this, "Registration succeeded, but failed to set display name.", Toast.LENGTH_LONG).show()
-                            updateUI(user)
+        viewModel.registrationResult.observe(this) { event ->
+            event.getContentIfNotHandled()?.let { result ->
+                when (result) {
+                    is AuthResult.Success -> {
+                        val intent = Intent(this, HomeActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         }
+                        startActivity(intent)
+                    }
+
+                    is AuthResult.Error -> {
+                        Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
                     }
                 }
-            } else {
-                showLoading(false)
-                val errorMessage = when (task.exception) {
-                    is FirebaseAuthUserCollisionException -> getString(R.string.email_already_registered)
-                    is FirebaseAuthWeakPasswordException -> getString(R.string.password_is_too_weak)
-                    else -> getString(R.string.registration_failed)
-                }
-                Toast.makeText(baseContext, errorMessage, Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -97,14 +67,5 @@ class RegisterActivity : BaseActivity() {
         binding.edRegisterEmail.isEnabled = !isLoading
         binding.edRegisterPassword.isEnabled = !isLoading
         binding.edRegisterName.isEnabled = !isLoading
-    }
-
-    private fun updateUI(user: FirebaseUser ?) {
-        if (user != null) {
-            val intent = Intent(this@RegisterActivity, HomeActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
-        }
     }
 }

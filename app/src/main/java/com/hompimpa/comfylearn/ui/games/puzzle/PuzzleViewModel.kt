@@ -50,7 +50,7 @@ class PuzzleViewModel(application: Application) : AndroidViewModel(application) 
             return
         }
 
-        if (formedWord == currentWordPair.display.lowercase()) {
+        if (formedWord.equals(currentWordPair.display, ignoreCase = true)) {
             SoundManager.playSound(SoundManager.Sound.CORRECT_ANSWER)
 
             GameContentProvider.addUsedWord(context, category, currentWordPair.base)
