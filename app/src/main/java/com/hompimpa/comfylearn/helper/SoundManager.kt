@@ -34,7 +34,8 @@ object SoundManager {
         val appContext = context.applicationContext
         soundMap[Sound.CORRECT_ANSWER.name] = soundPool.load(appContext, R.raw.correct_answer, 1)
         soundMap[Sound.BUTTON_CLICK.name] = soundPool.load(appContext, R.raw.button_click, 1)
-        soundMap[Sound.INCORRECT_ANSWER.name] = soundPool.load(appContext, R.raw.incorrect_answer, 1)
+        soundMap[Sound.INCORRECT_ANSWER.name] =
+            soundPool.load(appContext, R.raw.incorrect_answer, 1)
 
         isInitialized = true
     }

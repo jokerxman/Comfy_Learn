@@ -138,6 +138,7 @@ class FillInActivity : BaseActivity() {
             loadQuestionsAndSetup()
         }
     }
+
     private fun loadQuestionsAndSetup() {
         questionsSuccessfullyAnsweredThisSession = 0
         loadQuestions()
@@ -171,7 +172,10 @@ class FillInActivity : BaseActivity() {
             val englishBaseWords = englishContext.resources.getStringArray(categoryResId)
 
             if (localizedWords.size != englishBaseWords.size) {
-                Log.e(TAG, "Mismatch between localized and English word arrays for category: $category")
+                Log.e(
+                    TAG,
+                    "Mismatch between localized and English word arrays for category: $category"
+                )
                 Toast.makeText(this, "Error: Word list mismatch.", Toast.LENGTH_SHORT).show()
                 return
             }
@@ -224,7 +228,11 @@ class FillInActivity : BaseActivity() {
                     setupQuestion()
                 } else {
                     SoundManager.playSound(SoundManager.Sound.CORRECT_ANSWER)
-                    Toast.makeText(this, "Congratulations! You've completed all questions!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this,
+                        "Congratulations! You've completed all questions!",
+                        Toast.LENGTH_LONG
+                    ).show()
                     setGameResultAndFinish()
                 }
             } else {
@@ -351,7 +359,10 @@ class FillInActivity : BaseActivity() {
 
             gravity = Gravity.CENTER
             background = ContextCompat.getDrawable(this@FillInActivity, R.drawable.letter_slot_bg)
-            TextViewCompat.setAutoSizeTextTypeWithDefaults(this, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM)
+            TextViewCompat.setAutoSizeTextTypeWithDefaults(
+                this,
+                TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM
+            )
 
             text = when {
                 charToShow.isWhitespace() -> " "

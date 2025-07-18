@@ -36,7 +36,12 @@ class DifficultySelectionActivity : BaseActivity() {
         const val DIFFICULTY_MEDIUM = "MEDIUM"
         const val DIFFICULTY_HARD = "HARD"
 
-        fun newIntent(context: Context, category: String, gameType: String, currentDifficulty: String? = null): Intent {
+        fun newIntent(
+            context: Context,
+            category: String,
+            gameType: String,
+            currentDifficulty: String? = null
+        ): Intent {
             val intent = Intent(context, DifficultySelectionActivity::class.java)
             intent.putExtra(EXTRA_GAME_CATEGORY, category)
             intent.putExtra(EXTRA_GAME_TYPE, gameType)
@@ -95,6 +100,7 @@ class DifficultySelectionActivity : BaseActivity() {
                     }
                     startActivityForResult(fillInIntent, FILL_IN_GAME_REQUEST_CODE_INTERNAL)
                 }
+
                 GAME_TYPE_PUZZLE, GAME_TYPE_MATH -> {
                     val resultIntent = Intent().apply {
                         putExtra(EXTRA_SELECTED_DIFFICULTY, selectedDifficulty)
@@ -104,6 +110,7 @@ class DifficultySelectionActivity : BaseActivity() {
                     setResult(Activity.RESULT_OK, resultIntent)
                     finish()
                 }
+
                 else -> {
                     Toast.makeText(this, "Error: Unknown game type.", Toast.LENGTH_SHORT).show()
                     setResult(Activity.RESULT_CANCELED)
@@ -114,7 +121,8 @@ class DifficultySelectionActivity : BaseActivity() {
     }
 
     private fun loadLastSelectedDifficulty() {
-        val lastDifficulty = sharedPreferences.getString(KEY_LAST_UNIVERSAL_DIFFICULTY, DIFFICULTY_MEDIUM)
+        val lastDifficulty =
+            sharedPreferences.getString(KEY_LAST_UNIVERSAL_DIFFICULTY, DIFFICULTY_MEDIUM)
         setSelectedDifficultyRadio(lastDifficulty)
     }
 
@@ -128,7 +136,8 @@ class DifficultySelectionActivity : BaseActivity() {
     }
 
     private fun getSelectedDifficultyAndSaveChoice(): String {
-        val selectedRadioButtonId = binding.difficultySelectorRadioGroupActivity.checkedRadioButtonId
+        val selectedRadioButtonId =
+            binding.difficultySelectorRadioGroupActivity.checkedRadioButtonId
         val difficulty = when (selectedRadioButtonId) {
             R.id.easyRadioButtonActivity -> DIFFICULTY_EASY
             R.id.mediumRadioButtonActivity -> DIFFICULTY_MEDIUM

@@ -116,7 +116,12 @@ class ArithmeticActivity : BaseActivity() {
         repeat(count) {
             val imageView = ImageView(this).apply {
                 setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-                setImageDrawable(GameContentProvider.loadSvgFromAssets(this@ArithmeticActivity, imagePath))
+                setImageDrawable(
+                    GameContentProvider.loadSvgFromAssets(
+                        this@ArithmeticActivity,
+                        imagePath
+                    )
+                )
                 layoutParams = GridLayout.LayoutParams().apply {
                     width = itemSize
                     height = itemSize
@@ -135,7 +140,8 @@ class ArithmeticActivity : BaseActivity() {
         val wordIndex = localizedArray.indexOfFirst { it.equals(localizedWord, ignoreCase = true) }
         if (wordIndex == -1) return null
 
-        val englishConfig = Configuration(resources.configuration).apply { setLocale(Locale.ENGLISH) }
+        val englishConfig =
+            Configuration(resources.configuration).apply { setLocale(Locale.ENGLISH) }
         val englishContext = createConfigurationContext(englishConfig)
         val englishArray = englishContext.resources.getStringArray(resId)
 

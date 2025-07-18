@@ -33,7 +33,8 @@ class DrawingActivity : BaseActivity() {
             if (isGranted) {
                 saveDrawing()
             } else {
-                Toast.makeText(this, "Permission denied. Cannot save drawing.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Permission denied. Cannot save drawing.", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -90,9 +91,11 @@ class DrawingActivity : BaseActivity() {
                     try {
                         val outlineBitmap = BitmapFactory.decodeResource(resources, it)
                         binding.board.setBackgroundImage(outlineBitmap)
-                        Toast.makeText(this, "$selectedPageName page loaded!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "$selectedPageName page loaded!", Toast.LENGTH_SHORT)
+                            .show()
                     } catch (_: Exception) {
-                        Toast.makeText(this, "Coloring page image not found.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Coloring page image not found.", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
                 dialog.dismiss()
@@ -127,6 +130,7 @@ class DrawingActivity : BaseActivity() {
                 ) == PackageManager.PERMISSION_GRANTED -> {
                     saveDrawing()
                 }
+
                 else -> {
                     requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 }
@@ -140,7 +144,10 @@ class DrawingActivity : BaseActivity() {
             put(MediaStore.Images.Media.DISPLAY_NAME, "drawing_${System.currentTimeMillis()}.jpg")
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/ComfyLearn")
+                put(
+                    MediaStore.Images.Media.RELATIVE_PATH,
+                    Environment.DIRECTORY_PICTURES + "/ComfyLearn"
+                )
                 put(MediaStore.Images.Media.IS_PENDING, 1)
             }
         }

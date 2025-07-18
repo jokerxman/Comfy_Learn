@@ -54,7 +54,8 @@ class StudyFragment : Fragment() {
         val scrollIndicator = binding.scrollIndicator
         val contentLayout = scrollView.getChildAt(0)
 
-        contentLayout.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        contentLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 contentLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
 

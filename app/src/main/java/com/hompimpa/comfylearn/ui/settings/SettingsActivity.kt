@@ -38,7 +38,8 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun setupLanguageSpinner() {
-        val languages = arrayOf(getString(R.string.language_english), getString(R.string.language_indonesian))
+        val languages =
+            arrayOf(getString(R.string.language_english), getString(R.string.language_indonesian))
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, languages)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerLanguage.adapter = adapter
@@ -67,12 +68,14 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun applyChanges() {
-        val selectedLanguageCode = if (binding.spinnerLanguage.selectedItemPosition == 0) "en" else "in"
+        val selectedLanguageCode =
+            if (binding.spinnerLanguage.selectedItemPosition == 0) "en" else "in"
         val isDarkModeEnabled = binding.switchTheme.isChecked
 
         lifecycleScope.launch {
             settingPreferences.saveThemeSetting(isDarkModeEnabled)
-            val mode = if (isDarkModeEnabled) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            val mode =
+                if (isDarkModeEnabled) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
             AppCompatDelegate.setDefaultNightMode(mode)
         }
 

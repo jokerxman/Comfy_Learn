@@ -111,7 +111,11 @@ class LoginActivity : BaseActivity() {
                 handleSignIn(result)
             } catch (_: GetCredentialException) {
                 showLoading(false)
-                Toast.makeText(this@LoginActivity, getString(R.string.google_sign_in_cancelled), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@LoginActivity,
+                    getString(R.string.google_sign_in_cancelled),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -131,6 +135,7 @@ class LoginActivity : BaseActivity() {
                     showLoading(false)
                 }
             }
+
             else -> {
                 showLoading(false)
             }
@@ -143,17 +148,21 @@ class LoginActivity : BaseActivity() {
             .addOnCompleteListener(this) { task ->
                 showLoading(false)
                 if (task.isSuccessful) {
-                    val user: FirebaseUser ? = auth.currentUser
+                    val user: FirebaseUser? = auth.currentUser
                     updateUI(user)
                 } else {
-                    Toast.makeText(this, getString(R.string.authentication_failed), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        getString(R.string.authentication_failed),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     updateUI(null)
                 }
             }
     }
 
-    private fun updateUI(currentUser: FirebaseUser ?) {
-        if (currentUser  != null) {
+    private fun updateUI(currentUser: FirebaseUser?) {
+        if (currentUser != null) {
             startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
             finish()
         }
@@ -169,8 +178,8 @@ class LoginActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        val currentUser  = auth.currentUser
-        if (currentUser  != null) {
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
             updateUI(currentUser)
         }
     }

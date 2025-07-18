@@ -104,7 +104,8 @@ class Board @JvmOverloads constructor(
             strokeCap = Paint.Cap.ROUND
             strokeWidth = brushSize
             this.color = color
-            xfermode = if (color == Color.TRANSPARENT) PorterDuffXfermode(PorterDuff.Mode.SRC) else null
+            xfermode =
+                if (color == Color.TRANSPARENT) PorterDuffXfermode(PorterDuff.Mode.SRC) else null
         }
     }
 
@@ -150,9 +151,11 @@ class Board @JvmOverloads constructor(
                 mPath = Path().apply { moveTo(x, y) }
                 mPaint = createPaint(currentColor)
             }
+
             MotionEvent.ACTION_MOVE -> {
                 mPath?.lineTo(x, y)
             }
+
             MotionEvent.ACTION_UP -> {
                 mPath?.let {
                     drawingCanvas?.drawPath(it, mPaint)
@@ -168,6 +171,7 @@ class Board @JvmOverloads constructor(
                 startX = x
                 startY = y
             }
+
             MotionEvent.ACTION_UP -> {
                 val rectPath = Path()
                 rectPath.addRect(startX, startY, x, y, Path.Direction.CW)

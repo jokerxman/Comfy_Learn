@@ -49,7 +49,11 @@ class SpellingFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentSpellingBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -121,7 +125,8 @@ class SpellingFragment : Fragment() {
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
-                val margin = if (displayType == DISPLAY_TYPE_SYLLABLES && items.size > 1) dpToPx(4) else 0
+                val margin =
+                    if (displayType == DISPLAY_TYPE_SYLLABLES && items.size > 1) dpToPx(4) else 0
                 setMargins(margin, dpToPx(8), margin, 0)
             }
             binding.syllableContainer.addView(textView, layoutParams)
@@ -130,14 +135,16 @@ class SpellingFragment : Fragment() {
     }
 
     private fun getEnglishEquivalent(localizedWord: String, categoryName: String): String? {
-        val resId = resources.getIdentifier(categoryName.lowercase(), "array", requireContext().packageName)
+        val resId =
+            resources.getIdentifier(categoryName.lowercase(), "array", requireContext().packageName)
         if (resId == 0) return null
 
         val localizedArray = resources.getStringArray(resId)
         val wordIndex = localizedArray.indexOfFirst { it.equals(localizedWord, ignoreCase = true) }
         if (wordIndex == -1) return null
 
-        val englishConfig = Configuration(resources.configuration).apply { setLocale(Locale.ENGLISH) }
+        val englishConfig =
+            Configuration(resources.configuration).apply { setLocale(Locale.ENGLISH) }
         val englishContext = requireContext().createConfigurationContext(englishConfig)
         val englishArray = englishContext.resources.getStringArray(resId)
 
@@ -146,7 +153,29 @@ class SpellingFragment : Fragment() {
 
     private fun getItemsForConsonantSyllables(consonant: String): List<String> {
         val consonantLower = consonant.lowercase(Locale.ROOT)
-        val consonantOrder = listOf("b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "y", "z")
+        val consonantOrder = listOf(
+            "b",
+            "c",
+            "d",
+            "f",
+            "g",
+            "h",
+            "j",
+            "k",
+            "l",
+            "m",
+            "n",
+            "p",
+            "q",
+            "r",
+            "s",
+            "t",
+            "v",
+            "w",
+            "x",
+            "y",
+            "z"
+        )
         val index = consonantOrder.indexOf(consonantLower)
         if (index == -1) return emptyList()
 
@@ -154,8 +183,12 @@ class SpellingFragment : Fragment() {
             val spellArray = resources.getStringArray(R.array.spell)
             if (index < spellArray.size) {
                 spellArray[index].split(",").map { it.trim() }.filter { it.isNotEmpty() }
-            } else { emptyList() }
-        } catch (_: Exception) { emptyList() }
+            } else {
+                emptyList()
+            }
+        } catch (_: Exception) {
+            emptyList()
+        }
     }
 
     private fun resetUI() {

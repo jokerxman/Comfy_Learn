@@ -20,7 +20,9 @@ class SpellingActivity : BaseActivity() {
     private lateinit var fragmentContainer: View
 
     private val mainCategories by lazy { GameContentProvider.getGameCategories(this) }
-    private val consonantCategories by lazy { resources.getStringArray(R.array.consonants).toList() }
+    private val consonantCategories by lazy {
+        resources.getStringArray(R.array.consonants).toList()
+    }
 
     private val backPressedCallback = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {

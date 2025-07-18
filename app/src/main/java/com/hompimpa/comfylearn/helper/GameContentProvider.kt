@@ -92,7 +92,11 @@ object GameContentProvider {
         return context.resources.getStringArray(R.array.puzzle_difficulties).toList()
     }
 
-    fun getTotalWordsForPuzzleCategory(context: Context, category: String, difficulty: String): Int {
+    fun getTotalWordsForPuzzleCategory(
+        context: Context,
+        category: String,
+        difficulty: String
+    ): Int {
         val allWords = getWordsForCategory(context, category)
         val (minLength, maxLength) = getDifficultyBounds(difficulty)
         return allWords.count { it.length in minLength..maxLength }

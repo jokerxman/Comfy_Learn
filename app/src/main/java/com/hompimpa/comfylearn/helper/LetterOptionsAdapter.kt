@@ -34,7 +34,10 @@ class LetterOptionsAdapter(
             }
 
             letterTextView.text = letter
-            TextViewCompat.setAutoSizeTextTypeWithDefaults(letterTextView, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM)
+            TextViewCompat.setAutoSizeTextTypeWithDefaults(
+                letterTextView,
+                TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM
+            )
 
             itemView.setOnClickListener {
                 onLetterClick(letter)

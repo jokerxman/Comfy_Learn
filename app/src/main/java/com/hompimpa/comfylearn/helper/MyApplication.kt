@@ -22,7 +22,8 @@ class MyApplication : Application() {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageTag))
 
             val isDarkMode = prefs.getThemeSetting().first()
-            val mode = if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            val mode =
+                if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
             AppCompatDelegate.setDefaultNightMode(mode)
         }
     }

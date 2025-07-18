@@ -35,7 +35,7 @@ class RegisterActivity : BaseActivity() {
             val password = binding.edRegisterPassword.text.toString().trim()
             val fullName = binding.edRegisterName.text.toString().trim()
 
-            registerUser (email, password, fullName)
+            registerUser(email, password, fullName)
         }
 
         binding.tvToLogin.setOnClickListener {
@@ -45,19 +45,28 @@ class RegisterActivity : BaseActivity() {
         }
     }
 
-    private fun registerUser (email: String, password: String, fullName: String) {
+    private fun registerUser(email: String, password: String, fullName: String) {
         if (email.isEmpty() || password.isEmpty() || fullName.isEmpty()) {
-            Toast.makeText(this, getString(R.string.all_fields_must_not_be_empty), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                getString(R.string.all_fields_must_not_be_empty),
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, getString(R.string.invalid_email_format), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.invalid_email_format), Toast.LENGTH_SHORT)
+                .show()
             return
         }
 
         if (password.length < 8) {
-            Toast.makeText(this, getString(R.string.password_must_be_at_least_8_characters), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                getString(R.string.password_must_be_at_least_8_characters),
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
@@ -65,7 +74,7 @@ class RegisterActivity : BaseActivity() {
 
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
-                auth.currentUser ?.let { user ->
+                auth.currentUser?.let { user ->
                     val profileUpdates = userProfileChangeRequest {
                         displayName = fullName
                     }
@@ -74,7 +83,11 @@ class RegisterActivity : BaseActivity() {
                         if (profileTask.isSuccessful) {
                             updateUI(user)
                         } else {
-                            Toast.makeText(this, "Registration succeeded, but failed to set display name.", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                this,
+                                "Registration succeeded, but failed to set display name.",
+                                Toast.LENGTH_LONG
+                            ).show()
                             updateUI(user)
                         }
                     }
@@ -99,7 +112,7 @@ class RegisterActivity : BaseActivity() {
         binding.edRegisterName.isEnabled = !isLoading
     }
 
-    private fun updateUI(user: FirebaseUser ?) {
+    private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
             val intent = Intent(this@RegisterActivity, HomeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
