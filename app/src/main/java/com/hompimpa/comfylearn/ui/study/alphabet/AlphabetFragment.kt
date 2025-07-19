@@ -15,7 +15,10 @@ class AlphabetFragment : Fragment() {
 
     private var currentLetter: Char = 'A'
     private lateinit var letterImageView: ImageView
-    private var loadingResourceToLetterMap = HashMap<Int, Char>()
+
+    private var soundIdMap = HashMap<Char, Int>()
+    private var soundIdToLetterMap = HashMap<Int, Char>()
+    private var soundLoadingMap = HashMap<Char, Boolean>()
 
     private val letterImages = mapOf(
         'A' to R.drawable.letter_a,
@@ -47,8 +50,6 @@ class AlphabetFragment : Fragment() {
     )
 
     private var soundPool: SoundPool? = null
-    private var soundIdMap = HashMap<Char, Int>()
-    private var soundLoadingMap = HashMap<Char, Boolean>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,8 +63,7 @@ class AlphabetFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_alphabet, container, false)
         letterImageView = view.findViewById(R.id.letterImageView)
@@ -84,37 +84,19 @@ class AlphabetFragment : Fragment() {
     }
 
     private fun setupSoundPool() {
-        val audioAttributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_MEDIA)
-            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-            .build()
+        val audioAttributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
         soundPool = SoundPool.Builder().setMaxStreams(3).setAudioAttributes(audioAttributes).build()
 
         soundPool?.setOnLoadCompleteListener { _, sampleId, status ->
-            var letterForThisSound: Char? = null
+            val loadedLetter = soundIdToLetterMap[sampleId]
 
-            synchronized(soundLoadingMap) {
-                val iterator = soundLoadingMap.entries.iterator()
-                while (iterator.hasNext()) {
-                    val entry = iterator.next()
-                    if (entry.value) {
-                        val loadingLetter = soundLoadingMap.filterValues { it }.keys.firstOrNull()
-                        if (loadingLetter != null) {
-                            letterForThisSound = loadingLetter
-                            break
-                        }
-                    }
-                }
-            }
-
-            if (letterForThisSound != null) {
+            loadedLetter?.let { letter ->
                 if (status == 0) {
-                    soundIdMap[letterForThisSound] = sampleId
-                } else {
-                    soundIdMap.remove(letterForThisSound)
+                    soundIdMap[letter] = sampleId
                 }
-                soundLoadingMap.remove(letterForThisSound)
-                loadingResourceToLetterMap.entries.removeAll { it.value == letterForThisSound }
+                soundLoadingMap.remove(letter)
+                soundIdToLetterMap.remove(sampleId)
             }
         }
     }
@@ -136,9 +118,11 @@ class AlphabetFragment : Fragment() {
 
         soundLoadingMap[letter] = true
 
-        val streamId = soundPool?.load(requireContext(), soundResId, 1)
+        val soundId = soundPool?.load(requireContext(), soundResId, 1)
 
-        if (streamId == null || streamId == 0) {
+        if (soundId != null && soundId != 0) {
+            soundIdToLetterMap[soundId] = letter
+        } else {
             soundLoadingMap.remove(letter)
         }
     }
@@ -147,9 +131,7 @@ class AlphabetFragment : Fragment() {
         val soundId = soundIdMap[letter]
         if (soundId != null && soundId > 0) {
             soundPool?.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f)
-        } else if (soundLoadingMap[letter] == true) {
-            // Sound is still loading
-        } else {
+        } else if (soundLoadingMap[letter] != true) {
             loadSoundForLetter(letter)
         }
     }
@@ -164,11 +146,10 @@ class AlphabetFragment : Fragment() {
         private const val ARG_LETTER = "letter"
 
         @JvmStatic
-        fun newInstance(letter: Char) =
-            AlphabetFragment().apply {
-                arguments = Bundle().apply {
-                    putChar(ARG_LETTER, letter)
-                }
+        fun newInstance(letter: Char) = AlphabetFragment().apply {
+            arguments = Bundle().apply {
+                putChar(ARG_LETTER, letter)
             }
+        }
     }
 }

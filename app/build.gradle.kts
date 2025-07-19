@@ -21,7 +21,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
@@ -38,7 +38,6 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
-        mlModelBinding = true
     }
     buildToolsVersion = "35.0.0"
 }
@@ -76,16 +75,11 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
 
 // Other
-    implementation(libs.tasks.vision)
-    implementation(libs.tensorflow.lite.support)
-    implementation(libs.tensorflow.lite.metadata)
-    implementation(libs.tensorflow.lite.gpu)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.ui.text.android)
-    implementation(libs.appcompat)
 
 // Testing
     testImplementation(libs.junit)
