@@ -11,5 +11,5 @@
     <dimen name="slot_min_height">48dp</dimen>
     <dimen name="slot_margin">4dp</dimen>
     <dimen name="arithmetic_item_size">40dp</dimen>
-    <dimen name="arithmetic_item_margin">4dp</dimen>
+    <dimen name="arithmetic_item_margin">0dp</dimen>
 </resources>

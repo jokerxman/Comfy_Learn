@@ -66,7 +66,7 @@ class ArithmeticActivity : BaseActivity() {
     }
 
     private fun generateQuestion() {
-        val visualCategory = GameContentProvider.getGameCategories(this).random()
+        val visualCategory = GameContentProvider.getGameCategories(this).random().lowercase()
         val localizedWords = GameContentProvider.getWordsForCategory(this, visualCategory)
         if (localizedWords.isEmpty()) return
 
@@ -105,30 +105,38 @@ class ArithmeticActivity : BaseActivity() {
         gridLayout.removeAllViews()
         if (count <= 0) return
 
-        gridLayout.columnCount = when {
-            count > 9 -> 5
-            count > 4 -> 4
-            else -> count.coerceAtLeast(1)
+        gridLayout.columnCount = 2
+        gridLayout.rowCount = when {
+            count > 9 -> 4
+            count > 4 -> 3
+            else -> count.coerceAtLeast(2)
         }
-        val itemSize = resources.getDimensionPixelSize(R.dimen.arithmetic_item_size)
-        val itemMargin = resources.getDimensionPixelSize(R.dimen.arithmetic_item_margin)
+        gridLayout.post {
+            val gridWidth = gridLayout.width
+            if (gridWidth == 0) return@post
 
-        repeat(count) {
-            val imageView = ImageView(this).apply {
-                setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-                setImageDrawable(
-                    GameContentProvider.loadSvgFromAssets(
-                        this@ArithmeticActivity,
-                        imagePath
+            val itemMargin = resources.getDimensionPixelSize(R.dimen.arithmetic_item_margin)
+            val numColumns = gridLayout.columnCount
+
+            val itemSize = (gridWidth / numColumns) - (itemMargin * 2)
+
+            repeat(count) {
+                val imageView = ImageView(this).apply {
+                    setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+                    setImageDrawable(
+                        GameContentProvider.loadSvgFromAssets(
+                            this@ArithmeticActivity,
+                            imagePath
+                        )
                     )
-                )
-                layoutParams = GridLayout.LayoutParams().apply {
-                    width = itemSize
-                    height = itemSize
-                    setMargins(itemMargin, itemMargin, itemMargin, itemMargin)
+                    layoutParams = GridLayout.LayoutParams().apply {
+                        width = itemSize
+                        height = itemSize
+                        setMargins(itemMargin, itemMargin, itemMargin, itemMargin)
+                    }
                 }
+                gridLayout.addView(imageView)
             }
-            gridLayout.addView(imageView)
         }
     }
 
