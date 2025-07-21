@@ -97,43 +97,45 @@ class FillInActivity : BaseActivity() {
             setGameResultAndFinish()
         }
 
-        val savedWord = savedInstanceState!!.getString(STATE_CURRENT_WORD)
-        val savedImageUrl = savedInstanceState.getString(STATE_CURRENT_IMAGE_URL)
-        hintsAvailable = savedInstanceState.getInt(
-            STATE_HINTS_AVAILABLE,
-            if (difficulty == DIFFICULTY_EASY) 1 else 0
-        )
-        questionsSuccessfullyAnsweredThisSession =
-            savedInstanceState.getInt(STATE_QUESTIONS_ANSWERED_THIS_SESSION, 0)
-        val savedAnsweredWords = savedInstanceState.getStringArrayList(STATE_ANSWERED_WORDS)
-        if (savedAnsweredWords != null) {
-            answeredWordsThisSession.addAll(savedAnsweredWords)
-        }
+        if (savedInstanceState != null) {
+            val savedWord = savedInstanceState.getString(STATE_CURRENT_WORD)
+            val savedImageUrl = savedInstanceState.getString(STATE_CURRENT_IMAGE_URL)
+            hintsAvailable = savedInstanceState.getInt(STATE_HINTS_AVAILABLE, if (difficulty == DIFFICULTY_EASY) 1 else 0)
+            questionsSuccessfullyAnsweredThisSession = savedInstanceState.getInt(STATE_QUESTIONS_ANSWERED_THIS_SESSION, 0)
+            savedInstanceState.getStringArrayList(STATE_ANSWERED_WORDS)?.let {
+                answeredWordsThisSession.addAll(it)
+            }
 
-        if (savedWord != null && savedImageUrl != null) {
-            currentQuestion = Question(savedWord, savedImageUrl)
-            loadQuestions()
-            questions.removeAll { it.word == savedWord }
-            setupLetterSlots()
-            val savedSlotTexts = savedInstanceState.getStringArray(STATE_LETTER_SLOTS_TEXT)
-            if (savedSlotTexts != null && savedSlotTexts.size == letterSlots.size) {
-                letterSlots.forEachIndexed { index, textView ->
-                    textView.text = savedSlotTexts[index]
+            if (savedWord != null && savedImageUrl != null) {
+                currentQuestion = Question(savedWord, savedImageUrl)
+                loadQuestions()
+                questions.removeAll { it.word == savedWord }
+                setupLetterSlots()
+
+                val savedSlotTexts = savedInstanceState.getStringArray(STATE_LETTER_SLOTS_TEXT)
+                if (savedSlotTexts != null) {
+                    binding.letterSlots.post {
+                        if (savedSlotTexts.size == letterSlots.size) {
+                            letterSlots.forEachIndexed { index, textView ->
+                                textView.text = savedSlotTexts[index]
+                            }
+                        }
+                    }
                 }
-            }
-            val imageDrawable = loadSvgFromAssets(currentQuestion?.imageUrl)
-            if (imageDrawable != null) {
-                binding.imagePrompt.setImageDrawable(imageDrawable)
+
+                val imageDrawable = loadSvgFromAssets(currentQuestion?.imageUrl)
+                binding.imagePrompt.setImageDrawable(imageDrawable ?: ContextCompat.getDrawable(this, R.drawable.ic_placeholder_image))
+
+                generateKeyboardLetters()
+                if (currentKeyboardLetters.isNotEmpty()) currentKeyboardLetters.shuffle()
+                setupLetterOptions()
+                setupHintButton()
+                setupUndoButton()
+                checkAnswer(isRestoring = true)
+                updateHintButtonState()
             } else {
-                binding.imagePrompt.setImageResource(R.drawable.ic_placeholder_image)
+                loadQuestionsAndSetup()
             }
-            generateKeyboardLetters()
-            if (currentKeyboardLetters.isNotEmpty()) currentKeyboardLetters.shuffle()
-            setupLetterOptions()
-            setupHintButton()
-            setupUndoButton()
-            checkAnswer(isRestoring = true)
-            updateHintButtonState()
         } else {
             loadQuestionsAndSetup()
         }
