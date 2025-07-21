@@ -120,7 +120,9 @@ class SpellingFragment : Fragment() {
                 gravity = Gravity.CENTER
                 setBackgroundResource(R.drawable.syllable_background)
                 setPadding(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8))
-                setOnClickListener { SoundManager.playSoundByName(requireContext(), itemText) }
+                setOnClickListener { view ->
+                    view.post { SoundManager.playSoundByName(requireContext(), itemText) }
+                }
             }
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
